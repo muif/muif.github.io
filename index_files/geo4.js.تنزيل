@@ -1,0 +1,17 @@
+(function(){
+  window['optimizely'] = window['optimizely'] || [];
+  window['optimizely'].push(['activateGeoDelayedExperiments', {
+    'location':{
+      'city': "BAGHDAD",
+      'continent': "AS",
+      'country': "IQ",
+      'region': "",
+      'dma': ""
+    },
+    'ip':"37.238.121.11"
+  }]);
+})
+//
+()
+
+;
