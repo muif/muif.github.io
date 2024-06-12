@@ -1,0 +1,6 @@
+@use "sass:math";
+
+// px to rem unit converter
+@function rem($n, $base: 16px) {
+    @return math.div($n, $base) * 1rem;
+}

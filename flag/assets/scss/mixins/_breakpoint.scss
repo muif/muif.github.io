@@ -1,0 +1,59 @@
+@use "sass:list";
+@use "sass:map";
+@use "sass:meta";
+
+$_grid-breakpoints: (
+    xs: 0,
+    sm: 480px,
+    md: 640px,
+    lg: 960px,
+    xl: 1200px,
+    xxl: 1440px
+) !default;
+
+@function _get-breakpoint-value($value, $breakpoints: ()) {
+    $type: meta.type-of($value);
+
+    @if $type == number and $value > 0 {
+        @return $value;
+    } @else if $type == string {
+        @return _get-breakpoint-value(map.get($breakpoints, $value));
+    }
+
+    @return null;
+}
+
+@mixin breakpoint($query, $breakpoints: $_grid-breakpoints) {
+    $min: $query;
+    $max: null;
+
+    @if list.length($query) == 2 {
+        $min: list.nth($query, 1);
+        $max: list.nth($query, 2);
+    }
+
+    $min: _get-breakpoint-value($min, $breakpoints);
+    $max: _get-breakpoint-value($max, $breakpoints);
+
+    @if $max != null {
+        $max: $max - 0.02px;
+    }
+
+    @if $min != null and $max != null {
+        @media (min-width: $min) and (max-width: $max) {
+            @content;
+        }
+    } @else if $min != null and $max == null {
+        @media (min-width: $min) {
+            @content;
+        }
+    } @else if $min == null and $max != null {
+        @media (max-width: $max) {
+            @content;
+        }
+    } @else {
+        @warn "\"#{$query}\" is not a valid breakpoint.";
+
+        @content;
+    }
+}

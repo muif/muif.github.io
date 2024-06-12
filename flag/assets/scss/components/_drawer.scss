@@ -1,0 +1,99 @@
+@use "../vendors/spectre.css/abstracts" as spectre-css;
+@use "../abstracts" as s;
+
+.drawer {
+    width: 100%;
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: s.$zindex-fixed;
+    background-color: s.$white;
+    box-shadow: none;
+    transform: translateX(-100%);
+    transition:
+        visibility 0ms s.$transition-duration,
+        box-shadow s.$transition-style,
+        transform s.$transition-style;
+
+    @include s.mq-layout-drawer-bottom {
+        top: s.$app-viewer-height;
+        transform: translateY(100%);
+
+        &.open {
+            transform: translateY(0);
+        }
+    }
+
+    @include s.mq-layout-drawer-left {
+        width: s.$drawer-width;
+        max-width: 100%;
+
+        @include s.breakpoint(md) {
+            width: s.$drawer-md-width;
+        }
+
+        @include s.breakpoint(lg) {
+            width: s.$drawer-lg-width;
+        }
+    }
+
+    &.open {
+        visibility: visible;
+        box-shadow: 0 0 0.5rem 0.25rem rgba(s.$black, 0.25);
+        transform: translateX(0);
+        transition:
+            visibility 0ms,
+            box-shadow s.$transition-style,
+            transform s.$transition-style;
+    }
+
+    .panel-header,
+    .panel-body {
+        width: s.$drawer-lg-width;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+}
+
+.drawer-layout {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.drawer-header {
+    flex: 0 0 auto;
+    position: relative;
+    z-index: 1;
+    border-bottom: spectre-css.$border-width solid spectre-css.$border-color;
+    font-size: 0.875rem;
+
+    .btn {
+        border-radius: 0;
+    }
+}
+
+.drawer-header-layout {
+    display: flex;
+
+    .drawer-header-left,
+    .drawer-header-right {
+        flex: 1 0 auto;
+    }
+
+    .drawer-header-left {
+        text-align: left;
+    }
+
+    .drawer-header-right {
+        text-align: right;
+    }
+}
+
+.drawer-body {
+    flex: 1 1 100%;
+    overflow-y: auto;
+}

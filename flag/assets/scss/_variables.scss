@@ -1,0 +1,123 @@
+@use "sass:color";
+
+@use "functions/rem" as *;
+
+//
+// Variables
+//
+
+// Colors
+
+$black:                         #000;
+$white:                         #fff;
+
+$brand-red:                     #d0112b;
+$brand-blue:                    #1946ba;
+$brand-sky-blue:                #4392f1;
+$brand-sky-blue-light:          #76aff4;
+$brand-green-light:             #3ec300;
+$brand-yellow:                  #e89005;
+$brand-smoky-gray:              #8d99ae;
+$brand-danger:                  #dc392d;
+
+$brand-gray-darkest:            #262626;
+$brand-gray-darker:             #4b4b4b;
+$brand-gray-dark:               #707070;
+$brand-gray-medium:             #9d9d9d;
+$brand-gray-light:              #bebebe;
+$brand-gray-lighter:            #dedede;
+$brand-gray-lightest:           #f0f0f0;
+
+$brand-overlay-white:           rgba($white, 0.85);
+
+$primary:                       $brand-blue;
+$secondary:                     $brand-gray-medium;
+
+
+// Spacing
+
+$spacer:                        1rem;
+
+
+// Body
+
+$text-color:                    $brand-gray-darker;
+$text-inverse-color:            $white;
+
+
+// Links
+
+$link-color:                    $primary;
+$link-decoration:               underline;
+$link-hover-color:              color.adjust($link-color, $lightness: -10%);
+$link-hover-decoration:         underline;
+
+$link-inverse-color:            $white;
+$link-inverse-hover-color:      color.adjust($primary, $lightness: 40%);
+
+
+// Grid
+
+$grid-breakpoints: (
+    xs: 480px,
+    sm: 600px,
+    md: 840px,
+    lg: 960px,
+    xl: 1200px,
+    xxl: 1440px
+);
+
+$grid-gutter-width:             1.25rem;
+$grid-gutter-half:              $grid-gutter-width * 0.5;
+
+
+// Z-index
+
+$zindex-fixed:                  1000;
+$zindex-toasts:                 1010;
+$zindex-loader:                 1020;
+
+
+// Typography
+
+$font-size-root:                16px;
+
+$font-family-helvetica:         "Helvetica Neue", Helvetica, Arial, sans-serif;
+$font-family-montserrat:        "Montserrat", $font-family-helvetica;
+
+$font-family-base:              $font-family-montserrat;
+$font-family-primary:           $font-family-base;
+$font-family-secondary:         $font-family-base;
+
+$font-size-base:                1rem;
+$font-size-sm:                  0.75rem;
+$font-size-lg:                  1.25rem;
+
+$line-height-base:              1.5;
+
+
+// Transitions
+
+$transition-duration:           200ms;
+$transition-timing-function:    ease-in-out;
+$transition-style:              $transition-duration
+                                $transition-timing-function;
+
+// Small delay to ensure transitions fire in order.
+$transition-wait:               15ms;
+
+$control-transition:            background-color $transition-style,
+                                border-color $transition-style,
+                                box-shadow $transition-style,
+                                color $transition-style;
+
+$control-shadow-transition:     box-shadow $transition-style;
+
+
+// Layout
+
+$app-viewer-height:             rem(240px);
+
+$drawer-width:                  rem(288px);
+$drawer-md-width:               rem(320px);
+$drawer-lg-width:               rem(360px);

@@ -1,0 +1,37 @@
+/*!
+ * FlagWaver
+ * @author krikienoid / https://github.com/krikienoid
+ */
+
+/*! Custom Spectre.css */
+
+@use "vendors/spectre.css/styles";
+
+/*! Main styles */
+
+@use "components/loader";
+
+@use "components/typography";
+@use "components/layout";
+@use "components/button";
+@use "components/form";
+@use "components/header";
+
+@use "components/background";
+@use "components/bottom-app-bar";
+@use "components/button-select";
+@use "components/drawer";
+@use "components/empty";
+@use "components/field-group";
+@use "components/focus";
+@use "components/form-file";
+@use "components/icon";
+@use "components/nav";
+@use "components/panel";
+@use "components/slider";
+@use "components/slider-ticks";
+@use "components/toasts";
+
+@use "utilities/display";
+@use "utilities/screenreader";
+@use "utilities/v-align";

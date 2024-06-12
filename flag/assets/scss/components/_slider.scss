@@ -1,0 +1,31 @@
+@use "../vendors/spectre.css/abstracts" as spectre-css;
+@use "../abstracts" as s;
+
+.slider {
+    transition: s.$control-shadow-transition;
+
+    &::-webkit-slider-thumb {
+        transition:
+            background s.$transition-style,
+            transform s.$transition-style;
+    }
+
+    &::-moz-range-thumb {
+        transition:
+            background s.$transition-style,
+            transform s.$transition-style;
+    }
+
+    &::-ms-thumb {
+        transition:
+            background s.$transition-style,
+            transform s.$transition-style;
+    }
+
+    &:disabled,
+    &.disabled {
+        &::-ms-fill-lower {
+            background: spectre-css.$gray-color-light;
+        }
+    }
+}
