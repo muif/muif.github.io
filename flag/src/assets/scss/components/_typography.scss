@@ -1,0 +1,99 @@
+@use "../vendors/spectre.css/abstracts" as spectre-css;
+@use "../abstracts" as s;
+
+html.wf-active body {
+    font-family: s.$font-family-montserrat;
+}
+
+h1, .h1,
+h2, .h2,
+h3, .h3,
+h4, .h4,
+h5, .h5,
+h6, .h6 {
+    margin-top: 0;
+    margin-bottom: 0.5em;
+    font-weight: 500;
+    line-height: 1.25;
+
+    small, .small {
+        margin-left: 0.25em;
+        color: s.$brand-gray-light;
+        font-weight: 500;
+    }
+}
+
+h1, .h1 {
+    font-size: 2rem;
+}
+
+h2, .h2 {
+    font-size: 1.5rem;
+}
+
+h3, .h3 {
+    font-size: 1.25rem;
+}
+
+h4, .h4 {
+    font-size: 1.125rem;
+}
+
+h5, .h5 {
+    font-size: 1rem;
+}
+
+h6, .h6 {
+    font-size: 0.875rem;
+}
+
+p {
+    margin: 0 0 (s.$font-size-base * s.$line-height-base);
+}
+
+a,
+.link {
+    color: spectre-css.$link-color;
+    font-weight: 500;
+    text-decoration: s.$link-decoration;
+    transition: s.$control-transition;
+
+    &:visited {
+        color: spectre-css.$link-color;
+    }
+
+    &:hover,
+    &:focus,
+    &:active,
+    &.active {
+        color: spectre-css.$link-color-dark;
+        text-decoration: s.$link-hover-decoration;
+    }
+
+    &:active,
+    &.active {
+        transition: s.$control-shadow-transition;
+    }
+}
+
+.link {
+    display: inline;
+    @include s.button-unstyled;
+    outline: 0;
+    cursor: pointer;
+
+    &:focus {
+        @include spectre-css.control-shadow;
+    }
+}
+
+hr, .hr {
+    margin: (s.$font-size-base * s.$line-height-base) 0;
+    border: 0;
+    border-top: spectre-css.$border-width solid spectre-css.$border-color;
+}
+
+.text-inverse {
+    color: s.$text-inverse-color;
+    @include s.font-smoothing;
+}

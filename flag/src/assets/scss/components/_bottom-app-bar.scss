@@ -1,0 +1,201 @@
+@use "../vendors/spectre.css/abstracts" as spectre-css;
+@use "../abstracts" as s;
+
+$bottom-app-bar-padding-x:      0.5 * s.$spacer;
+$bottom-app-bar-padding-y:      0.5 * s.$spacer;
+$bottom-app-bar-sm-padding-x:   s.$grid-gutter-width;
+$bottom-app-bar-sm-padding-y:   s.$grid-gutter-half;
+$bottom-app-bar-translate-y:    s.rem(96px);
+
+.bottom-app-bar,
+.bottom-app-bar-primary,
+.bottom-app-bar-secondary,
+.bottom-app-bar-tertiary,
+.bottom-app-bar-quaternary {
+    display: flex;
+}
+
+.bottom-app-bar-primary,
+.bottom-app-bar-secondary,
+.bottom-app-bar-tertiary,
+.bottom-app-bar-quaternary .btn:not(.site-theater-mode-toggle-btn) {
+    visibility: visible;
+    transition: visibility 0ms;
+
+    .site-is-theater-mode & {
+        visibility: hidden;
+        transition: visibility 0ms s.$transition-duration;
+    }
+}
+
+.bottom-app-bar-primary,
+.bottom-app-bar-secondary,
+.bottom-app-bar-tertiary {
+    @include s.mq-layout-drawer {
+        .site-is-drawer-open & {
+            visibility: hidden;
+            transition: visibility 0ms s.$transition-duration;
+        }
+    }
+}
+
+.bottom-app-bar {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+    padding: $bottom-app-bar-padding-y $bottom-app-bar-padding-x;
+    background-color: s.$brand-overlay-white;
+    opacity: 1;
+    transition:
+        opacity s.$transition-style,
+        transform s.$transition-style;
+
+    .site-is-theater-mode & {
+        opacity: 0;
+    }
+
+    @include s.mq-layout-drawer {
+        .site-is-drawer-open & {
+            transform: translateY($bottom-app-bar-translate-y);
+        }
+    }
+
+    @include s.breakpoint(sm) {
+        padding: $bottom-app-bar-sm-padding-y $bottom-app-bar-sm-padding-x;
+    }
+
+    .form-section {
+        margin-right: s.$grid-gutter-width;
+    }
+
+    .form-group {
+        &:not(:last-child) {
+            margin-bottom: 0;
+        }
+
+        + .form-group {
+            margin-left: 0.5 * s.$spacer;
+        }
+    }
+
+    .form-label {
+        @include s.sr-only;
+    }
+
+    .field-group {
+        position: relative;
+        margin: 0;
+    }
+
+    .field-group-legend {
+        position: absolute;
+        bottom: 100%;
+        margin-bottom: $bottom-app-bar-padding-y;
+        padding-bottom: 0.25rem;
+        color: s.$text-inverse-color;
+        font-size: spectre-css.$font-size-lg;
+        @include s.font-smoothing;
+
+        @include s.breakpoint(sm) {
+            margin-bottom: $bottom-app-bar-sm-padding-y;
+        }
+    }
+
+    .field-group-body {
+        display: flex;
+        padding: 0;
+        background: none;
+        border: 0;
+    }
+
+    .form-file-picker-group-footer {
+        display: none;
+    }
+}
+
+.bottom-app-bar-primary {
+    @include s.breakpoint(0 sm) {
+        width: 100%;
+
+        .form-section {
+            width: 100%;
+            margin-right: 0;
+        }
+
+        .form-group + .form-group {
+            flex: 1 1 0%;
+        }
+    }
+}
+
+.bottom-app-bar-secondary {
+    @include s.breakpoint(0 md) {
+        display: none;
+    }
+}
+
+.bottom-app-bar-tertiary {
+    @include s.breakpoint(0 lg) {
+        display: none;
+    }
+}
+
+.bottom-app-bar-quaternary {
+    flex: 1 1 auto;
+    justify-content: flex-end;
+
+    .form-section {
+        margin-right: 0;
+
+        @include s.mq-layout-drawer {
+            transition: transform s.$transition-style;
+
+            .site-is-drawer-open & {
+                transform: translateY(-$bottom-app-bar-translate-y);
+            }
+        }
+    }
+
+    @include s.breakpoint(0 sm) {
+        .form-section {
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            margin-bottom: $bottom-app-bar-padding-y;
+            margin-right: $bottom-app-bar-padding-x;
+
+            @include s.mq-layout-drawer-bottom {
+                transition:
+                    bottom 0ms s.$transition-duration,
+                    transform s.$transition-style;
+
+                .site-is-drawer-open & {
+                    bottom: 0;
+                }
+            }
+        }
+    }
+}
+
+.site-theater-mode-toggle-btn-overlay {
+    display: none;
+    position: fixed;
+    top: -9999px;
+    left: -9999px;
+    bottom: -9999px;
+    right: -9999px;
+    opacity: 0;
+    cursor: default;
+
+    .site-is-theater-mode & {
+        display: block;
+    }
+}
+
+.site-fullscreen-toggle-btn {
+    .svg-icon {
+        transform: scale(1.25);
+    }
+}

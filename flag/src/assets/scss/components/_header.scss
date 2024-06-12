@@ -1,0 +1,213 @@
+@use "../vendors/spectre.css/abstracts" as spectre-css;
+@use "../abstracts" as s;
+
+$site-header-btn-width: 1.75rem;
+$site-header-btn-height: 1.5rem;
+
+.site-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    padding: 0.5rem 0.625rem 0;
+    color: s.$text-inverse-color;
+    @include s.font-smoothing;
+
+    @include s.breakpoint(sm) {
+        padding: 1rem s.$grid-gutter-width 0;
+    }
+
+    @include s.mq-layout-drawer-left {
+        transition: transform s.$transition-style;
+
+        .site-is-drawer-open & {
+            transform: translateX(s.$drawer-width);
+
+            @include s.breakpoint(md) {
+                transform: translateX(s.$drawer-md-width);
+            }
+
+            @include s.breakpoint(lg) {
+                transform: translateX(s.$drawer-lg-width);
+            }
+        }
+    }
+}
+
+.site-header-layout {
+    display: flex;
+    margin-left: -(s.$grid-gutter-half);
+    margin-right: -(s.$grid-gutter-half);
+
+    .site-header-center,
+    .site-header-left,
+    .site-header-right {
+        padding-left: s.$grid-gutter-half;
+        padding-right: s.$grid-gutter-half;
+    }
+
+    .site-header-left,
+    .site-header-right {
+        width: $site-header-btn-width + s.$grid-gutter-width;
+        flex: 0 0 auto;
+        visibility: visible;
+        opacity: 1;
+        transition:
+            visibility 0ms,
+            opacity s.$transition-style;
+
+        .site-is-theater-mode & {
+            visibility: hidden;
+            opacity: 0;
+            transition:
+                visibility 0ms s.$transition-duration,
+                opacity s.$transition-style;
+        }
+    }
+
+    .site-header-left {
+        order: 0;
+    }
+
+    .site-header-right {
+        order: 2;
+    }
+
+    .site-header-center {
+        flex: 1 1 auto;
+        order: 1;
+        text-align: center;
+
+        @include s.breakpoint(sm) {
+            text-align: left;
+        }
+    }
+}
+
+.site-header-btn {
+    @include s.button-icon($site-header-btn-width, $site-header-btn-height);
+    position: relative;
+    margin: 0.125rem 0;
+    overflow: hidden; // Bugfix: Firefox bug #687311
+    color: s.$link-inverse-color;
+    outline-offset: 0.25rem;
+    cursor: pointer;
+    transition: s.$control-transition;
+
+    &:focus {
+        outline: 0.125rem solid rgba(spectre-css.$primary-color, 0.8);
+    }
+
+    @include s.breakpoint(sm) {
+        margin: 0.25rem 0;
+    }
+
+    .icon-bars {
+        $bar-height: 0.25rem;
+        $bar-gap: 0.3125rem;
+
+        width: $site-header-btn-width;
+        display: inline-block;
+        margin: (
+            ($site-header-btn-height - ($bar-height * 3 + $bar-gap * 2)) * 0.5
+        ) 0;
+
+        .icon-bar {
+            width: 100%;
+            height: $bar-height;
+            display: block;
+            background-color: s.$link-inverse-color;
+            border-radius: 0.0625rem;
+            transition: background-color s.$transition-style;
+
+            + .icon-bar {
+                margin-top: $bar-gap;
+            }
+        }
+    }
+
+    .icon-dots {
+        $dot-height: 0.375rem;
+        $dot-gap: 0.1875rem;
+
+        width: $site-header-btn-width;
+        display: inline-block;
+        margin: (
+            ($site-header-btn-height - ($dot-height * 3 + $dot-gap * 2)) * 0.5
+        ) 0;
+
+        .icon-dot {
+            width: $dot-height;
+            height: $dot-height;
+            display: block;
+            margin: 0 auto;
+            background-color: s.$link-inverse-color;
+            border-radius: 50%;
+            transition: background-color s.$transition-style;
+
+            + .icon-dot {
+                margin-top: $dot-gap;
+            }
+        }
+    }
+
+    &:hover {
+        .icon-bar,
+        .icon-dot {
+            background-color: s.$link-inverse-hover-color;
+        }
+    }
+}
+
+.site-header-right {
+    .site-header-btn {
+        // Hide this button for now since it has no use
+        visibility: hidden;
+    }
+}
+
+.site-headline {
+    margin: 0;
+    font-size: 1.75rem;
+    line-height: 1;
+    white-space: nowrap;
+    opacity: 1;
+    user-select: none;
+    transition:
+        opacity s.$transition-style,
+        transform s.$transition-style;
+
+    img {
+        width: auto;
+        height: 2.5rem;
+        display: inline-block;
+        margin-top: -0.375rem;
+        margin-bottom: -0.5rem;
+        vertical-align: top;
+    }
+
+    .site-is-theater-mode & {
+        opacity: 0.2;
+        transition:
+            opacity s.$transition-style,
+            transform s.$transition-style;
+    }
+
+    @include s.breakpoint(sm) {
+        font-size: 2rem;
+        transform: translateX(0rem);
+
+        img {
+            height: 3rem;
+            margin-top: -0.625rem;
+            margin-bottom: -0.375rem;
+        }
+
+        .site-is-theater-mode & {
+            transform: translateX(#{
+                -($site-header-btn-width + s.$grid-gutter-width)
+            });
+        }
+    }
+}

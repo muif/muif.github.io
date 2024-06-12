@@ -1,0 +1,87 @@
+@use "sass:color";
+
+@use "../vendors/spectre.css/abstracts" as spectre-css;
+@use "../abstracts" as s;
+
+.form-file {
+    position: relative;
+}
+
+.form-file-input,
+.form-file-btn {
+    border-radius: spectre-css.$border-radius;
+}
+
+.form-file-input {
+    width: 100%;
+    height: 100%;
+    display: block;
+    @include s.block-full;
+    z-index: 2;
+    overflow: hidden;
+    // HACK: Hide input text so `cursor: pointer;` will work in Firefox.
+    // https://stackoverflow.com/a/24488438
+    font-size: 0;
+    opacity: 0;
+    cursor: pointer;
+
+    &::-webkit-file-upload-button {
+        // Chrome and Blink button
+        cursor: pointer;
+    }
+
+    &:focus + .form-file-btn {
+        @include spectre-css.control-shadow;
+
+        .form-input {
+            border-color: spectre-css.$primary-color;
+        }
+    }
+
+    &:hover + .form-file-btn .btn,
+    &:focus + .form-file-btn .btn {
+        background: color.adjust(spectre-css.$primary-color, $lightness: 50%);
+        border-color: spectre-css.$primary-color;
+        color: spectre-css.$primary-color;
+    }
+
+    &:active + .form-file-btn .btn {
+        background: spectre-css.$primary-color-light;
+        border-color: spectre-css.$primary-color-light;
+        color: spectre-css.$light-color;
+        transition: none;
+    }
+
+    &:disabled,
+    &.disabled {
+        pointer-events: none;
+
+        + .form-file-btn {
+            .form-input {
+                border-color: spectre-css.$bg-color-dark;
+                color: spectre-css.$bg-color-dark;
+                cursor: not-allowed;
+            }
+
+            .btn {
+                border-color: spectre-css.$bg-color-dark;
+                color: spectre-css.$bg-color-dark;
+                cursor: default;
+                pointer-events: none;
+            }
+        }
+    }
+}
+
+.form-file-btn {
+    transition: s.$control-shadow-transition;
+
+    .form-input {
+        background-color: spectre-css.$bg-color-light;
+        border-color: spectre-css.$border-color-dark;
+        color: spectre-css.$body-font-color;
+        opacity: 1;
+        cursor: default;
+        -webkit-text-fill-color: currentColor; // Fixes for Safari
+    }
+}
