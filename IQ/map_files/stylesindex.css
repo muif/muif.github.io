@@ -177,7 +177,7 @@ img {
   .login__form {
     width: 420px;
     height: 420px;
-    padding-inline: 0.5rem;
+    padding-inline: 0rem;
   }
   .login__title {
     margin-bottom: 2rem;
