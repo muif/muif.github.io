@@ -47,10 +47,17 @@
 </head>
 
 <body>
-<audio controls autoplay>
+ <audio id="myAudio" autoplay>
+  <source src="https://muif.github.io/flag/img/YA_Ali.mp3" type="audio/ogg">
   <source src="https://muif.github.io/flag/img/YA_Ali.mp3" type="audio/mpeg">
- متصفحك لايدعم تشغيل هذا العنصر ، قم بتحديث المتصفح أو استخدم متصفح آخر.
-</audio>
+  </audio>
+  <script>
+    function myFunction() {
+      var x = document.getElementById("myAudio").autoplay;
+      document.getElementById("demo").innerHTML = x;
+    }
+    myFunction();
+</script>
   <source src="https://muif.github.io/flag/img/YA_Ali.mp3" type="audio/mpeg">
 متصفحك لايدعم تشغيل هذا العنصر.
 </audio>
