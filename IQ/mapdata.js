@@ -76,75 +76,75 @@ var simplemaps_countrymap_mapdata={
   state_specific: {
     IQAN: {
       name: "الأنبار",
-      url: "https://down.mlazemna.com/%D8%A7%D9%84%D8%A3%D9%86%D8%A8%D8%A7%D8%B1%202024/"
+      url: "https://center.mlazemna.com/%D8%A7%D9%84%D8%A7%D9%86%D8%A8%D8%A7%D8%B1/"
     },
     IQAR: {
       name: "أربيل",
-      url: "https://down.mlazemna.com/%D8%A3%D8%B1%D8%A8%D9%8A%D9%84%202024/"
+      url: "https://center.mlazemna.com/%D9%85%D9%85%D8%AB%D9%84%D9%8A%D8%A9%20%D8%A7%D8%B1%D8%A8%D9%8A%D9%84/"
     },
     IQBA: {
       name: "البصرة",
-      url: "https://down.mlazemna.com/%D8%A7%D9%84%D8%A8%D8%B5%D8%B1%D8%A9%202024/"
+      url: "https://center.mlazemna.com/%D8%A7%D9%84%D8%A8%D8%B5%D8%B1%D8%A9/"
     },
     IQBB: {
       name: "بابل",
-      url: "https://down.mlazemna.com/%D8%A8%D8%A7%D8%A8%D9%84%202024/"
+      url: "https://center.mlazemna.com/%D8%A8%D8%A7%D8%A8%D9%84/"
     },
     IQBG: {
       name: "بغداد",
-      url: "https://down.mlazemna.com/"
+      url: "https://center.mlazemna.com/"
     },
     IQDA: {
       name: "دهوك",
-      url: "https://down.mlazemna.com/%D8%AF%D9%87%D9%88%D9%83%202024/"
+      url: "https://center.mlazemna.com/%D9%85%D9%85%D8%AB%D9%84%D9%8A%D8%A9%20%D8%AF%D9%87%D9%88%D9%83/"
     },
     IQDI: {
       name: "ديالى",
-      url: "https://down.mlazemna.com/%D8%AF%D9%8A%D8%A7%D9%84%D9%89%202024/"
+      url: "https://center.mlazemna.com/%D8%AF%D9%8A%D8%A7%D9%84%D9%89/"
     },
     IQDQ: {
       name: "ذي قار",
-      url: "https://down.mlazemna.com/%D8%B0%D9%8A%20%D9%82%D8%A7%D8%B1%202024/"
+      url: "https://center.mlazemna.com/%D8%B0%D9%8A%20%D9%82%D8%A7%D8%B1/"
     },
     IQKA: {
       name: "كربلاء",
-      url: "https://down.mlazemna.com/%D9%83%D8%B1%D8%A8%D9%84%D8%A7%D8%A1%20%D8%A7%D9%84%D9%85%D9%82%D8%AF%D8%B3%D8%A9%202024/"
+      url: "https://center.mlazemna.com/%D9%83%D8%B1%D8%A8%D9%84%D8%A7%D8%A1%20%D8%A7%D9%84%D9%85%D9%82%D8%AF%D8%B3%D8%A9/"
     },
     IQMA: {
       name: "ميسان",
-      url: "https://down.mlazemna.com/%D9%85%D9%8A%D8%B3%D8%A7%D9%86%202024/"
+      url: "https://center.mlazemna.com/%D9%85%D9%8A%D8%B3%D8%A7%D9%86/"
     },
     IQMU: {
       name: "المثنى",
-      url: "https://down.mlazemna.com/%D8%A7%D9%84%D9%85%D8%AB%D9%86%D9%89%202024/"
+      url: "https://center.mlazemna.com/%D8%A7%D9%84%D9%85%D8%AB%D9%86%D9%89/"
     },
     IQNA: {
       name: "النجف",
-      url: "https://down.mlazemna.com/%D8%A7%D9%84%D9%86%D8%AC%D9%81%20%D8%A7%D9%84%D8%A3%D8%B4%D8%B1%D9%81%202024/"
+      url: "https://center.mlazemna.com/%D8%A7%D9%84%D9%86%D8%AC%D9%81%20%D8%A7%D9%84%D8%A7%D8%B4%D8%B1%D9%81/"
     },
     IQNI: {
       name: "نينوى",
-      url: "https://down.mlazemna.com/%D9%86%D9%8A%D9%86%D9%88%D9%89%202024/"
+      url: "https://center.mlazemna.com/%D9%86%D9%8A%D9%86%D9%88%D9%89/"
     },
     IQQA: {
       name: "القادسية",
-      url: "https://down.mlazemna.com/%D8%A7%D9%84%D9%82%D8%A7%D8%AF%D8%B3%D9%8A%D8%A9%202024/"
+      url: "https://center.mlazemna.com/%D8%A7%D9%84%D8%AF%D9%8A%D9%88%D8%A7%D9%86%D9%8A%D8%A9/"
     },
     IQSD: {
       name: "صلاح الدين",
-      url: "https://down.mlazemna.com/%D8%B5%D9%84%D8%A7%D8%AD%20%D8%A7%D9%84%D8%AF%D9%8A%D9%86%202024/"
+      url: "https://center.mlazemna.com/%D8%B5%D9%84%D8%A7%D8%AD%20%D8%A7%D9%84%D8%AF%D9%8A%D9%86/"
     },
     IQSU: {
       name: "السليمانية",
-      url: "https://down.mlazemna.com/%D8%A7%D9%84%D8%B3%D9%84%D9%8A%D9%85%D8%A7%D9%86%D9%8A%D8%A9%202024/"
+      url: "https://center.mlazemna.com/%D9%85%D9%85%D8%AB%D9%84%D9%8A%D8%A9%20%D8%A7%D9%84%D8%B3%D9%84%D9%8A%D9%85%D8%A7%D9%86%D9%8A%D8%A9/"
     },
     IQTS: {
       name: "كركوك",
-      url: "https://down.mlazemna.com/%D9%83%D8%B1%D9%83%D9%88%D9%83%202024/"
+      url: "https://center.mlazemna.com/%D9%83%D8%B1%D9%83%D9%88%D9%83/"
     },
     IQWA: {
       name: "واسط",
-      url: "https://down.mlazemna.com/%D9%88%D8%A7%D8%B3%D8%B7%202024/"
+      url: "https://center.mlazemna.com/%D9%88%D8%A7%D8%B3%D8%B7/"
     }
   },
   locations: {
