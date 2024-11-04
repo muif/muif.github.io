@@ -1,0 +1,388 @@
+html
+{
+    direction: rtl;
+    height: 100%;
+}
+body
+{
+    direction: rtl;
+    height: 100%;
+    margin: 0px;
+    font: 11px Tahoma;
+    background-color: #F2F6F8;
+}
+a
+{
+    color: Navy;
+    text-decoration: none;
+}
+a:hover
+{
+    color: red;
+    text-decoration: underline;
+}
+img
+{
+    border-width: 1px;
+}
+input, textarea, select
+{
+    font: 13px Tahoma;
+}
+label
+{
+    cursor: pointer;
+    font: 11px Tahoma;
+    color: Silver;
+}
+.page
+{
+    padding: 20px;
+    border: 1px solid black;
+    margin: 30px auto 30px auto;
+    width: 500px;
+    box-shadow: -3px 3px 4px silver;
+    -moz-box-shadow: -3px 3px 4px silver;
+    -webkit-box-shadow: -3px 3px 4px silver;
+}
+.pagenumber
+{
+    margin-top: 40px;
+    font: 13px Tahoma;
+    text-align: center;
+}
+.button, .checkbox
+{
+    cursor: pointer;
+}
+.maintable
+{
+    margin: auto;
+    width: 800px;
+    height: 100%;
+    border: 1px solid black;
+    background-color: #E0EBEF;
+}
+.header
+{
+    height: 100px;
+    background-color: White;
+    vertical-align: top;
+}
+fieldset
+{
+    /*position: relative;*/
+    border: 1px solid #4670BA;
+    margin: 0px;
+    padding: 6px;
+    border-radius: 8px;
+    -moz-border-radius: 8px;
+}
+fieldset legend
+{
+    /*
+    position: absolute;
+    top: -1.5em;
+    right: 1em;
+    */
+    border: 1px solid black;
+    background-color: #4670BA;
+    color: #FFFFFF;
+    font: 13px Tahoma;
+    padding: 1px 5px;
+    border-radius: 8px;
+    -moz-border-radius: 8px;
+    box-shadow: -3px 3px 4px silver;
+    -moz-box-shadow: -3px 3px 4px silver;
+    -webkit-box-shadow: -3px 3px 4px silver;
+}
+.menu
+{
+	background-color:#FDFDFD;
+	overflow: hidden;
+    height:31px;
+    margin: 0px;
+    padding: 0px;
+    border-top: 1px solid #E6E6E6;
+    border-bottom: 1px solid #E6E6E6;
+    box-shadow: 0px 3px 4px silver;
+    -moz-box-shadow: 0px 3px 4px silver;
+    -webkit-box-shadow: 0px 3px 4px silver;
+}
+.menu li
+{
+    background:transparent no-repeat right top;
+    font: 12px Tahoma;
+    display:inline;
+    list-style:none;
+    padding: 0px;
+    margin: 0px;
+}
+.menu li a
+{
+    background-image: url("/content/images/menu.gif");
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: right top;
+    display:block;
+    color:#382E1F;
+    height:31px;
+    line-height:31px;
+    padding: 0 15px;
+    margin-right:-10px;
+    text-decoration:none;
+    font-size:11px;
+    float:right;
+    z-index:1;
+}
+.menu li a:hover
+{
+	background-position: right -31px;
+}
+.menu li a.home {
+	background-position: right -93px;
+	width:45px;
+	padding:0;
+	margin-right:0;
+	text-indent:-999em;
+}
+.menu li a.homecurrent, .menu li a.homecurrent:hover {
+	background-position: right -155px;
+	width:45px;
+	padding:0;
+	margin-right:0;
+	text-indent:-999em;
+}
+.menu li a.home:hover {
+	background-position:right -124px;
+}
+.menu li a.lastmenu:hover
+{
+	background-position: right 0;
+}
+.menu li a.current
+{
+    background-position: right -62px;
+    color: black;
+}
+.block
+{
+    width: 100%;
+    background-color: #FFFFFF;
+    height: 35px;
+    border-radius: 8px;
+    -moz-border-radius: 8px;
+    box-shadow: -3px 3px 4px silver;
+    -moz-box-shadow: -3px 3px 4px silver;
+    -webkit-box-shadow: -3px 3px 4px silver;
+}
+.block_title
+{
+    height: 30px;
+    font: 18px Simplified Arabic;
+    padding: 0px 15px 0px 15px;
+    background-color: #4670BA;
+    color: #FFFFFF;
+    border-radius: 8px 8px 0px 0px;
+    -moz-border-radius: 8px 8px 0px 0px;
+}
+.block_body
+{
+    padding: 10px;
+    border: 1px solid #4670BA;
+    border-radius: 0px 0px 8px 8px;
+    -moz-border-radius: 0px 0px 8px 8px;
+}
+.pager
+{
+    text-align: center;
+    font: 13px Tahoma;
+    margin: 10px;
+    line-height: 20pt;
+}
+.pager .page
+{
+    white-space: nowrap;
+    padding: 0px 3px;
+    margin: auto 0px;
+    background-color: #d4e6fc;
+    border: 1px solid #c3d5eb;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    box-shadow: -3px 3px 4px silver;
+    -moz-box-shadow: -3px 3px 4px silver;
+    -webkit-box-shadow: -3px 3px 4px silver;
+}
+.pager .page:hover
+{
+    background-color: #e5f7ff;
+    border: 1px solid silver;
+}
+.pager .currentpage
+{
+    width: 30px;
+    text-align: center;
+    padding: 0px 3px 0px 3px;
+    margin: 1px;
+    background-color: #f6f8ff;
+    border: 1px solid silver;
+    color: Red;
+    font: 13px Tahoma;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    box-shadow: -3px 3px 4px silver;
+    -moz-box-shadow: -3px 3px 4px silver;
+    -webkit-box-shadow: -3px 3px 4px silver;
+}
+.text
+{
+    font: 18px Simplified Arabic;
+    text-align: justify;
+}
+.footnote
+{
+    font: 13px Tahoma;
+}
+.search
+{
+    width: 100%;
+    font: 12px Tahoma;
+}
+.highlight
+{
+    background-color: yellow;
+    color: blue;
+}
+.listview
+{
+    width: 100%;
+    font: 13px Tahoma;
+}
+.toc_title
+{
+    width: 532px;
+    margin: auto;
+    text-align: center;
+    font: 18px Arial;
+    padding: 5px;
+    cursor: pointer;
+    background-color: #E8E8E8;
+    border-radius: 8px;
+    -moz-border-radius: 8px;
+    box-shadow: -3px 3px 4px silver;
+    -moz-box-shadow: -3px 3px 4px silver;
+    -webkit-box-shadow: -3px 3px 4px silver;
+}
+#toc
+{
+    padding: 10px;
+    display: none;
+}
+.toc_header
+{
+    width: 550px;
+    margin: auto;
+}
+.toc
+{
+    padding: 10px;
+    width: 520px;
+    height: 500px;
+    overflow: auto;
+    margin: auto;
+    border-right: 1px solid black;
+    border-left: 1px solid black;
+    border-bottom: 1px solid black;
+    box-shadow: -3px 3px 4px silver;
+    -moz-box-shadow: -3px 3px 4px silver;
+    -webkit-box-shadow: -3px 3px 4px silver;
+}
+.listview thead td
+{
+    font: bold 16px Arial;
+    padding: 0px 15px 0px 15px;
+    background-color: #E8E8E8;
+    border-radius: 8px 8px 8px 8px;
+    -moz-border-radius: 8px 8px 8px 8px;
+    box-shadow: 0px 3px 4px silver;
+    -moz-box-shadow: 0px 3px 4px silver;
+    -webkit-box-shadow: 0px 3px 4px silver;
+}
+.listview tbody td
+{
+    padding: auto 15px auto 15px;
+    border-bottom: 1px solid #D4E6FC;
+    vertical-align: top;
+}
+.listview tbody tr:hover
+{
+    background-color: #FAFAFA;
+}
+.footer, .footer a
+{
+    height: 10px;
+    text-align: center;
+    font: 11px Tahoma;
+    padding: 5px 0px;
+    color: Blue;
+}
+.index
+{
+    cursor: help;
+}
+.index:hover
+{
+    color: navy;
+    border-bottom: 1px dotted black;
+}
+
+@font-face 
+{
+    font-family: 'KFGQPC_Naskh';
+    src: url('/content/fonts/KFC_naskh.eot');
+    src: local('KFGQPC Uthman Taha Naskh'), url('/content/fonts/KFC_naskh.otf.eot') format('opentype');
+}
+.quran
+{
+    font-size: 20px;
+    font-family: KFGQPC Uthman Taha Naskh, KFGQPC_Naskh, Arabic Typesetting, Traditional Arabic;
+    color: Green;
+    text-align: justify;
+}
+.explanation
+{
+    font: 20px Traditional Arabic;
+}
+.hadith
+{
+    font-size: 20px;
+    font-family: KFGQPC Uthman Taha Naskh, KFGQPC_Naskh, Arabic Typesetting, Traditional Arabic;
+    color: navy;
+}
+.poem
+{
+    
+}
+.title1
+{
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+}
+.title2
+{
+    font-weight: bold;
+    font-size: 18px;
+}
+.title3
+{
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.gsc-input {font: 13px Tahoma;}
+.gsc-branding-text {font: 11px Tahoma; display: none;}
+.gs-title {font: 12px Tahoma;}
+.gs-snippet {font: 12px Tahoma;}
+.gs-visibleUrl .gs-visibleUrl-short {font: 12px Tahoma;}
+.gsc-cursor-box {border-top: 1px solid #E9E9E9; text-align: center;}
