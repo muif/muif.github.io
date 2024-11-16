@@ -1,0 +1,311 @@
+/*=============== GOOGLE FONTS ===============*/
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
+
+/*=============== VARIABLES CSS ===============*/
+:root {
+  /*========== Colors ==========*/
+  /*Color mode HSL(hue, saturation, lightness)*/
+  --white-color: hsl(0, 0%, 100%);
+  --black-color: hsl(0, 0%, 0%);
+
+  /*========== Font and typography ==========*/
+  /*.5rem = 8px | 1rem = 16px ...*/
+  --body-font: "Poppins", sans-serif;
+  --h1-font-size: 2rem;
+  --normal-font-size: 1rem;
+  --small-font-size: .813rem;
+}
+
+/*=============== BASE ===============*/
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body,
+input,
+button {
+  font-family: var(--body-font);
+  font-size: var(--normal-font-size);
+}
+
+a {
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/*=============== LOGIN ===============*/
+.login {
+  position: relative;
+  height: 100vh;
+  display: grid;
+  align-items: center;
+}
+
+.login__bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.login__form {
+  position: relative;
+  margin-inline: 1.5rem;
+  background-color: hsla(0, 0%, 100%, .01);
+  border: 2px solid hsla(0, 0%, 100%, .7);
+  padding: 0rem 0rem;
+  color: var(--white-color);
+  border-radius: 1rem;
+  backdrop-filter: blur(16px);
+  font-size: 2rem;
+    color: #421139;
+    width: 300px;
+    height: 300px;
+    display: block;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.login__title {
+  text-align: center;
+  font-size: var(--h1-font-size);
+  margin-bottom: 1.25rem;
+}
+
+.login__inputs, 
+.login__box {
+  display: grid;
+}
+
+.login__inputs {
+  row-gap: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.login__box {
+  grid-template-columns: 1fr max-content;
+  column-gap: .75rem;
+  align-items: center;
+  border: 2px solid hsla(0, 0%, 100%, .7);
+  padding-inline: 1.25rem;
+  border-radius: 4rem;
+}
+
+.login__input, 
+.login__button {
+  border: none;
+  outline: none;
+}
+
+.login__input {
+  width: 100%;
+  background: none;
+  color: var(--white-color);
+  padding-block: 1rem;
+}
+
+.login__input::placeholder {
+  color: var(--white-color);
+}
+
+.login__box i {
+  font-size: 1.25rem;
+}
+
+.login__check, 
+.login__check-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.login__check {
+  margin-bottom: 1rem;
+  font-size: var(--small-font-size);
+}
+
+.login__check-box {
+  column-gap: .5rem;
+}
+
+.login__check-input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--white-color);
+}
+
+.login__forgot {
+  color: var(--white-color);
+}
+
+.login__forgot:hover {
+  text-decoration: underline;
+}
+
+.login__button {
+  width: 100%;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: var(--white-color);
+  border-radius: 4rem;
+  color: var(--black-color);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.login__register {
+  font-size: var(--small-font-size);
+  text-align: center;
+}
+
+.login__register a {
+  color: var(--white-color);
+  font-weight: 500;
+}
+@import url('https://fonts.googleapis.com/css?family=Roboto:300i,400');
+
+html, body {
+    width: 100%;
+    height: 100%;
+  font-family: 'Roboto', sans-serif;
+}
+
+a{
+  text-decoration: none;
+}
+
+body {
+    background-color: #36BEA6;
+}
+
+.share__icon {
+    width: 32px;
+    height: 32px;
+    fill: #fff;
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 3px;
+}
+.share__icon:last-of-type{
+   margin-right: 0px;
+}
+
+.share-button {
+  cursor: pointer;
+    display: inline-block;
+    height:42px;
+    position: absolute;
+    top: 40%;
+    transform: translateY(-50%) translateX(-50%);
+    -webkit-transform: translateY(-50%) translateX(-50%);
+   -moz-transform: translateY(-50%) translateX(-50%);
+    left: 10%;
+  -webkit-perspective: 200px;
+  -moz-perspective: 200px;
+  perspective: 200px;
+  
+}
+
+.share-button__back {
+    background-color: #ffffff;
+    padding: 5px;
+    border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0px 0px 14px rgba(0,0,0,0.1) inset;
+}
+
+.share-button__front {
+    width: 100%;
+    height: 100%;
+    background-color: #642f3f;
+    border-radius: 20px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: center top;
+    -webkit-transition: all .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  -moz-transition: all .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  -ms-transition: all .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  -o-transition: all .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+}
+
+
+
+.share-button__text {
+    margin: 0;
+    line-height: 42px;
+    font-size: 16px;
+    text-align: center;
+    color: #b6b6b6;
+}
+
+.share__link {
+    position: relative;
+    top: 40px;
+    display: inline-block;
+    opacity: 0;
+  -webkit-transition: top .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  -moz-transition: top .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  -ms-transition: top .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  -o-transition: top .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: top .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  }
+
+.share-button:hover .share-button__front {
+    transform: rotateX(90deg);
+}
+
+.share-button:hover .share__link {
+    top:0;
+  opacity: 1;
+}
+
+.share-button:hover .share__link:nth-of-type(1){
+  transition-delay:0.1s;
+}
+
+.share-button:hover .share__link:nth-of-type(2){
+  transition-delay:0.2s;
+}
+
+.share-button:hover .share__link:nth-of-type(3){
+  transition-delay:0.3s;
+}
+
+.share-button:hover .share__link:nth-of-type(4){
+  transition-delay:0.4s;
+}
+
+.login__register a:hover {
+  text-decoration: underline;
+}
+
+/*=============== BREAKPOINTS ===============*/
+/* For medium devices */
+@media screen and (min-width: 576px) {
+  .login {
+    justify-content: center;
+  }
+  .login__form {
+    width: 420px;
+    height: 420px;
+    padding-inline: 0rem;
+  }
+  .login__title {
+    margin-bottom: 2rem;
+  }
+}
