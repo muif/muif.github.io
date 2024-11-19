@@ -42,12 +42,14 @@ img {
 
 /*=============== LOGIN ===============*/
 .login {
-  position: relative;
-  height: 100vh;
-  display: grid;
-  align-items: center;
+  osition: relative;
+    height: 100vh;
+    display: grid;
+    justify-content: space-around;
+    align-items: end;
+    justify-items: center;
+    align-content: stretch;
 }
-
 .login__bg {
   position: absolute;
   width: 100%;
