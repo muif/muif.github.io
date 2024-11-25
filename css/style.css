@@ -158,10 +158,6 @@ a:hover {
 }
 
 .title-a {
-  // <uniquifier>: Use a unique and descriptive class name
-// <weight>: Use a value from 100 to 900
-
-.alexandria-<uniquifier> {
   font-family: "Alexandria", sans-serif;
   font-optical-sizing: auto;
   font-weight: <weight>;
