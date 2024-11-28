@@ -176,8 +176,8 @@ img {
     justify-content: center;
   }
   .login__form {
-    width: 420px;
-    height: 420px;
+    width: 550px;
+    height: 350px;
     padding-inline: 0rem;
   }
   .login__title {
