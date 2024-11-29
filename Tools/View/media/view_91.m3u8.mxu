@@ -1,0 +1,16 @@
+#EXTM3U
+#EXT-X-VERSION:6
+#EXT-X-START:TIME-OFFSET=0.01
+#EXT-X-TARGETDURATION:7
+#EXT-X-MEDIA-SEQUENCE:688708
+#EXT-X-KEY:METHOD=AES-128,URI="https://cdn.jsdelivr.net/gh/rtmp4/keys/key.js",IV=0x1d8bb95bf5e7dbf21bddf5269096d9b8
+#EXTINF:7.000000,
+https://xcx.lavaza.pics/x3/9153216688708.js
+#EXTINF:7.000000,
+https://xcx.lavaza.pics/x3/9153216688709.js
+#EXTINF:7.000000,
+https://xcx.lavaza.pics/x3/9153216688710.js
+#EXTINF:7.000000,
+https://xcx.lavaza.pics/x3/9153216688711.js
+#EXTINF:7.000000,
+https://xcx.lavaza.pics/x3/9153216688712.js
