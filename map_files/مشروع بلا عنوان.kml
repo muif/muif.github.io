@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>مشروع بلا عنوان</name>
+	<gx:CascadingStyle kml:id="__managed_style_0205BF9F5534B964F836">
+		<Style>
+			<IconStyle>
+				<scale>1.2</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>4</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_122B2E0A3D34B964F835">
+		<Style>
+			<IconStyle>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>2.66667</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<StyleMap id="__managed_style_0F48B6929634B964F835">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_122B2E0A3D34B964F835</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_0205BF9F5534B964F836</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Placemark id="021383BB8234B964F82C">
+		<name>زون 145</name>
+		<LookAt>
+			<longitude>45.23357155442026</longitude>
+			<latitude>32.05769788249053</latitude>
+			<altitude>17.01221424281825</altitude>
+			<heading>71.10905318277247</heading>
+			<tilt>0.07786584544322218</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>2342.512870409992</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0F48B6929634B964F835</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						45.23667798619509,32.05901409129211,0 45.23577906815059,32.05989991403757,0 45.23256761171353,32.05892505807952,0 45.23314783770434,32.05765265210037,0 45.23271060430164,32.05747114646606,0 45.23280489636782,32.05713577608559,0 45.23190040939222,32.05679714602399,0 45.23011221899229,32.0562554404722,0 45.23065963608822,32.05507576015268,0 45.23132994920757,32.05354071637426,0 45.23187342278805,32.05213203560497,0 45.2332173551608,32.05228695999081,0 45.2342168837882,32.05306555976729,0 45.2349779007134,32.05411550363273,0 45.23576173425919,32.05536182266108,0 45.236725086709,32.05656033593225,0 45.23791605844853,32.05824515874077,0 45.23667798619509,32.05901409129211,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="0461AA5A8E34B9662D2B">
+		<name>ابو عبدالله نعيم</name>
+		<LookAt>
+			<longitude>45.23275369187755</longitude>
+			<latitude>32.05462331724717</latitude>
+			<altitude>19.10865223598176</altitude>
+			<heading>71.11026665927031</heading>
+			<tilt>0.07783899607671228</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>147.0762496381394</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0F48B6929634B964F835</styleUrl>
+		<Point>
+			<coordinates>45.23267329547655,32.05464302997363,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="07B7494F9234B9664C04">
+		<name>سيد كمال شبر</name>
+		<LookAt>
+			<longitude>45.23275369187755</longitude>
+			<latitude>32.05462331724717</latitude>
+			<altitude>19.10865223598176</altitude>
+			<heading>71.11026665927031</heading>
+			<tilt>0.07783899607671228</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>147.0762496381394</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0F48B6929634B964F835</styleUrl>
+		<Point>
+			<coordinates>45.23285693831269,32.05470367021186,19.02026640313554</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0405F24D0334B9691DCD">
+		<name>سامر العبيدي</name>
+		<LookAt>
+			<longitude>45.23266263178331</longitude>
+			<latitude>32.05474745885411</latitude>
+			<altitude>19.03683496039935</altitude>
+			<heading>71.11024213219362</heading>
+			<tilt>0.07747679433602893</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>85.85900635793223</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0F48B6929634B964F835</styleUrl>
+		<Point>
+			<coordinates>45.23264581190657,32.05473094323167,19.05410739436423</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0E582C978334B96A12A2">
+		<name>حسن فلاح</name>
+		<LookAt>
+			<longitude>45.23283635147943</longitude>
+			<latitude>32.05474508051424</latitude>
+			<altitude>19.02016063553338</altitude>
+			<heading>71.11035197930089</heading>
+			<tilt>0.07747648273518551</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>60.7208776067182</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0F48B6929634B964F835</styleUrl>
+		<Point>
+			<coordinates>45.23286203226037,32.05473988438492,19.04576009880476</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0946955DEE34B96A61D1">
+		<name>استاذ رائد عكار</name>
+		<LookAt>
+			<longitude>45.23277736007223</longitude>
+			<latitude>32.05421223987904</latitude>
+			<altitude>19.77755886117441</altitude>
+			<heading>71.11032066625505</heading>
+			<tilt>0.07747646039493891</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>59.96348001483966</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0F48B6929634B964F835</styleUrl>
+		<Point>
+			<coordinates>45.23279878733712,32.05419233211642,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0022D9D91734B96AB401">
+		<name>ابو سلطان </name>
+		<LookAt>
+			<longitude>45.23286323316833</longitude>
+			<latitude>32.05406528106523</latitude>
+			<altitude>19.714782834094</altitude>
+			<heading>71.11036624472902</heading>
+			<tilt>0.07747645705025202</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>60.0262565427056</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0F48B6929634B964F835</styleUrl>
+		<Point>
+			<coordinates>45.23286941360465,32.05403422208327,19.73802125909096</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0AADC3BB1434B96B2C4D">
+		<name>رحيم ابو امير</name>
+		<LookAt>
+			<longitude>45.23344918175817</longitude>
+			<latitude>32.0534840136858</latitude>
+			<altitude>20.14990837275664</altitude>
+			<heading>71.11067722272374</heading>
+			<tilt>0.07747643489816612</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>59.59113188112497</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0F48B6929634B964F835</styleUrl>
+		<Point>
+			<coordinates>45.2333794029982,32.05340430316529,20.3934822510675</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="01A029149D34B96BE5C0">
+		<name>حسين كريم وهد</name>
+		<LookAt>
+			<longitude>45.23339036282553</longitude>
+			<latitude>32.05421540148959</latitude>
+			<altitude>18.46177333158866</altitude>
+			<heading>71.11060572720673</heading>
+			<tilt>0.07747719169243858</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>123.3091048610549</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0F48B6929634B964F835</styleUrl>
+		<Point>
+			<coordinates>45.23343285010601,32.05402572747403,18.12647378975957</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0A9C1D580934B96C5040">
+		<name>ابو سيف الشمري</name>
+		<LookAt>
+			<longitude>45.23383275020092</longitude>
+			<latitude>32.05376446357843</latitude>
+			<altitude>18.59926273781894</altitude>
+			<heading>71.11084470760206</heading>
+			<tilt>0.07747678406680207</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>90.79369688802217</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0F48B6929634B964F835</styleUrl>
+		<Point>
+			<coordinates>45.2338970143002,32.05369510084246,18.71694946005639</coordinates>
+		</Point>
+	</Placemark>
+</Document>
+</kml>
