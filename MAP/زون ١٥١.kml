@@ -1,0 +1,860 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document id="1LapqT7BBm3QoFVFBuAfJrWnz5Zo91MZD">
+	<name>زون ١٥١</name>
+	<gx:CascadingStyle kml:id="__managed_style_25E1A5FBD234DBE5D627">
+		<Style>
+			<IconStyle>
+				<scale>1.2</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ffd27619</color>
+				<width>4</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>80f5a542</color>
+			</PolyStyle>
+			<BalloonStyle>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_1D7C28FCEE34DBE5D627">
+		<Style>
+			<IconStyle>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ffd27619</color>
+				<width>2.66667</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>80f5a542</color>
+			</PolyStyle>
+			<BalloonStyle>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<StyleMap id="__managed_style_006946544A34DBE5D627">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_1D7C28FCEE34DBE5D627</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_25E1A5FBD234DBE5D627</styleUrl>
+		</Pair>
+	</StyleMap>
+	<gx:CascadingStyle kml:id="__managed_style_1E4C1216FA34DBDEBD1C">
+		<Style>
+			<IconStyle>
+				<scale>1.2</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>4</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_0BE6AA8CF934DBDEBD1C">
+		<Style>
+			<IconStyle>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>2.66667</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<StyleMap id="__managed_style_0AEE57E0CF34DBDEBD1B">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_0BE6AA8CF934DBDEBD1C</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_1E4C1216FA34DBDEBD1C</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Placemark id="0FB8C71CC234D169E052">
+		<name>فات 1</name>
+		<LookAt>
+			<longitude>45.23573237391905</longitude>
+			<latitude>32.05497064051116</latitude>
+			<altitude>20.09733806059277</altitude>
+			<heading>129.9939908744803</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>123.1572336412501</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.23574019737463,32.05488878861462,20.09733806059277</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0E9FDDB08E34D172129E">
+		<name>فات 2</name>
+		<LookAt>
+			<longitude>45.23626231996921</longitude>
+			<latitude>32.05503626168058</latitude>
+			<altitude>19.03262921778408</altitude>
+			<heading>127.2319541166026</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>251.3322553006947</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.23626231996921,32.05503626168058,19.03262921778408</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="041FB1461D34D173B216">
+		<name>فات 18</name>
+		<LookAt>
+			<longitude>45.23795656667067</longitude>
+			<latitude>32.05396806455261</latitude>
+			<altitude>22.62595241124355</altitude>
+			<heading>152.2825169988148</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>214.6281162441664</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.23804953890804,32.05372478381904,22.62595241124355</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="000BFD609734D1753981">
+		<name>فات ١٦</name>
+		<LookAt>
+			<longitude>45.23786681639709</longitude>
+			<latitude>32.05498866976168</latitude>
+			<altitude>21.39972874142526</altitude>
+			<heading>83.00298687895254</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>411.5342228210648</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.2382746656052,32.05509460486278,21.39972874142526</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="047BB9B6C434D175C96F">
+		<name>فات ٢٠</name>
+		<LookAt>
+			<longitude>45.23786681776976</longitude>
+			<latitude>32.05498867007867</latitude>
+			<altitude>21.39965328407969</altitude>
+			<heading>83.00298687881494</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>411.5318587059301</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.23853621629898,32.05498958017737,21.39965328407969</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0CC32FDBD234D180BAB0">
+		<name>فات ٤١</name>
+		<LookAt>
+			<longitude>45.24273981939064</longitude>
+			<latitude>32.05711113889885</latitude>
+			<altitude>22.81053849707816</altitude>
+			<heading>139.1300913723742</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>207.1932059215396</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.24291232808503,32.05700357702977,22.81053850132211</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0EC4B8FAE934D181FE3C">
+		<name>فات ٣٠</name>
+		<LookAt>
+			<longitude>45.24166588094162</longitude>
+			<latitude>32.05650296062356</latitude>
+			<altitude>20.41625454941718</altitude>
+			<heading>153.8071660225607</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>181.0621314305536</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.24171520489963,32.05642420529171,20.41625454941718</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="07DD025E7734D18718D8">
+		<name>فات ١١</name>
+		<LookAt>
+			<longitude>45.23773286624432</longitude>
+			<latitude>32.0576150028103</latitude>
+			<altitude>22.08754698904825</altitude>
+			<heading>122.1273185644336</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>230.7563646466588</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.23773286624432,32.0576150028103,22.08754698904825</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0ADB21CF4634D18AD229">
+		<name>فات ٦</name>
+		<LookAt>
+			<longitude>45.23683156715768</longitude>
+			<latitude>32.05635841237986</latitude>
+			<altitude>21.75803400141908</altitude>
+			<heading>122.1267605128313</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>206.4437350686421</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.23683156715768,32.05635841237986,21.75803400141908</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0E5B3667E034D18B5DF2">
+		<name>فات ٥</name>
+		<LookAt>
+			<longitude>45.23652025217081</longitude>
+			<latitude>32.0559729662284</latitude>
+			<altitude>20.28789290168242</altitude>
+			<heading>122.1265952823331</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>207.9138901960323</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.23657153488878,32.05607091458739,20.29424987323886</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0796440F4134D18ED9D9">
+		<name>فات ١٢</name>
+		<LookAt>
+			<longitude>45.23761269462637</longitude>
+			<latitude>32.0566758380341</latitude>
+			<altitude>23.56357940760127</altitude>
+			<heading>122.1270999595479</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>424.1362080793624</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.23810099104033,32.05676259775628,23.57142752466827</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="054C1E7B6034D1902E17">
+		<name>فات ٨</name>
+		<LookAt>
+			<longitude>45.23793556573425</longitude>
+			<latitude>32.05590768950951</latitude>
+			<altitude>20.64532945014378</altitude>
+			<heading>239.311242086967</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>169.8339751967069</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.23793556573425,32.05590768950951,20.64532945014378</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0FB2F7FDFF34D1906A50">
+		<name>فات ١٣</name>
+		<LookAt>
+			<longitude>45.23826142513452</longitude>
+			<latitude>32.05601204360106</latitude>
+			<altitude>20.07010029018187</altitude>
+			<heading>239.3114101655528</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>224.5937654632871</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.23814329708976,32.05589269973451,20.07010029018187</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="059708266434D191FAA0">
+		<name>فات ٩</name>
+		<LookAt>
+			<longitude>45.2387222361761</longitude>
+			<latitude>32.05786087828264</latitude>
+			<altitude>20.27440715611099</altitude>
+			<heading>134.203878398948</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>176.8732786646615</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.23878596259625,32.05781276222726,20.27440715611099</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="04EB2D9F5934D1931888">
+		<name>فات ١٠</name>
+		<LookAt>
+			<longitude>45.23813636033944</longitude>
+			<latitude>32.05725785591147</latitude>
+			<altitude>21.2634775528891</altitude>
+			<heading>40.46896385029461</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>208.924804369708</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.23828962686363,32.05734919648448,21.2634775528891</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="07CC1564CD34D19712BA">
+		<name>فات ٣٨</name>
+		<LookAt>
+			<longitude>45.24291480808503</longitude>
+			<latitude>32.05572963520389</latitude>
+			<altitude>20.80933401448051</altitude>
+			<heading>339.8577246692815</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>236.8303095124793</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.24282847617601,32.05591692054244,20.80933401448051</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="044F13687034D198C56E">
+		<name>فات٣٧</name>
+		<LookAt>
+			<longitude>45.24371377640453</longitude>
+			<latitude>32.05623861776439</latitude>
+			<altitude>21.59640577336456</altitude>
+			<heading>152.16846354903</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>236.6925882170835</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.24390045577822,32.05594060649044,21.59374604622729</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0C2A4286CB34D19C543B">
+		<name>فات ٢٨</name>
+		<LookAt>
+			<longitude>45.24066465911082</longitude>
+			<latitude>32.05546785571033</latitude>
+			<altitude>22.03616332074183</altitude>
+			<heading>244.6504979408931</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>215.8479069432724</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.24048107421687,32.05533437599901,22.03616332074183</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0BCF82521434D1A3C31F">
+		<name>فات ١٩</name>
+		<LookAt>
+			<longitude>45.23986294263</longitude>
+			<latitude>32.05412603068442</latitude>
+			<altitude>21.95080082494001</altitude>
+			<heading>167.3331785495121</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>326.4945677780997</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.24003862277593,32.05403860804574,21.95080082494001</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="093B6503FD34D1A4348A">
+		<name>فات ١٧</name>
+		<LookAt>
+			<longitude>45.23814142749853</longitude>
+			<latitude>32.05476066626199</latitude>
+			<altitude>21.67859476577982</altitude>
+			<heading>165.0089321647921</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>243.7906121330161</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.23814151702332,32.05476061112763,21.67882115196302</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="05EAEA0C8634D1A4A1B8">
+		<name>فات ٢٣</name>
+		<LookAt>
+			<longitude>45.2385839667949</longitude>
+			<latitude>32.05430753391773</latitude>
+			<altitude>22.80889876114377</altitude>
+			<heading>165.0091670331071</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>242.6602637898395</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.23862019142232,32.05415425261984,22.80889876114377</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="031511CBFD34D202814C">
+		<name>فات ١٤</name>
+		<LookAt>
+			<longitude>45.23760782035986</longitude>
+			<latitude>32.05527097292033</latitude>
+			<altitude>20.95440394713069</altitude>
+			<heading>348.5790632539653</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>89.45228753067569</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.23764130550172,32.05533086733507,20.95440390893518</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0E719FBAF434D20368C7">
+		<name>فات ١٥</name>
+		<LookAt>
+			<longitude>45.23814141793265</longitude>
+			<latitude>32.05539118027665</latitude>
+			<altitude>20.93483201634066</altitude>
+			<heading>348.5793274045704</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>74.15605120680084</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.23813457882385,32.05542941755847,20.93411030233793</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="077CE04E7934D2144E49">
+		<name>فات ٢٤</name>
+		<LookAt>
+			<longitude>45.23965461111466</longitude>
+			<latitude>32.05482443583228</latitude>
+			<altitude>22.798692419538</altitude>
+			<heading>164.3867335931901</heading>
+			<tilt>0</tilt>
+			<gx:fovy>30.00029960489282</gx:fovy>
+			<range>124.5363008031564</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.23965568970726,32.05482375758,22.79675861356779</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="03BD012DE034D218BE25">
+		<name>فات ٢٢</name>
+		<LookAt>
+			<longitude>45.24051978803265</longitude>
+			<latitude>32.05423505713603</latitude>
+			<altitude>21.26348189585969</altitude>
+			<heading>162.0754321916484</heading>
+			<tilt>0</tilt>
+			<gx:fovy>30.00029960489282</gx:fovy>
+			<range>251.1762005242053</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.24052102498569,32.05423726007898,21.26348227074151</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="05A796F66A34D21A8B07">
+		<name>فات ٢١</name>
+		<LookAt>
+			<longitude>45.23913735141135</longitude>
+			<latitude>32.05474325987507</latitude>
+			<altitude>23.02309492758214</altitude>
+			<heading>81.77307429238483</heading>
+			<tilt>0</tilt>
+			<gx:fovy>30.00029960489282</gx:fovy>
+			<range>213.2357219626283</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.23913630916002,32.05474441668169,23.03065928740015</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="00EAD2FAE834D28EAA68">
+		<name>فات ٣</name>
+		<LookAt>
+			<longitude>45.23640708015107</longitude>
+			<latitude>32.05537360350426</latitude>
+			<altitude>18.79802615121682</altitude>
+			<heading>114.5120736743118</heading>
+			<tilt>0</tilt>
+			<gx:fovy>30</gx:fovy>
+			<range>240.764567938204</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.23640884738825,32.05537965878969,18.81321021331282</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0389E5FE0434D28EE6C6">
+		<name>فات ٤</name>
+		<LookAt>
+			<longitude>45.23628051135817</longitude>
+			<latitude>32.05549873115837</latitude>
+			<altitude>19.16827806034938</altitude>
+			<heading>114.5120064989027</heading>
+			<tilt>0</tilt>
+			<gx:fovy>30</gx:fovy>
+			<range>240.3943057884317</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.236282665771,32.05549934447415,19.16674972939101</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="060F2DEC7C34D29236A5">
+		<name>فات ٢٧</name>
+		<LookAt>
+			<longitude>45.24133433832886</longitude>
+			<latitude>32.05522315404505</latitude>
+			<altitude>21.88158215519617</altitude>
+			<heading>60.82380440069283</heading>
+			<tilt>0</tilt>
+			<gx:fovy>30</gx:fovy>
+			<range>282.5666199739135</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.24133346693493,32.05522047404006,21.88158180153407</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0356DBF95234D293E5B9">
+		<name>فات ٢٩</name>
+		<LookAt>
+			<longitude>45.24130254429186</longitude>
+			<latitude>32.05526144690956</latitude>
+			<altitude>21.88163678750267</altitude>
+			<heading>60.82378752645339</heading>
+			<tilt>0</tilt>
+			<gx:fovy>30</gx:fovy>
+			<range>282.5665504411154</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.24130305379144,32.05526398632146,21.88318411294508</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="03F1A756F434D294E13E">
+		<name>فات ٢٥</name>
+		<LookAt>
+			<longitude>45.24116609582024</longitude>
+			<latitude>32.05468305354141</latitude>
+			<altitude>21.23082780029586</altitude>
+			<heading>60.82367958668013</heading>
+			<tilt>0</tilt>
+			<gx:fovy>30</gx:fovy>
+			<range>228.4087751403058</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.24116730687487,32.05468637884194,21.23303387232614</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="077ED1BAC634D295D27F">
+		<name>فات ٢٦</name>
+		<LookAt>
+			<longitude>45.24114613695116</longitude>
+			<latitude>32.05473770123886</latitude>
+			<altitude>21.21855273911677</altitude>
+			<heading>60.82366899408257</heading>
+			<tilt>0</tilt>
+			<gx:fovy>30</gx:fovy>
+			<range>228.4210360903671</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.24114547154323,32.05473570447851,21.21466713567801</coordinates>
+		</Point>
+	</Placemark>
+	<Folder id="0634FEFA2034D35A9AA8">
+		<name>مجلد بلا عنوان</name>
+		<open>1</open>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+	</Folder>
+	<Placemark id="08A89359E934D5A35BF2">
+		<name>فات ٧</name>
+		<LookAt>
+			<longitude>45.23740946912906</longitude>
+			<latitude>32.05647169762417</latitude>
+			<altitude>22.79821058039096</altitude>
+			<heading>352.2955291035175</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>154.2281846501828</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.23740946912906,32.05647169762417,22.79821058039095</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="02F7E1BF9534D5A4520A">
+		<name>فات ٣٥</name>
+		<LookAt>
+			<longitude>45.24022241118067</longitude>
+			<latitude>32.05810925303528</latitude>
+			<altitude>19.99217266294226</altitude>
+			<heading>353.2407612258531</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>142.5678704874736</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.24022241118067,32.05810925303528,19.99217266294226</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="08F6ADFA0F34D5A56081">
+		<name>فات ٣٦</name>
+		<LookAt>
+			<longitude>45.2397705214341</longitude>
+			<latitude>32.05925229483187</latitude>
+			<altitude>19.19786348646086</altitude>
+			<heading>359.9046917939719</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>114.1764701517241</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.2397705214341,32.05925229483187,19.19786348646086</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="00F8B3E11C34D5A6A759">
+		<name>فات ٣٤</name>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<extrude>1</extrude>
+			<coordinates>45.24039,32.057655,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="08D113FA8134D5A75754">
+		<name>فات ٣٣</name>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<extrude>1</extrude>
+			<coordinates>45.240423,32.057655,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0BC62C621B34D5A88A51">
+		<name>فات ٣٢</name>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<extrude>1</extrude>
+			<coordinates>45.240992,32.05765,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0B2427CEF634D5A94392">
+		<name>فات ٣١</name>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<extrude>1</extrude>
+			<coordinates>45.241024,32.056916,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0B3E29A54634D5AB90F9">
+		<name>فات ٤٣</name>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<extrude>1</extrude>
+			<coordinates>45.242909,32.056556,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0DBC5F2AC234D5AC7211">
+		<name>فات ٤٤</name>
+		<LookAt>
+			<longitude>45.24288095308341</longitude>
+			<latitude>32.05659170145431</latitude>
+			<altitude>22.45588298043959</altitude>
+			<heading>-0.0001340048916560945</heading>
+			<tilt>1.188803566842247</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>85.44281779502853</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.24288095308341,32.05659170145431,22.45588298043959</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0F53884AD034D5AE8C7E">
+		<name>فات ٤٠</name>
+		<LookAt>
+			<longitude>45.24372108860656</longitude>
+			<latitude>32.05635202286225</latitude>
+			<altitude>21.93677496943936</altitude>
+			<heading>44.80822350742028</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>227.3522706286894</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.24372108860656,32.05635202286225,21.93677496943936</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="02A2F3314E34D5B1F98B">
+		<name>فات ٤٢</name>
+		<LookAt>
+			<longitude>45.24326684870697</longitude>
+			<latitude>32.05626960460886</latitude>
+			<altitude>21.64438830013739</altitude>
+			<heading>342.358838853845</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>170.0863908425345</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.24326684870697,32.05626960460886,21.64438830013739</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0EE3830D8734D5B2AB70">
+		<name>فات ٣٩</name>
+		<LookAt>
+			<longitude>45.24368169140873</longitude>
+			<latitude>32.05737981798053</latitude>
+			<altitude>22.23017466845945</altitude>
+			<heading>359.9966575168618</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>120.1925521407429</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Point>
+			<coordinates>45.24368169140873,32.05737981798053,22.23017466845945</coordinates>
+		</Point>
+	</Placemark>
+	<GroundOverlay id="063D27C34834DBE0B386">
+		<name>تراكب بلا عنوان</name>
+		<styleUrl>#__managed_style_0AEE57E0CF34DBDEBD1B</styleUrl>
+		<Icon>
+			<href>data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==</href>
+		</Icon>
+		<LatLonBox>
+			<north>85</north>
+			<south>-85</south>
+			<east>180</east>
+			<west>-180</west>
+		</LatLonBox>
+		<gx:MapTilePyramid>
+			<gx:minLevel>0</gx:minLevel>
+			<gx:maxLevel>22</gx:maxLevel>
+		</gx:MapTilePyramid>
+	</GroundOverlay>
+	<Placemark id="0A331093E534DBE59F33">
+		<name>مضلّع بلا عنوان</name>
+		<LookAt>
+			<longitude>45.23623524734449</longitude>
+			<latitude>32.05435389572672</latitude>
+			<altitude>20.10134424583171</altitude>
+			<heading>4.007767303110827</heading>
+			<tilt>52.60918253309641</tilt>
+			<gx:fovy>34.99998255584106</gx:fovy>
+			<range>357.1398274083913</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_006946544A34DBE5D627</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						45.23500929542857,32.05384752180705,0 45.23491406279383,32.05349706999053,0 45.23490690330681,32.05306394395271,0 45.23491829400365,32.0528609164806,0 45.23498437191727,32.05275471762802,0 45.23511877582288,32.05269037661469,0 45.2352954290579,32.05263813887445,0 45.23561652940399,32.05259571480319,0 45.23591334672421,32.05260783529391,0 45.23618095726278,32.05264385021468,0 45.23671407959998,32.05275191246945,0 45.23759722933188,32.05291989290252,0 45.23832494705717,32.05310054796566,0 45.23881450259991,32.05324832796539,0 45.23973256138,32.05352896350207,0 45.2401899683813,32.05363867912006,0 45.24114423648026,32.05401046802598,0 45.24189590832867,32.05430453250315,0 45.2425931217258,32.05458826986182,0 45.24385961904526,32.05511627541068,0 45.2451168368286,32.055669662001,0 45.24483124782601,32.05627486398184,0 45.24469346598845,32.05647061015316,0 45.24429546022043,32.05714084465024,0 45.2439881355256,32.05763978880618,0 45.24361883142603,32.05745065920197,0 45.24289130094074,32.05705751788427,0 45.24250213730542,32.05685928382817,0 45.2422737987302,32.05675585937986,0 45.24215552053328,32.0567260366297,0 45.24182795691801,32.05721395267177,0 45.24142807047561,32.05775729376013,0 45.24100147669744,32.05839242255779,0 45.24075124348396,32.05876096443992,0 45.24018043801952,32.05962187230747,0 45.23986162823866,32.06013301965329,0 45.23976976419399,32.06007808390086,0 45.23935891544065,32.05972132313689,0 45.23865969661044,32.05884948325374,0 45.23813060238457,32.05818171988378,0 45.23749835903661,32.05739571668132,0 45.23708915321497,32.05682408590499,0 45.23672933476016,32.05634233176195,0 45.23627017138625,32.05572032826269,0 45.23597005002527,32.05530302610314,0 45.23570289814293,32.05491965186269,0 45.23525720701448,32.05431135502504,0 45.23500929542857,32.05384752180705,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+</Document>
+</kml>
