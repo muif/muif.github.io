@@ -612,6 +612,19 @@ img {
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
 }
+.token--songbird {
+  display: inline-block;
+  width: 70%;
+  height: 100%;
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='m5 22l4.535-8.251l-.825 7.126zm4.378-3.97l.56-4.908l6.011.788zM13.7 8.194l2.457 5.406l-6.052-.794zm1.284 2.027L18.026 8.7l-1.616 4.66zm-5.127 2.366L6.462 2l7.048 5.902zm7.676-1.458l.743-2.143L19 12.48z'/%3E%3C/svg%3E");
+  background-color: currentColor;
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
 .login__check {
   margin-bottom: 1rem;
   font-size: var(--small-font-size);
