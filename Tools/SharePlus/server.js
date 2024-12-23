@@ -14,4 +14,4 @@ server.on("connection", (socket) => {
     });
 });
 
-console.log("WebSocket server running on ws://localhost:8080");
+console.log("WebSocket server running on ws://muif.github.io/Tools/SharePlus:8080");
