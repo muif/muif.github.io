@@ -13,7 +13,7 @@ form.addEventListener('submit', (event) => {
         const base64String = reader.result;
 
         // إرسال البيانات إلى Google Sheets باستخدام Google Apps Script
-        const scriptUrl = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbxjREegv4V6LEIZCV7TdWn9H5eQgmE-Yc3gUnf3mEftoKwtxOY_x66ul1VfJpTPwrOO/exec';
         fetch(scriptUrl, {
             method: 'post',
             contentType: 'application/x-www-form-urlencoded',
