@@ -1,22 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>استمارة تسجيل</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استمارة البيانات</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"], input[type="date"], input[type="file"], button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+    </style>
 </head>
 <body>
-    <form id="myForm">
+    <form id="dataForm">
+        <h2>إدخال البيانات</h2>
         <label for="name">الاسم:</label>
         <input type="text" id="name" name="name" required>
-
-        <label for="birthdate">تاريخ الميلاد:</label>
-        <input type="date" id="birthdate" name="birthdate" required>
-
-        <label for="image">صورة الهوية:</label>
-        <input type="file" id="image" name="image" accept="image/*">
-
+        
+        <label for="dob">تاريخ الميلاد:</label>
+        <input type="date" id="dob" name="dob" required>
+        
+        <label for="idImage">صورة الهوية:</label>
+        <input type="file" id="idImage" name="idImage" accept="image/*" required>
+        
         <button type="submit">إرسال</button>
     </form>
-    <script src="script.js"></script>
-</body>
-</html>
+
+    <script>
+        document.getElementById("dataForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById("name").value;
+            const dob = document.getElementById("dob").value;
+            const idImage = document.getElementById("idImage").files[0];
+
+            if (!idImage) {
+                alert("يرجى اختيار صورة الهوية.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("name", name);
+            formData.append("do
