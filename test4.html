@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Store Clone</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="app.js"></script>
+</head>
+<body>
+    <header>
+        <h1>App Store Clone</h1>
+        <nav>
+            <button id="admin-panel-btn">Admin Panel</button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="apps-list">
+            <h2>Available Applications</h2>
+            <div id="apps-container"></div>
+        </section>
+
+        <section id="admin-panel" class="hidden">
+            <h2>Admin Panel</h2>
+            <form id="add-app-form">
+                <label for="app-name">App Name:</label>
+                <input type="text" id="app-name" name="app-name" required>
+
+                <label for="app-description">Description:</label>
+                <textarea id="app-description" name="app-description" required></textarea>
+
+                <label for="app-url">GitHub Pages URL:</label>
+                <input type="url" id="app-url" name="app-url" required>
+
+                <button type="submit">Add App</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 App Store Clone</p>
+    </footer>
+
+    <script>
+        // JavaScript Code
+        const appsContainer = document.getElementById('apps-container');
+        const adminPanel = document.getElementById('admin-panel');
+        const adminPanelBtn = document.getElementById('admin-panel-btn');
+        const addAppForm = document.getElementById('add-app-form');
+
+        const apps = [];
+
+        function renderApps() {
+            appsContainer.innerHTML = '';
+            apps.forEach((app, index) => {
+                const appCard = document.createElement('div');
+                appCard.className = 'app-card';
+
+                appCard.innerHTML = `
+                    <h3>${app.name}</h3>
+                    <p>${app.description}</p>
+                    <a href="${app.url}" target="_blank">Visit</a>
+                `;
+
+                appsContainer.appendChild(appCard);
+            });
+        }
+
+        adminPanelBtn.addEventListener('click', () => {
+            adminPanel.classList.toggle('hidden');
+        });
+
+        addAppForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('app-name').value;
+            const description = document.getElementById('app-description').value;
+            const url = document.getElementById('app-url').value;
+
+            apps.push({ name, description, url });
+            renderApps();
+
+            addAppForm.reset();
+            adminPanel.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
