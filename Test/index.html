@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -24,9 +24,17 @@
             border: 2px solid #ddd;
             border-radius: 10px;
         }
+        .fixed-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+        }
     </style>
 </head>
 <body>
+    <img src="https://muif.github.io/logo.png" alt="Icon" class="fixed-icon">
     <div class="ad-container">
         <img id="adImage" class="ad-image" src="" alt="Advertisement" onclick="redirectToAd()">
     </div>
@@ -34,7 +42,7 @@
     <script>
         // Array of ad objects containing image URLs and redirection links
         const ads = [
-            { image: "https://muif.github.io/img/work-1.jpg", link: "https://muif.github.io/Tools.html" },
+           { image: "https://muif.github.io/img/work-1.jpg", link: "https://muif.github.io/Tools.html" },
             { image: "https://muif.github.io/img/work-2.jpg", link: "https://muif.github.io/APKS.html" },
             { image: "https://muif.github.io/img/work-3.jpg", link: "https://example.com/ad3" }
         ];
@@ -60,3 +68,4 @@
     </script>
 </body>
 </html>
+
