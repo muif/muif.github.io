@@ -16,18 +16,15 @@
             background-color: #f4f4f4;
         }
         .ad-container {
-            width: 100vw; /* عرض الحاوية يشمل كامل الصفحة */
-            height: 80vh; /* ارتفاع الحاوية */
             text-align: center;
             margin-bottom: 20px;
         }
         .ad-image {
-            width: 100%; /* الصورة تشغل عرض الحاوية */
-            height: 100%; /* الصورة تشغل ارتفاع الحاوية */
+            max-width: 100%;
+            height: auto;
             cursor: pointer;
             border: 2px solid #ddd;
             border-radius: 10px;
-            object-fit: cover; /* تناسب الصورة مع الحفاظ على نسبتها */
         }
         .fixed-icon {
             position: absolute;
@@ -96,4 +93,4 @@
         window.onload = loadRandomAd;
     </script>
 </body>
-</html>
+</html>  
