@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ad App</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .ad-container {
+            text-align: center;
+        }
+        .ad-image {
+            max-width: 100%;
+            height: auto;
+            cursor: pointer;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+        }
+        .fixed-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+    <img src="https://muif.github.io/logo.png" alt="Icon" class="fixed-icon">
+    <div class="ad-container">
+        <img id="adImage" class="ad-image" src="" alt="Advertisement" onclick="redirectToAd()">
+    </div>
+
+    <script>
+        // Array of ad objects containing image URLs and redirection links
+        const ads = [
+           { image: "https://muif.github.io/ADS/AD.jpg", link: "https://muif.github.io/Tools.html" },
+            { image: "https://muif.github.io/ADS/AD2.jpg", link: "https://muif.github.io/APKS.html" },
+            { image: "https://muif.github.io/ADS/AD3.jpg", link: "https://muif.github.io" }
+        ];
+
+        // Function to load a random ad
+        function loadRandomAd() {
+            const randomIndex = Math.floor(Math.random() * ads.length);
+            const selectedAd = ads[randomIndex];
+            const adImage = document.getElementById('adImage');
+            adImage.src = selectedAd.image;
+            adImage.dataset.link = selectedAd.link;
+        }
+
+        // Function to redirect to the ad's link
+        function redirectToAd() {
+            const adImage = document.getElementById('adImage');
+            const adLink = adImage.dataset.link;
+            window.location.href = adLink;
+        }
+
+        // Load a random ad on page load
+        window.onload = loadRandomAd;
+    </script>
+</body>
+</html>
