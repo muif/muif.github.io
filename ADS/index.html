@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,7 @@
     <style>
         body {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -16,6 +17,7 @@
         }
         .ad-container {
             text-align: center;
+            margin-bottom: 20px;
         }
         .ad-image {
             max-width: 100%;
@@ -31,12 +33,29 @@
             width: 30px;
             height: 30px;
         }
+        .info-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .info-container input {
+            margin: 5px 0;
+            width: 300px;
+            padding: 5px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
     <img src="https://muif.github.io/logo.png" alt="Icon" class="fixed-icon">
     <div class="ad-container">
         <img id="adImage" class="ad-image" src="" alt="Advertisement" onclick="redirectToAd()">
+    </div>
+    <div class="info-container">
+        <input type="text" id="imageUrl" readonly placeholder="Image URL">
+        <input type="text" id="linkUrl" readonly placeholder="Link URL">
     </div>
 
     <script>
@@ -52,8 +71,15 @@
             const randomIndex = Math.floor(Math.random() * ads.length);
             const selectedAd = ads[randomIndex];
             const adImage = document.getElementById('adImage');
+            const imageUrl = document.getElementById('imageUrl');
+            const linkUrl = document.getElementById('linkUrl');
+
             adImage.src = selectedAd.image;
             adImage.dataset.link = selectedAd.link;
+
+            // Update textboxes
+            imageUrl.value = selectedAd.image;
+            linkUrl.value = selectedAd.link;
         }
 
         // Function to redirect to the ad's link
@@ -68,4 +94,3 @@
     </script>
 </body>
 </html>
-
