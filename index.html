@@ -751,18 +751,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>عداد الزوار</title>
+  
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
       background-color: #f4f4f9;
-      color: #333;
+      color: #fff;
       margin: 0;
       padding: 20px;
     }
     h1 {
-      color: #0078d7;
+      color: #fff;
     }
     p {
       font-size: 18px;
@@ -770,13 +770,12 @@
     h2 {
       font-size: 48px;
       margin: 20px 0;
-      color: #444;
+      color: #fff;
     }
   </style>
 </head>
 <body>
-  <h1>مرحبًا بك في موقعي</h1>
-  <p>عدد الزوار الذين زاروا الموقع:</p>
+  <p>عدد زوار الموقع:</p>
   <h2 id="counter">جارٍ التحميل...</h2>
 
   <script>
@@ -791,7 +790,7 @@
       })
       .catch(error => {
         console.error('خطأ:', error);
-        document.getElementById("counter").innerText = "خطأ في التحميل";
+        document.getElementById("counter").innerText = "يتم جلب البيانات... ";
       });
   </script>
 </body>
