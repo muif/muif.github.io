@@ -743,8 +743,59 @@
         <div class="row">
           <div class="col-sm-12">
             <div class="copyright-box">
+              
               <p class="copyright">&copy; Copyright <strong>Muntadher Imad</strong>. All Rights Reserved</p>
             </div>
+            <!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>عداد الزوار</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f9;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: #0078d7;
+    }
+    p {
+      font-size: 18px;
+    }
+    h2 {
+      font-size: 48px;
+      margin: 20px 0;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+  <h1>مرحبًا بك في موقعي</h1>
+  <p>عدد الزوار الذين زاروا الموقع:</p>
+  <h2 id="counter">جارٍ التحميل...</h2>
+
+  <script>
+    // رابط واجهة Google Apps Script API
+    const apiUrl = "https://script.google.com/macros/s/AKfycbxHxySez7TNpqmD1NyjiU3d6M-PG6ot04rDxYO7CJTj1bcpegcqFNGlt73jpMGpQ03Rfw/exec"; // ضع رابط Google Apps Script هنا
+
+    // جلب عدد الزوار وتحديثه
+    fetch(apiUrl)
+      .then(response => response.text())
+      .then(count => {
+        document.getElementById("counter").innerText = count;
+      })
+      .catch(error => {
+        console.error('خطأ:', error);
+        document.getElementById("counter").innerText = "خطأ في التحميل";
+      });
+  </script>
+</body>
+</html>
           </div>
         </div>
       </div>
