@@ -561,7 +561,26 @@ div {text-align: center;}
           <div class="col-sm-12">
             <div class="copyright-box">
               <p class="copyright">&copy; Copyright <strong>Muntadher Imad</strong>. All Rights Reserved</p>
-            </div>
+             </div>
+        
+  <a dir="rtl">عدد زوار الموقع:</a>
+  <p id="counter" dir="rtl" >جارٍ التحميل...</p>
+
+  <script>
+    // رابط واجهة Google Apps Script API
+    const apiUrl = "https://script.google.com/macros/s/AKfycbzCqqQPhw7TMvY8mND-wPGWlzsf_aq5GvZmJ_N253fiyaYxkEzpaw8wol3MyYE2eYfW3A/exec"; // ضع رابط Google Apps Script هنا
+
+    // جلب عدد الزوار وتحديثه
+    fetch(apiUrl)
+      .then(response => response.text())
+      .then(count => {
+        document.getElementById("counter").innerText = count;
+      })
+      .catch(error => {
+        console.error('خطأ:', error);
+        document.getElementById("counter").innerText = "يتم جلب البيانات... ";
+      });
+  </script>
           </div>
         </div>
       </div>
