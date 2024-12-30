@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حساب اقساط ستارلنك</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        input[readonly] {
+            background-color: #e9ecef;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>حساب النسبة المئوية</h2>
+    <label for="baseAmount">المبلغ الأساسي:</label>
+    <input type="number" id="baseAmount" placeholder="أدخل المبلغ" step="0.01" min="0">
+    
+    <label for="percentage">النسبة المئوية:</label>
+    <input type="number" id="percentage" value="40" placeholder="أدخل النسبة المئوية" step="0.01" min="0">
+    
+    <label for="result">النتيجة:</label>
+    <input type="number" id="result" readonly>
+    
+    <div class="button-container">
+        <button onclick="copyResult()">نسخ النتيجة</button>
+        <button onclick="calculate()">احتساب النتيجة</button>
+    </div>
+</div>
+
+<script>
+    function calculate() {
+        const baseAmount = parseFloat(document.getElementById("baseAmount").value);
+        const percentage = parseFloat(document.getElementById("percentage").value);
+
+        if (isNaN(baseAmount) || isNaN(percentage)) {
+            alert("يرجى إدخال قيم صحيحة.");
+            return;
+        }
+
+        const result = baseAmount + (baseAmount * (percentage / 100));
+        document.getElementById("result").value = result.toFixed(2);
+    }
+
+    function copyResult() {
+        const resultField = document.getElementById("result");
+        if (resultField.value !== "") {
+            resultField.select();
+            document.execCommand("copy");
+            alert("تم نسخ النتيجة إلى الحافظة!");
+        } else {
+            alert("لا توجد نتيجة لنسخها.");
+        }
+    }
+</script>
+
+</body>
+</html>
