@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توليد كابشن</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>توليد كابشن ستارلنك</h1>
+        <label for="device-name">اسم الجهاز وتفاصيل بسيطة:</label>
+        <input type="text" id="device-name" placeholder="أدخل اسم الجهاز">
+
+        <label for="screen"> الشاشة:</label>
+        <input type="text" id="screen" placeholder="أدخل تفاصيل الشاشة">
+
+        <label for="processor"> المعالج:</label>
+        <input type="text" id="processor" placeholder="أدخل تفاصيل المعالج">
+
+        <label for="cameras"> الكاميرات:</label>
+        <input type="text" id="cameras" placeholder="أدخل تفاصيل الكاميرات">
+
+        <label for="memory"> الذاكرة:</label>
+        <input type="text" id="memory" placeholder="أدخل تفاصيل الذاكرة">
+
+        <label for="battery"> البطارية:</label>
+        <input type="text" id="battery" placeholder="أدخل تفاصيل البطارية">
+
+        <button onclick="generateText()">توليد النص</button>
+
+        <textarea id="result" readonly placeholder="النص الناتج سيظهر هنا"></textarea>
+
+        <button onclick="copyText()">نسخ النص</button>
+        <div class="share-buttons">
+            <button onclick="share('facebook')">مشاركة على Facebook</button>
+            <button onclick="share('instagram')">مشاركة على Instagram</button>
+            <button onclick="share('telegram')">مشاركة على Telegram</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
