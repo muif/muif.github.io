@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print Form</title>
+    <style>
+        body {
+            font-family: "Arial", sans-serif;
+        }
+        .container {
+            width: 300px;
+            margin: auto;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+        }
+        .hidden-checkbox {
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+                direction: rtl;
+                text-align: center;
+                font-size: 16px;
+                width: 60mm;
+                height: 60mm;
+            }
+            .container {
+                width: auto;
+                margin: 0;
+                padding: 10px;
+            }
+            .logo {
+                text-align: center;
+                margin-bottom: 10px;
+            }
+            table {
+                width: 60%;
+                border-collapse: collapse;
+                margin: auto;
+            }
+            table, th, td {
+                border: 1px solid black;
+            }
+            td {
+                padding: 5px;
+                text-align: center;
+                font-size: 14px;
+            }
+            .qr-code {
+                margin-top: 10px;
+            }
+            .footer {
+                margin-top: 10px;
+                font-size: 10px;
+                font-weight: bold;
+                text-align: center;
+            }
+            button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="./img/Logo.png" alt="Logo" width="80">
+        </div>
+        <div class="form-group">
+            <label for="networkName">اسم الشبكة</label>
+            <input type="text" id="networkName" placeholder="أدخل اسم الشبكة">
+            <div class="hidden-checkbox">
+                <input type="checkbox" id="hiddenNetwork">
+                <label for="hiddenNetwork">شبكة مخفية</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="password">الرمز</label>
+            <input type="text" id="password" placeholder="أدخل الرمز">
+        </div>
+        <div class="form-group">
+            <label for="code">CODE</label>
+            <input type="text" id="code" placeholder="أدخل CODE">
+        </div>
+        <div class="form-group">
+            <label for="notes">ملاحظات</label>
+            <input type="text" id="notes" placeholder="أدخل الملاحظات">
+        </div>
+        <button onclick="printData()">طباعة</button>
+    </div>
+
+    <!-- QRCode.js مكتبة -->
+    <script src="./qrcode.min.js"></script>
+    <script>
+        function printData() {
+            const networkName = document.getElementById("networkName").value;
+            const hiddenNetwork = document.getElementById("hiddenNetwork").checked;
+            const password = document.getElementById("password").value;
+            const code = document.getElementById("code").value;
+            const notes = document.getElementById("notes").value;
+
+            if (!networkName || !password) {
+                alert("يرجى إدخال اسم الشبكة والرمز.");
+                return;
+            }
+
+            // إنشاء نص QR بناءً على اسم الشبكة وكلمة المرور وحالة الشبكة المخفية فقط
+            const qrText = `WIFI:S:${networkName};T:WPA;P:${password};H:${hiddenNetwork};`;
+
+            // إنشاء عنصر QR
+            const qrContainer = document.createElement("div");
+            const qrCode = new QRCode(qrContainer, {
+                text: qrText,
+                width: 100,
+                height: 100,
+            });
+
+            // إعداد المحتوى للطباعة
+            const printContent = `
+                <div class="logo">
+                    <img src="./img/Logo.png" alt="Logo" width="80">
+                </div>
+                <table>
+                    <tr><td>اسم الشبكة</td><td>${networkName}</td></tr>
+                    <tr><td>شبكة مخفية</td><td>${hiddenNetwork ? "نعم" : "لا"}</td></tr>
+                    <tr><td>الرمز</td><td>${password}</td></tr>
+                    <tr><td>CODE</td><td>${code}</td></tr>
+                    <tr><td>ملاحظات</td><td>${notes}</td></tr>
+                </table>
+                <div class="qr-code">${qrContainer.innerHTML}</div>
+                <div class="footer">مكتب حسين الشيباوي لخدمات الانترنت</div>
+            `;
+
+            const printWindow = window.open("", "_blank");
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Print</title>
+                        <style>
+                            body {
+                                font-family: "Arial", sans-serif;
+                                direction: rtl;
+                                text-align: center;
+                                font-size: 16px;
+                                margin: 0;
+                                padding: 10px;
+                                width: 60mm;
+                                height: 60mm;
+                            }
+                            .logo {
+                                text-align: center;
+                                margin-bottom: 10px;
+                            }
+                            table {
+                                width: 60%;
+                                border-collapse: collapse;
+                                margin: auto;
+                            }
+                            table, th, td {
+                                border: 1px solid black;
+                            }
+                            td {
+                                padding: 5px;
+                                text-align: center;
+                                font-size: 14px;
+                            }
+                            .qr-code {
+                                margin-top: 10px;
+                            }
+                            .footer {
+                                margin-top: 10px;
+                                font-size: 10px;
+                                font-weight: bold;
+                                text-align: center;
+                            }
+                        </style>
+                    </head>
+                    <body>${printContent}</body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+    </script>
+</body>
+</html>
