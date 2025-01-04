@@ -118,7 +118,7 @@
     </div>
 
     <!-- QRCode.js مكتبة -->
-    <script src="./qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
         function printData() {
             const networkName = document.getElementById("networkName").value;
@@ -132,16 +132,8 @@
                 return;
             }
 
-            // إنشاء نص QR بناءً على اسم الشبكة وكلمة المرور وحالة الشبكة المخفية فقط
+            // إعداد نص QR
             const qrText = `WIFI:S:${networkName};T:WPA;P:${password};H:${hiddenNetwork};`;
-
-            // إنشاء عنصر QR
-            const qrContainer = document.createElement("div");
-            const qrCode = new QRCode(qrContainer, {
-                text: qrText,
-                width: 100,
-                height: 100,
-            });
 
             // إعداد المحتوى للطباعة
             const printContent = `
@@ -155,7 +147,7 @@
                     <tr><td>CODE</td><td>${code}</td></tr>
                     <tr><td>ملاحظات</td><td>${notes}</td></tr>
                 </table>
-                <div class="qr-code">${qrContainer.innerHTML}</div>
+                <div id="qr-code" class="qr-code"></div>
                 <div class="footer">مكتب حسين الشيباوي لخدمات الانترنت</div>
             `;
 
@@ -207,7 +199,19 @@
                 </html>
             `);
             printWindow.document.close();
-            printWindow.print();
+
+            // إنشاء QR Code بعد فتح نافذة الطباعة
+            printWindow.onload = function () {
+                const qrCodeElement = printWindow.document.getElementById("qr-code");
+                setTimeout(() => {
+                    new QRCode(qrCodeElement, {
+                        text: qrText,
+                        width: 100,
+                        height: 100,
+                    });
+                    printWindow.print();
+                }, 500);
+            };
         }
     </script>
 </body>
