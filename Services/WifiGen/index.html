@@ -95,7 +95,7 @@
         </div>
         <div class="form-group">
             <label for="networkName">اسم الشبكة</label>
-            <input type="text" id="networkName" placeholder="أدخل اسم الشبكة">
+            <input type="text" id="networkName" placeholder="أدخل اسم الشبكة" ondblclick="copyToClipboard('networkName')">
             <button onclick="generateNetworkName()">توليد</button>
         </div>
         <div class="form-group">
@@ -104,7 +104,7 @@
         </div>
         <div class="form-group">
             <label for="password">الرمز</label>
-            <input type="text" id="password" placeholder="أدخل الرمز">
+            <input type="text" id="password" placeholder="أدخل الرمز" ondblclick="copyToClipboard('password')">
             <button onclick="generatePassword()">توليد</button>
         </div>
         <div class="form-group">
@@ -121,7 +121,7 @@
     <!-- QRCode.js مكتبة -->
     <script src="./qrcode.min.js"></script>
     <script>
-        // توليد اسم الشبكة
+        // وظيفة توليد اسم الشبكة
         function generateNetworkName() {
             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
             let name = '';
@@ -131,7 +131,7 @@
             document.getElementById('networkName').value = name;
         }
 
-        // توليد الرمز
+        // وظيفة توليد الرمز
         function generatePassword() {
             let password = '';
             for (let i = 0; i < 4; i++) {
@@ -141,6 +141,15 @@
             document.getElementById('password').value = password;
         }
 
+        // وظيفة نسخ النص إلى الحافظة
+        function copyToClipboard(elementId) {
+            const inputElement = document.getElementById(elementId);
+            inputElement.select(); // تحديد النص
+            document.execCommand("copy"); // نسخ النص
+            alert("تم نسخ النص: " + inputElement.value); // رسالة تأكيد
+        }
+
+        // وظيفة طباعة البيانات
         function printData() {
             const networkName = document.getElementById("networkName").value;
             const hiddenNetwork = document.getElementById("hiddenNetwork").checked;
