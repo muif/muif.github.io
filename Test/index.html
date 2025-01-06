@@ -16,28 +16,26 @@
         .form-group {
             margin-bottom: 15px;
             text-align: left;
+            display: flex;
+            align-items: center;
         }
         label {
-            display: block;
+            flex: 1;
             font-weight: bold;
         }
         input[type="text"] {
-            width: 100%;
+            flex: 2;
             padding: 5px;
             margin-top: 5px;
         }
-        .hidden-checkbox {
-            display: flex;
-            align-items: center;
-            margin-top: 5px;
-        }
         button {
-            padding: 10px 20px;
+            padding: 5px 10px;
+            margin-left: 5px;
             background-color: #4CAF50;
             color: white;
             border: none;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
         }
         button:hover {
             background-color: #45a049;
@@ -97,14 +95,16 @@
         <div class="form-group">
             <label for="networkName">اسم الشبكة</label>
             <input type="text" id="networkName" placeholder="أدخل اسم الشبكة">
-            <div class="hidden-checkbox">
-                <input type="checkbox" id="hiddenNetwork">
-                <label for="hiddenNetwork">شبكة مخفية</label>
-            </div>
+            <button onclick="generateNetworkName()">توليد</button>
+        </div>
+        <div class="form-group">
+            <label for="hiddenNetwork">شبكة مخفية</label>
+            <input type="checkbox" id="hiddenNetwork">
         </div>
         <div class="form-group">
             <label for="password">الرمز</label>
             <input type="text" id="password" placeholder="أدخل الرمز">
+            <button onclick="generatePassword()">توليد</button>
         </div>
         <div class="form-group">
             <label for="code">CODE</label>
@@ -120,6 +120,26 @@
     <!-- QRCode.js مكتبة -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
+        // توليد اسم الشبكة
+        function generateNetworkName() {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            let name = '';
+            for (let i = 0; i < 2; i++) {
+                name += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            document.getElementById('networkName').value = name;
+        }
+
+        // توليد الرمز
+        function generatePassword() {
+            let password = '';
+            for (let i = 0; i < 4; i++) {
+                const pair = Math.floor(Math.random() * 10).toString(); // رقم عشوائي بين 0-9
+                password += pair + pair; // إضافة زوج من الرقم نفسه
+            }
+            document.getElementById('password').value = password;
+        }
+
         function printData() {
             const networkName = document.getElementById("networkName").value;
             const hiddenNetwork = document.getElementById("hiddenNetwork").checked;
@@ -132,10 +152,8 @@
                 return;
             }
 
-            // إعداد نص QR
             const qrText = `WIFI:S:${networkName};T:WPA;P:${password};H:${hiddenNetwork};`;
 
-            // إعداد المحتوى للطباعة
             const printContent = `
                 <div class="logo">
                     <img src="./img/Logo.png" alt="Logo" width="80">
@@ -200,7 +218,6 @@
             `);
             printWindow.document.close();
 
-            // إنشاء QR Code بعد فتح نافذة الطباعة
             printWindow.onload = function () {
                 const qrCodeElement = printWindow.document.getElementById("qr-code");
                 setTimeout(() => {
