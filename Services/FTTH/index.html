@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توليد يوزر FTTH | BY Muntadher Imad</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>توليد يوزر FTTH</h1>
+        <div class="form-group">
+            <label> الشركة المنفذة:</label>
+            <input type="text" id="company" value="NIPPUR" readonly>
+        </div>
+        <div class="form-group">
+            <label>رقم الزون:</label>
+            <div class="inline-group">
+               <select id="area">
+    <option value="143">143</option>
+    <option value="144">144</option>
+    <option value="145">145</option>
+    <option value="146">146</option>
+    <option value="147">147</option>
+    <option value="148">148</option>
+    <option value="149">149</option>
+    <option value="150">150</option>
+    <option value="151">151</option>
+    <option value="152">152</option>
+    <option value="153">153</option>
+    <option value="154">154</option>
+</select>
+
+                <input type="text" id="areaDetails" readonly>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>رقم الفات:</label>
+            <input type="text" id="vat">
+        </div>
+        <div class="form-group">
+            <label>رقم البورت:</label>
+            <select id="port">
+                <script>
+                    for (let i = 1; i <= 16; i++) {
+                        document.write(`<option value="${i}">${i}</option>`);
+                    }
+                </script>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>رمز الوكيل:</label>
+            <input type="text" id="agentCode">
+        </div>
+        <div class="form-group">
+            <label>تنسيق الحروف:</label>
+           <select id="caseOption">
+    <option value="uppercase">أحرف كبيرة</option>
+    <option value="lowercase" selected>أحرف صغيرة</option>
+</select>
+        </div>
+        <div class="form-group">
+            <button id="generateButton">توليد اليوزر</button>
+        </div>
+        <div class="result-group">
+            <input type="text" id="serialNumber" readonly>
+            <button id="copyButton">نسخ النص</button>
+        </div>
+ <p dir="rtl" style="text-align:center;">
+                برمجة بواسطة :
+                <a href="https://muif.github.io/Tools.html" target="_blank">MuntadherImad</a>
+            </p>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
