@@ -19,14 +19,14 @@ div{
   font-family: sans-serif;
   font-size: 20px;
   font-weight:bolder;
-  border: 3px solid #11F793;
+  border: 3px solid #41212c;
   position: relative;
   transition: 1s all ease;
   
 }
 div::before{
   content:"";
-  background:#11F793;
+  background: linear-gradient(60deg, #161220, #41212c, #6f3544, #96495b, #a55361, #b76e65, #bf8464, #c29264);
   position: absolute;
   top: 50%;
   left: 50%;
