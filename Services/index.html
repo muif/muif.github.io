@@ -1,13 +1,19 @@
 <link rel="stylesheet" media="all" href="style.css" />
 <section class="container">
-<a class="hovera" href="https://muif.github.io/Services/FTTH/" >توليد يوزر FTTH</a>
-  
-  <div class="hoverb" href="https://muif.github.io/Services/WifiGen/" >وصل باركود  WIFI</div> 
-  <div class="hoverc" href="#" >HOVER ME</div> 
-  <div class="hoverd" href="#" >HOVER ME</div> 
-  
- 
-  
-  
-  
+  <div class="hovera" data-url="https://muif.github.io/Services/FTTH/">توليد يوزر FTTH</div>
+  <div class="hoverb" data-url="https://muif.github.io/Services/WifiGen/">وصل باركود WIFI</div>
+  <div class="hoverc" data-url="#">HOVER ME</div>
+  <div class="hoverd" data-url="#">HOVER ME</div>
 </section>
+
+<script>
+  document.querySelectorAll('.container div').forEach(div => {
+    div.style.cursor = 'pointer';
+    div.addEventListener('click', () => {
+      const url = div.getAttribute('data-url');
+      if (url) {
+        window.location.href = url;
+      }
+    });
+  });
+</script>
