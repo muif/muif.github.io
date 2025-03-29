@@ -3,147 +3,48 @@
 <head>
     <title>دمج بيانات العملاء</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .expired {
-            background-color: #ffe0e0; /* أحمر فاتح */
-        }
-        .warning {
-            background-color: #e0ffe0; /* أخضر فاتح */
-        }
+        // ... (أنماط CSS)
     </style>
 </head>
 <body>
-    <h1>دمج بيانات العملاء</h1>
-    <input type="file" id="xlsxFile" accept=".xlsx" style="display: none;">
-    <input type="file" id="csvFile" accept=".csv" style="display: none;">
-    <button onclick="تحميل_الملف()">تحميل الملف (XLSX)</button>
-    <div id="result"></div>
+    // ... (HTML)
 
     <script>
-        let mergedData = []; // متغير لتخزين البيانات المدمجة
+        // ... (متغيرات ودوال)
 
         async function دمج_البيانات(xlsxFile, csvFile) {
-            if (!xlsxFile || !csvFile) {
-                alert('الرجاء التأكد من وجود ملفي XLSX و CSV في نفس المجلد.');
-                return;
-            }
-
-            const xlsxData = await readXlsx(xlsxFile);
-            const csvData = await readCsv(csvFile);
+            // ... (بقية الكود)
 
             mergedData = mergeData(xlsxData, csvData); // تخزين البيانات المدمجة
+            console.log('mergedData:', mergedData);
             displayResult(mergedData);
         }
 
-        async function readXlsx(file) {
-            const data = await file.arrayBuffer();
-            const workbook = XLSX.read(data, { type: 'array' });
-            const sheetName = workbook.SheetNames[0];
-            const sheet = workbook.Sheets[sheetName];
-            return XLSX.utils.sheet_to_json(sheet);
-        }
+        // ... (بقية الدوال)
 
-        async function readCsv(file) {
-            const text = await file.text();
-            return Papa.parse(text, { header: true }).data;
-        }
+        window.onload = async function() {
+            try {
+                const xlsxResponse = await fetch('all_customers.xlsx');
+                const xlsxBlob = await xlsxResponse.blob();
+                const xlsxFile = new File([xlsxBlob], 'all_customers.xlsx');
 
-        function mergeData(xlsxData, csvData) {
-            const csvMap = {};
-            csvData.forEach(row => {
-                const customerId = row['Customer ID'];
-                if (!csvMap[customerId] || isNewer(row, csvMap[customerId])) {
-                    csvMap[customerId] = row;
+                const csvResponse = await fetch('partner.csv');
+                const csvBlob = await csvResponse.blob();
+                const csvFile = new File([csvBlob], 'partner.csv');
+
+                console.log('xlsxFile:', xlsxFile);
+                console.log('csvFile:', csvFile);
+
+                if (xlsxFile && csvFile) {
+                    await دمج_البيانات(xlsxFile, csvFile);
                 }
-            });
-
-            return xlsxData.map(xlsxRow => {
-                const csvRow = csvMap[xlsxRow.id];
-                if (csvRow) {
-                    const date = new Date(csvRow.Date);
-                    const hours = date.getHours() % 12 || 12;
-                    const minutes = date.getMinutes();
-                    const seconds = date.getSeconds();
-                    const ampm = date.getHours() >= 12 ? 'مساءً' : 'صباحًا';
-
-                    const endDate = new Date(csvRow['End Date'].split('/').reverse().join('-'));
-                    const now = new Date();
-                    const oneWeekFromNow = new Date();
-                    oneWeekFromNow.setDate(oneWeekFromNow.getDate() + 7);
-
-                    // إضافة عمود WhatsApp
-                    let phoneNumber = csvRow['phone']; // استبدل 'phone' باسم عمود رقم الهاتف
-                    if (phoneNumber) {
-                        // إزالة أي أحرف غير رقمية أو مسافات
-                        phoneNumber = phoneNumber.replace(/[^\d+]/g, '');
-                        // إزالة رمز البلد إذا كان موجودًا
-                        phoneNumber = phoneNumber.replace(/^(\+?964|00964)/, '');
-                    } else {
-                        phoneNumber = ''; // تعيين رقم الهاتف إلى سلسلة فارغة إذا كان غير موجود
-                    }
-                    console.log(phoneNumber);
-                    const customerName = xlsxRow.name; // استبدل 'name' باسم عمود اسم العميل
-                    const startDate = csvRow['Start Date']; // استبدل 'Start Date' باسم عمود تاريخ البدء
-
-                    const whatsappLink = "https://api.whatsapp.com/send?phone=964" + phoneNumber + "&text=" + encodeURIComponent(
-                        "*مكتب نيبور يهديكم أطيب التحايا*" + "\n\n" +
-                        "نود إعلامك مشتركنا الكريم *" + customerName + "* بقرب انتهاء اشتراك الإنترنت الخاص بك الذي تم تفعيله بتاريخ *" + startDate + "*." + "\n\n" +
-                        "إذا كنت ترغب في تجديد الاشتراك، عليك زيارة موقع مكتبنا الواقع قرب جسر الحمام أو طلب خدمة التوصيل عن طريق الاتصال بالأرقام التالية:" + "\n" +
-                        "*07866933525*" + "\n" +
-                        "*07766660437*" + "\n\n" +
-                        "علماً أن سعر خدمة التوصيل هو *1000* دينار فقط."
-                    );
-
-                    return {
-                        ...xlsxRow,
-                        'Start Date': csvRow['Start Date'],
-                        'End Date': csvRow['End Date'],
-                        'Date': `<span class="math-inline">\{hours\}\:</span>{minutes}:${seconds} ${ampm}`,
-                        'Plan Name': csvRow['Plan Name'],
-                        'Status': endDate < now ? 'منتهي الصلاحية' : 'فعال',
-                        'endDateObj': endDate,
-                        'startDateObj': new Date(csvRow['Start Date'].split('/').reverse().join('-')),
-                        'WhatsApp Link': whatsappLink // إضافة رابط WhatsApp إلى البيانات المدمجة
-                    };
-                }
-                return xlsxRow;
-            });
-        }
-
-        function isNewer(row1, row2) {
-            const date1 = new Date(row1['End Date'].split('/').reverse().join('-'));
-            const date2 = new Date(row2['End Date'].split('/').reverse().join('-'));
-            return date1 > date2;
-        }
-
-        function displayResult(data) {
-            const resultDiv = document.getElementById('result');
-            let tableHtml = '<table><tr><th>name</th><th>phone</th><th>id</th><th>email</th><th>createdAt</th><th>zone</th><th>address</th><th>contractor</th><th>deviceDetails</th><th>ontSerial</th><th>Start Date</th><th>End Date</th><th>Date</th><th>Plan Name</th><th>Status</th><th>WhatsApp Link</th></tr>'; // إضافة رأس عمود WhatsApp
-
-            data.forEach(row => {
-                const isExpired = row.endDateObj < new Date();
-                const startDate = row.startDateObj;
-                const now = new Date();
-                const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000); // أسبوع مضى
-
-                const isWarning = startDate >= oneWeekAgo && startDate <= now;
-
-                let planName = row['Plan Name'];
-                let status = row.Status;
-
-                if(planName !== 'FIBER 35' && planName !== 'FIBER 50' && planName !== 'FIBER 75' && planName !== 'FIBER 150'){
+            } catch (error) {
+                console.error('Error loading files:', error);
+                alert('Error loading files. Please ensure the files are in the same directory and try again.');
+            }
+        };
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+</body>
+</html>
