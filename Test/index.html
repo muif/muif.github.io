@@ -10,13 +10,16 @@
     // ... (HTML)
 
     <script>
-        // ... (متغيرات ودوال)
+        let mergedData = []; // متغير لتخزين البيانات المدمجة
+
+        // تعريف دالة mergeData قبل استدعائها
+        function mergeData(xlsxData, csvData) {
+            // ... (بقية الكود)
+        }
 
         async function دمج_البيانات(xlsxFile, csvFile) {
             // ... (بقية الكود)
-
             mergedData = mergeData(xlsxData, csvData); // تخزين البيانات المدمجة
-            console.log('mergedData:', mergedData);
             displayResult(mergedData);
         }
 
