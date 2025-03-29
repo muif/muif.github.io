@@ -86,6 +86,20 @@
                     const oneWeekFromNow = new Date();
                     oneWeekFromNow.setDate(oneWeekFromNow.getDate() + 7);
 
+                    // إضافة عمود WhatsApp
+                    const phoneNumber = csvRow['phone']; // استبدل 'phone' باسم عمود رقم الهاتف
+                    const customerName = xlsxRow.name; // استبدل 'name' باسم عمود اسم العميل
+                    const startDate = csvRow['Start Date']; // استبدل 'Start Date' باسم عمود تاريخ البدء
+
+                    const whatsappLink = "https://api.whatsapp.com/send?phone=964" + phoneNumber + "&text=" + encodeURIComponent(
+                        "*مكتب نيبور يهديكم أطيب التحايا*" + "\n\n" +
+                        "نود إعلامك مشتركنا الكريم *" + customerName + "* بقرب انتهاء اشتراك الإنترنت الخاص بك الذي تم تفعيله بتاريخ *" + startDate + "*." + "\n\n" +
+                        "إذا كنت ترغب في تجديد الاشتراك، عليك زيارة موقع مكتبنا الواقع قرب جسر الحمام أو طلب خدمة التوصيل عن طريق الاتصال بالأرقام التالية:" + "\n" +
+                        "*07866933525*" + "\n" +
+                        "*07766660437*" + "\n\n" +
+                        "علماً أن سعر خدمة التوصيل هو *1000* دينار فقط."
+                    );
+
                     return {
                         ...xlsxRow,
                         'Start Date': csvRow['Start Date'],
@@ -94,7 +108,8 @@
                         'Plan Name': csvRow['Plan Name'],
                         'Status': endDate < now ? 'منتهي الصلاحية' : 'فعال',
                         'endDateObj': endDate,
-                        'startDateObj': new Date(csvRow['Start Date'].split('/').reverse().join('-'))
+                        'startDateObj': new Date(csvRow['Start Date'].split('/').reverse().join('-')),
+                        'WhatsApp Link': whatsappLink // إضافة رابط WhatsApp إلى البيانات المدمجة
                     };
                 }
                 return xlsxRow;
@@ -109,7 +124,7 @@
 
         function displayResult(data) {
             const resultDiv = document.getElementById('result');
-            let tableHtml = '<table><tr><th>name</th><th>phone</th><th>id</th><th>email</th><th>createdAt</th><th>zone</th><th>address</th><th>contractor</th><th>deviceDetails</th><th>ontSerial</th><th>Start Date</th><th>End Date</th><th>Date</th><th>Plan Name</th><th>Status</th></tr>';
+            let tableHtml = '<table><tr><th>name</th><th>phone</th><th>id</th><th>email</th><th>createdAt</th><th>zone</th><th>address</th><th>contractor</th><th>deviceDetails</th><th>ontSerial</th><th>Start Date</th><th>End Date</th><th>Date</th><th>Plan Name</th><th>Status</th><th>WhatsApp Link</th></tr>'; // إضافة رأس عمود WhatsApp
 
             data.forEach(row => {
                 const isExpired = row.endDateObj < new Date();
@@ -132,6 +147,7 @@
 
                 tableHtml += `<tr class="${isExpired ? 'expired' : isWarning ? 'warning' : ''}">`;
                 tableHtml += `<td>${row.name || ''}</td><td>${row.phone || ''}</td><td>${row.id || ''}</td><td>${row.email || ''}</td><td>${row.createdAt || ''}</td><td>${row.zone || ''}</td><td>${row.address || ''}</td><td>${row.contractor || ''}</td><td>${row.deviceDetails || ''}</td><td>${row.ontSerial || ''}</td><td>${row['Start Date'] || ''}</td><td>${row['End Date'] || ''}</td><td>${row.Date || ''}</td><td>${planName || ''}</td><td>${status || ''}</td>`;
+                tableHtml += `<td><a href="${row['WhatsApp Link']}" target="_blank">إرسال رسالة</a></td>`; // إضافة رابط WhatsApp في عمود الجدول
                 tableHtml += '</tr>';
             });
 
@@ -151,7 +167,7 @@
                 return rest;
             });
 
-            const ws = XLSX.utils.json_to_sheet(filteredData);
+            const ws = XLSX.utils.json_to_sheet(filteredData, { header: Object.keys(filteredData[0]) }); // تضمين رؤوس الأعمدة
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Merged Data');
 
