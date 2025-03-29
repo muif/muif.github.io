@@ -12,13 +12,33 @@
     <script>
         let mergedData = []; // متغير لتخزين البيانات المدمجة
 
+        // تعريف دالة readXlsx قبل استدعائها
+        async function readXlsx(file) {
+            console.log('readXlsx file:', file);
+            const data = await file.arrayBuffer();
+            console.log('readXlsx data:', data);
+            const workbook = XLSX.read(data, { type: 'array' });
+            console.log('readXlsx workbook:', workbook);
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            console.log('readXlsx sheet:', sheet);
+            return XLSX.utils.sheet_to_json(sheet);
+        }
+
         // تعريف دالة mergeData قبل استدعائها
         function mergeData(xlsxData, csvData) {
             // ... (بقية الكود)
         }
 
         async function دمج_البيانات(xlsxFile, csvFile) {
-            // ... (بقية الكود)
+            if (!xlsxFile || !csvFile) {
+                alert('الرجاء التأكد من وجود ملفي XLSX و CSV في نفس المجلد.');
+                return;
+            }
+
+            const xlsxData = await readXlsx(xlsxFile);
+            const csvData = await readCsv(csvFile);
+
             mergedData = mergeData(xlsxData, csvData); // تخزين البيانات المدمجة
             displayResult(mergedData);
         }
