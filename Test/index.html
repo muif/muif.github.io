@@ -87,7 +87,13 @@
                     oneWeekFromNow.setDate(oneWeekFromNow.getDate() + 7);
 
                     // إضافة عمود WhatsApp
-                    const phoneNumber = csvRow['phone']; // استبدل 'phone' باسم عمود رقم الهاتف
+                    let phoneNumber = csvRow['phone']; // استبدل 'phone' باسم عمود رقم الهاتف
+                    if (phoneNumber) {
+                        // إزالة أي أحرف غير رقمية أو مسافات
+                        phoneNumber = phoneNumber.replace(/[^0-9]/g, '');
+                    } else {
+                        phoneNumber = ''; // تعيين رقم الهاتف إلى سلسلة فارغة إذا كان غير موجود
+                    }
                     const customerName = xlsxRow.name; // استبدل 'name' باسم عمود اسم العميل
                     const startDate = csvRow['Start Date']; // استبدل 'Start Date' باسم عمود تاريخ البدء
 
