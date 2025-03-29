@@ -90,10 +90,13 @@
                     let phoneNumber = csvRow['phone']; // استبدل 'phone' باسم عمود رقم الهاتف
                     if (phoneNumber) {
                         // إزالة أي أحرف غير رقمية أو مسافات
-                        phoneNumber = phoneNumber.replace(/[^0-9]/g, '');
+                        phoneNumber = phoneNumber.replace(/[^\d+]/g, '');
+                        // إزالة رمز البلد إذا كان موجودًا
+                        phoneNumber = phoneNumber.replace(/^(\+?964|00964)/, '');
                     } else {
                         phoneNumber = ''; // تعيين رقم الهاتف إلى سلسلة فارغة إذا كان غير موجود
                     }
+                    console.log(phoneNumber);
                     const customerName = xlsxRow.name; // استبدل 'name' باسم عمود اسم العميل
                     const startDate = csvRow['Start Date']; // استبدل 'Start Date' باسم عمود تاريخ البدء
 
@@ -110,7 +113,7 @@
                         ...xlsxRow,
                         'Start Date': csvRow['Start Date'],
                         'End Date': csvRow['End Date'],
-                        'Date': `${hours}:${minutes}:${seconds} ${ampm}`,
+                        'Date': `<span class="math-inline">\{hours\}\:</span>{minutes}:${seconds} ${ampm}`,
                         'Plan Name': csvRow['Plan Name'],
                         'Status': endDate < now ? 'منتهي الصلاحية' : 'فعال',
                         'endDateObj': endDate,
@@ -144,79 +147,3 @@
                 let status = row.Status;
 
                 if(planName !== 'FIBER 35' && planName !== 'FIBER 50' && planName !== 'FIBER 75' && planName !== 'FIBER 150'){
-                  planName = '';
-                }
-
-                if (isWarning) {
-                  status = 'فعال هذا الأسبوع';
-                }
-
-                tableHtml += `<tr class="${isExpired ? 'expired' : isWarning ? 'warning' : ''}">`;
-                tableHtml += `<td>${row.name || ''}</td><td>${row.phone || ''}</td><td>${row.id || ''}</td><td>${row.email || ''}</td><td>${row.createdAt || ''}</td><td>${row.zone || ''}</td><td>${row.address || ''}</td><td>${row.contractor || ''}</td><td>${row.deviceDetails || ''}</td><td>${row.ontSerial || ''}</td><td>${row['Start Date'] || ''}</td><td>${row['End Date'] || ''}</td><td>${row.Date || ''}</td><td>${planName || ''}</td><td>${status || ''}</td>`;
-                tableHtml += `<td><a href="${row['WhatsApp Link']}" target="_blank">إرسال رسالة</a></td>`; // إضافة رابط WhatsApp في عمود الجدول
-                tableHtml += '</tr>';
-            });
-
-            tableHtml += '</table>';
-            resultDiv.innerHTML = tableHtml;
-        }
-
-        function تحميل_الملف() {
-            if (mergedData.length === 0) {
-                alert('الرجاء دمج البيانات أولاً.');
-                return;
-            }
-
-            // حذف الأعمدة الزائدة
-            const filteredData = mergedData.map(row => {
-                const { endDateObj, startDateObj, ...rest } = row;
-                return rest;
-            });
-
-            const ws = XLSX.utils.json_to_sheet(filteredData, { header: Object.keys(filteredData[0]) }); // تضمين رؤوس الأعمدة
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Merged Data');
-
-            // إضافة الألوان إلى ورقة العمل
-            filteredData.forEach((row, index) => {
-                const cellRef = XLSX.utils.encode_cell({ c: 0, r: index + 1 }); // +1 لتجنب تلوين الرأس
-                const isExpired = mergedData[index].endDateObj < new Date();
-                const startDate = mergedData[index].startDateObj;
-                const now = new Date();
-                const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-                const isWarning = startDate >= oneWeekAgo && startDate <= now;
-
-                if (isExpired) {
-                    ws[cellRef].s = { fill: { fgColor: { rgb: 'FFE0E0' } } }; // أحمر فاتح
-                } else if (isWarning) {
-                    ws[cellRef].s = { fill: { fgColor: { rgb: 'E0FFE0' } } }; // أخضر فاتح
-                }
-            });
-
-            XLSX.writeFile(wb, 'merged_data.xlsx');
-        }
-
-        // تحديد الملفات ودمج البيانات تلقائيًا عند تحميل الصفحة
-        window.onload = async function() {
-            try {
-                const xlsxResponse = await fetch('all_customers.xlsx');
-                const xlsxBlob = await xlsxResponse.blob();
-                const xlsxFile = new File([xlsxBlob], 'all_customers.xlsx');
-
-                const csvResponse = await fetch('partner.csv');
-                const csvBlob = await csvResponse.blob();
-                const csvFile = new File([csvBlob], 'partner.csv');
-
-                if (xlsxFile && csvFile) {
-                    await دمج_البيانات(xlsxFile, csvFile);
-                }
-            } catch (error) {
-                console.error('Error loading files:', error);
-                alert('Error loading files. Please ensure the files are in the same directory and try again.');
-            }
-        };
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-</body>
-</html>
