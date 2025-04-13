@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>تطبيق العلامة المائية</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1, h2 {
+      color: #2c3e50;
+      text-align: center;
+    }
+
+    .controls {
+      background-color: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .upload-section {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .upload-btn {
+      display: inline-block;
+      background-color: #3498db;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .upload-btn:hover {
+      background-color: #2980b9;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    #file-count {
+      display: block;
+      margin-top: 10px;
+      color: #7f8c8d;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input[type="text"], select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    input[type="range"] {
+      width: 70%;
+      vertical-align: middle;
+    }
+
+    button {
+      background-color: #2ecc71;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      display: block;
+      margin: 20px auto;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #27ae60;
+    }
+
+    button:disabled {
+      background-color: #95a5a6;
+      cursor: not-allowed;
+    }
+
+    .image-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .preview-image {
+      max-width: 300px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      position: relative;
+    }
+
+    .preview-image img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .download-btn {
+      background-color: #e74c3c;
+      margin: 5px auto;
+      padding: 5px 10px;
+      font-size: 14px;
+    }
+
+    .download-btn:hover {
+      background-color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>إضافة علامة مائية إلى الصور</h1>
+
+    <div class="controls">
+      <div class="upload-section">
+        <input type="file" id="image-upload" accept="image/*" multiple>
+        <label for="image-upload" class="upload-btn">اختر الصور</label>
+        <span id="file-count">0 صور مختارة</span>
+      </div>
+
+      <div class="form-group">
+        <label for="opacity">الشفافية:</label>
+        <input type="range" id="opacity" min="0.1" max="1" step="0.1" value="0.5">
+        <span id="opacity-value">50%</span>
+      </div>
+
+      <div class="form-group">
+        <label for="position">الموقع:</label>
+        <select id="position">
+          <option value="top-left">أعلى اليسار</option>
+          <option value="top-right">أعلى اليمين</option>
+          <option value="center">الوسط</option>
+          <option value="bottom-left">أسفل اليسار</option>
+          <option value="bottom-right" selected>أسفل اليمين</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="size">الحجم:</label>
+        <select id="size">
+          <option value="small" selected>صغير</option>
+          <option value="medium">متوسط</option>
+          <option value="large">كبير</option>
+        </select>
+      </div>
+
+      <button id="apply-btn" disabled>تطبيق العلامة المائية</button>
+    </div>
+
+    <div class="preview-section">
+      <h2>معاينة النتائج</h2>
+      <div id="image-preview" class="image-preview"></div>
+      <button id="download-all" disabled>تحميل جميع الصور</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const imageUpload = document.getElementById('image-upload');
+      const opacitySlider = document.getElementById('opacity');
+      const opacityValue = document.getElementById('opacity-value');
+      const positionSelect = document.getElementById('position');
+      const sizeSelect = document.getElementById('size');
+      const applyBtn = document.getElementById('apply-btn');
+      const downloadAllBtn = document.getElementById('download-all');
+      const fileCount = document.getElementById('file-count');
+      const imagePreview = document.getElementById('image-preview');
+
+      let selectedImages = [];
+      let processedImages = [];
+
+      const watermarkURL = "https://muif.github.io/img/Logo.png";
+
+      imageUpload.addEventListener('change', function (e) {
+        selectedImages = Array.from(e.target.files);
+        fileCount.textContent = `${selectedImages.length} صور مختارة`;
+        applyBtn.disabled = selectedImages.length === 0;
+      });
+
+      opacitySlider.addEventListener('input', function () {
+        const value = Math.round(this.value * 100);
+        opacityValue.textContent = `${value}%`;
+      });
+
+      applyBtn.addEventListener('click', applyWatermark);
+
+      function applyWatermark() {
+        if (selectedImages.length === 0) return;
+        imagePreview.innerHTML = '';
+        processedImages = [];
+
+        const opacity = parseFloat(opacitySlider.value);
+        const position = positionSelect.value;
+        const size = sizeSelect.value;
+
+        selectedImages.forEach((imageFile, index) => {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const img = new Image();
+            img.onload = function () {
+              processImage(img, watermarkURL, opacity, position, size, imageFile.name, index);
+            };
+            img.src = e.target.result;
+          };
+          reader.readAsDataURL(imageFile);
+        });
+      }
+
+      function processImage(img, watermarkSrc, opacity, position, size, originalName, index) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+
+        const watermarkImg = new Image();
+        watermarkImg.crossOrigin = "anonymous";
+        watermarkImg.onload = function () {
+          addWatermarkImage(ctx, canvas, watermarkImg, opacity, position, size, originalName, index);
+        };
+        watermarkImg.src = watermarkSrc;
+      }
+
+      function addWatermarkImage(ctx, canvas, watermarkImg, opacity, position, size, originalName, index) {
+        let watermarkWidth, watermarkHeight;
+        const ratio = watermarkImg.width / watermarkImg.height;
+
+        if (size === 'small') {
+          watermarkWidth = canvas.width / 5;
+        } else if (size === 'medium') {
+          watermarkWidth = canvas.width / 3;
+        } else {
+          watermarkWidth = canvas.width / 2;
+        }
+
+        watermarkHeight = watermarkWidth / ratio;
+
+        let x, y;
+        switch (position) {
+          case 'top-left': x = 20; y = 20; break;
+          case 'top-right': x = canvas.width - watermarkWidth - 20; y = 20; break;
+          case 'bottom-left': x = 20; y = canvas.height - watermarkHeight - 20; break;
+          case 'bottom-right': x = canvas.width - watermarkWidth - 20; y = canvas.height - watermarkHeight - 20; break;
+          default: x = (canvas.width - watermarkWidth) / 2; y = (canvas.height - watermarkHeight) / 2;
+        }
+
+        ctx.globalAlpha = opacity;
+        ctx.drawImage(watermarkImg, x, y, watermarkWidth, watermarkHeight);
+        ctx.globalAlpha = 1.0;
+
+        createPreview(canvas, originalName, index);
+      }
+
+      function createPreview(canvas, originalName, index) {
+        const dataURL = canvas.toDataURL('image/jpeg');
+        processedImages.push({ dataURL, name: originalName });
+
+        const previewDiv = document.createElement('div');
+        previewDiv.className = 'preview-image';
+
+        const img = document.createElement('img');
+        img.src = dataURL;
+        img.alt = 'صورة معالجة';
+
+        const downloadBtn = document.createElement('button');
+        downloadBtn.className = 'download-btn';
+        downloadBtn.textContent = 'تحميل الصورة';
+        downloadBtn.addEventListener('click', () => downloadImage(dataURL, originalName));
+
+        previewDiv.appendChild(img);
+        previewDiv.appendChild(downloadBtn);
+        imagePreview.appendChild(previewDiv);
+
+        if (index === selectedImages.length - 1) {
+          downloadAllBtn.disabled = false;
+        }
+      }
+
+      function downloadImage(dataURL, filename) {
+        const link = document.createElement('a');
+        link.href = dataURL;
+        link.download = 'watermarked_' + filename;
+        link.click();
+      }
+
+      downloadAllBtn.addEventListener('click', function () {
+        processedImages.forEach((image, index) => {
+          setTimeout(() => {
+            downloadImage(image.dataURL, image.name);
+          }, index * 300);
+        });
+      });
+
+      // لصق صورة من الحافظة
+      document.addEventListener('paste', function (event) {
+        const items = (event.clipboardData || window.clipboardData).items;
+        for (let i = 0; i < items.length; i++) {
+          if (items[i].type.indexOf("image") !== -1) {
+            const file = items[i].getAsFile();
+            selectedImages = [file];
+            fileCount.textContent = `1 صورة ملصقة`;
+            applyBtn.disabled = false;
+            applyWatermark();
+            break;
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
