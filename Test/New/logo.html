@@ -1,38 +1,44 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>تحريك شعار JASHNET</title>
+  <meta charset="UTF-8" />
+  <title>JASHNET Logo Animation</title>
   <style>
     body {
-      background-color: black;
       margin: 0;
-      overflow: hidden;
+      background: #000;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-    }
-    .logo-container {
-      position: relative;
-      width: 600px;
-    }
-    #logo {
-      width: 100%;
-      opacity: 0;
-      transform: scale(0.5);
+      overflow: hidden;
     }
 
-    /* تأثير اللمعان */
+    .logo {
+      font-family: 'Arial Black', sans-serif;
+      font-size: 120px;
+      letter-spacing: 10px;
+      background: linear-gradient(to bottom, #4CAF50, #2196F3);
+      -webkit-background-clip: text;
+      color: transparent;
+      display: flex;
+      position: relative;
+    }
+
+    .letter {
+      opacity: 0;
+      transform: translateY(100px) scale(0.5);
+    }
+
     .shine {
       position: absolute;
       top: 0;
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%);
+      background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
       transform: skewX(-20deg);
-      animation: shine 2s infinite;
+      animation: shine 2.5s infinite;
     }
 
     @keyframes shine {
@@ -43,18 +49,27 @@
 </head>
 <body>
 
-<div class="logo-container">
-  <img id="logo" src="https://raw.githubusercontent.com/muif/muif.github.io/refs/heads/main/Test/New/IMG_20250516_133909_457.png" alt="JASHNET Logo">
+<div class="logo" id="logo">
   <div class="shine"></div>
+  <span class="letter">J</span>
+  <span class="letter">A</span>
+  <span class="letter">S</span>
+  <span class="letter">H</span>
+  <span class="letter">N</span>
+  <span class="letter">E</span>
+  <span class="letter">T</span>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script>
-  gsap.to("#logo", {
-    duration: 1.5,
+  gsap.to(".letter", {
     opacity: 1,
+    y: 0,
     scale: 1,
-    ease: "back.out(1.7)"
+    duration: 1,
+    ease: "back.out(1.7)",
+    stagger: 0.1,
+    delay: 0.5
   });
 </script>
 
