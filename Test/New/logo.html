@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>تحريك شعار JASHNET</title>
+  <style>
+    body {
+      background-color: black;
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .logo-container {
+      position: relative;
+      width: 600px;
+    }
+    #logo {
+      width: 100%;
+      opacity: 0;
+      transform: scale(0.5);
+    }
+
+    /* تأثير اللمعان */
+    .shine {
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%);
+      transform: skewX(-20deg);
+      animation: shine 2s infinite;
+    }
+
+    @keyframes shine {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="logo-container">
+  <img id="logo" src="logo.png" alt="JASHNET Logo">
+  <div class="shine"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+  gsap.to("#logo", {
+    duration: 1.5,
+    opacity: 1,
+    scale: 1,
+    ease: "back.out(1.7)"
+  });
+</script>
+
+</body>
+</html>
