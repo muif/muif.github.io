@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تطبيق إدارة الاشتراكات</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>إدارة اشتراكات المشتركين</h1>
+    
+    <div id="main-interface">
+      <h2>إضافة مشترك جديد</h2>
+      <form id="add-subscriber-form">
+        <input type="text" id="name" placeholder="اسم المشترك" required>
+        <input type="tel" id="phone" placeholder="رقم الواتساب" required>
+        <button type="submit">إضافة مشترك</button>
+      </form>
+      
+      <hr>
+      
+      <h2>البحث عن مشترك</h2>
+      <div class="search-container">
+        <input type="text" id="search-input" placeholder="أدخل اسم المشترك">
+        <button id="search-button">بحث</button>
+      </div>
+      
+      <div id="subscriber-details" class="hidden">
+        <h3>بيانات المشترك:</h3>
+        <p><strong>الاسم:</strong> <span id="display-name"></span></p>
+        <p><strong>رقم الهاتف:</strong> <span id="display-phone"></span></p>
+        <p><strong>إجمالي الديون:</strong> <span id="display-debt"></span></p>
+        
+        <div id="activation-info" class="hidden">
+          <h4>آخر تفعيل:</h4>
+          <p><strong>الباقة:</strong> <span id="last-package"></span></p>
+          <p><strong>تاريخ التفعيل:</strong> <span id="last-activation-date"></span></p>
+          <p><strong>تاريخ الانتهاء:</strong> <span id="last-expiration-date"></span></p>
+        </div>
+        
+        <div class="buttons-container">
+          <button id="activate-button">تفعيل اشتراك</button>
+          <button id="pay-button">تسجيل دفعة</button>
+        </div>
+      </div>
+    </div>
+    
+    <div id="activation-modal" class="modal hidden">
+      <div class="modal-content">
+        <h3>تفعيل اشتراك لـ <span id="modal-subscriber-name"></span></h3>
+        <form id="activation-form">
+          <label for="packages-select">اختر الباقة:</label>
+          <select id="packages-select"></select>
+          
+          <label for="price-input">السعر:</label>
+          <input type="text" id="price-input" readonly>
+          
+          <label for="activation-date-input">تاريخ التفعيل:</label>
+          <input type="text" id="activation-date-input" readonly>
+          
+          <label for="expiration-date-input">تاريخ الانتهاء:</label>
+          <input type="text" id="expiration-date-input" readonly>
+          
+          <button type="submit">تأكيد التفعيل</button>
+          <button type="button" id="close-activation-modal" class="cancel-button">إلغاء</button>
+        </form>
+      </div>
+    </div>
+    
+    <div id="payment-modal" class="modal hidden">
+      <div class="modal-content">
+        <h3>تسجيل دفعة لـ <span id="payment-modal-name"></span></h3>
+        <form id="payment-form">
+          <label for="payment-amount">المبلغ المدفوع:</label>
+          <input type="number" id="payment-amount" min="0" required>
+          <button type="submit">تسجيل الدفعة</button>
+          <button type="button" id="close-payment-modal" class="cancel-button">إلغاء</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
