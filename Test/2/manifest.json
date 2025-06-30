@@ -1,0 +1,14 @@
+{
+  "name": "نظام إدارة اشتراكات الإنترنت",
+  "short_name": "إدارة النت",
+  "description": "نظام ويب متكامل لإدارة شبكة اشتراكات الإنترنت.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#f4f7fc",
+  "theme_color": "#1a73e8",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "icon-192.png", "type": "image/png", "sizes": "192x192" },
+    { "src": "icon-512.png", "type": "image/png", "sizes": "512x512" }
+  ]
+}
