@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة اشتراكات الإنترنت</title>
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a73e8"/>
+</head>
+<body class="light-mode">
+
+    <div id="loader" class="loader-container hidden">
+        <div class="loader"></div>
+    </div>
+
+    <div id="notification-container"></div>
+
+    <header id="header">
+        <div class="header-left">
+            <button id="sidebar-toggle-btn" class="icon-btn"><i class="fas fa-bars"></i></button>
+            <div class="global-search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" id="global-search-input" placeholder="ابحث عن مشترك بالاسم أو الهاتف...">
+            </div>
+        </div>
+        <div class="header-right">
+            <button id="add-subscriber-btn" class="btn"><i class="fas fa-plus"></i> إضافة مشترك</button>
+        </div>
+    </header>
+
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <h3 id="app-logo-text">اسم الشبكة</h3>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#dashboard" class="nav-link active"><i class="fas fa-tachometer-alt fa-fw"></i><span>لوحة التحكم</span></a>
+            <a href="#subscribers" class="nav-link"><i class="fas fa-users fa-fw"></i><span>المشتركون</span></a>
+            <a href="#packages" class="nav-link"><i class="fas fa-box-open fa-fw"></i><span>الباقات</span></a>
+            <a href="#reports" class="nav-link"><i class="fas fa-chart-pie fa-fw"></i><span>التقارير</span></a>
+            <a href="#settings" class="nav-link"><i class="fas fa-cog fa-fw"></i><span>الإعدادات</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="#how-to-use" class="nav-link"><i class="fas fa-question-circle fa-fw"></i><span>كيفية الاستخدام</span></a>
+            <a href="#about" class="nav-link"><i class="fas fa-info-circle fa-fw"></i><span>حول التطبيق</span></a>
+            <button id="theme-toggle-btn" class="icon-btn">
+                <i class="fas fa-moon"></i><span>الوضع الليلي</span>
+            </button>
+        </div>
+    </aside>
+
+    <main id="main-content">
+        <div id="page-dashboard" class="page"></div>
+        <div id="page-subscribers" class="page hidden"></div>
+        <div id="page-packages" class="page hidden"></div>
+        <div id="page-reports" class="page hidden"></div>
+        <div id="page-settings" class="page hidden"></div>
+        <div id="page-how-to-use" class="page hidden"></div>
+        <div id="page-about" class="page hidden"></div>
+    </main>
+
+    <div id="modal-container" class="modal-container hidden">
+        <div class="modal-content">
+            <button id="modal-close-btn" class="modal-close-btn"><i class="fas fa-times"></i></button>
+            <div id="modal-body">
+                </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+    <script src="app.js"></script>
+</body>
+</html>
