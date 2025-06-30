@@ -2,7 +2,7 @@
   "name": "نظام إدارة اشتراكات الإنترنت",
   "short_name": "إدارة النت",
   "description": "نظام ويب متكامل لإدارة شبكة اشتراكات الإنترنت.",
-  "start_url": "/index.html",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#f4f7fc",
   "theme_color": "#1a73e8",
