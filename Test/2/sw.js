@@ -1,5 +1,5 @@
-// sw.js
-const CACHE_NAME = 'internet-manager-v2';
+// sw.js - Final Version
+const CACHE_NAME = 'internet-manager-v4'; // IMPORTANT: Version number incremented
 const urlsToCache = [
     './',
     './index.html',
@@ -17,7 +17,7 @@ self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
-                console.log('Opened cache');
+                console.log('Service Worker: Caching new assets');
                 return cache.addAll(urlsToCache);
             })
     );
@@ -27,7 +27,12 @@ self.addEventListener('fetch', event => {
     event.respondWith(
         caches.match(event.request)
             .then(response => {
-                return response || fetch(event.request);
+                // Cache hit - return response
+                if (response) {
+                    return response;
+                }
+                // Not in cache - go to network
+                return fetch(event.request);
             })
     );
 });
@@ -39,6 +44,7 @@ self.addEventListener('activate', event => {
       return Promise.all(
         cacheNames.map(cacheName => {
           if (cacheWhitelist.indexOf(cacheName) === -1) {
+            console.log('Service Worker: Deleting old cache', cacheName);
             return caches.delete(cacheName);
           }
         })
