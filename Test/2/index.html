@@ -3,83 +3,677 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة اشتراكات الإنترنت</title>
+    <meta name="theme-color" content="#3498db">
+    <title>نظام إدارة الاشتراكات</title>
+    
+    <!-- Manifest for PWA -->
+    <link rel="manifest" href="manifest.json">
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="./icon-192.png">
-    
-    <!-- CSS Styles -->
-    <link rel="stylesheet" href="./style.css">
-    
     <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#1a73e8"/>
-</head>
-<body class="light-mode">
+    <!-- Google Fonts (Cairo) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
-    <!-- ===== LOADER ===== -->
-    <div id="loader" class="loader-container"> <!-- Removed hidden class to show by default -->
+    <!-- Main Stylesheet -->
+    <style>
+        /* CSS Variables for Theming */
+        :root {
+            --primary-color: #3498db;
+            --primary-hover-color: #2980b9;
+            --secondary-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f1c40f;
+            --light-color: #f4f4f4;
+            --dark-color: #333;
+            --text-color: #333;
+            --bg-color: #ffffff;
+            --sidebar-bg: #2c3e50;
+            --sidebar-text: #ecf0f1;
+            --sidebar-active-bg: #34495e;
+            --card-bg: #ffffff;
+            --border-color: #ecf0f1;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --font-family: 'Cairo', sans-serif;
+        }
+
+        .dark-mode {
+            --text-color: #f4f4f4;
+            --bg-color: #2c3e50;
+            --sidebar-bg: #1f2937;
+            --sidebar-text: #ecf0f1;
+            --sidebar-active-bg: #374151;
+            --card-bg: #374151;
+            --border-color: #4b5563;
+            --shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        /* General Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s ease;
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100%;
+            z-index: 1000;
+        }
+
+        .sidebar.collapsed {
+            width: 70px;
+        }
+        
+        .sidebar .logo {
+            text-align: center;
+            padding: 0 10px 20px 10px;
+            color: #fff;
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .sidebar.collapsed .logo span {
+            display: none;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            transition: background-color 0.3s;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .sidebar-menu li a:hover, .sidebar-menu li a.active {
+            background-color: var(--sidebar-active-bg);
+        }
+
+        .sidebar-menu li a i {
+            font-size: 20px;
+            width: 30px;
+            text-align: center;
+            margin-left: 15px;
+        }
+
+        .sidebar.collapsed .sidebar-menu li a span {
+            display: none;
+        }
+        
+        .sidebar-footer {
+            padding: 20px;
+        }
+        
+        .theme-switcher {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .sidebar.collapsed .theme-switcher span {
+             display: none;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+            margin-right: 260px;
+            transition: margin-right 0.3s ease;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        body.sidebar-collapsed .main-content {
+            margin-right: 70px;
+        }
+
+        /* Header */
+        .header {
+            padding: 20px;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+        
+        .header .menu-toggle {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .header .search-bar {
+            position: relative;
+            width: 300px;
+        }
+        
+        .header .search-bar input {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        
+        .header .search-bar i {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 15px;
+            color: #999;
+        }
+
+        /* Page Container */
+        .page-container {
+            padding: 20px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+            .sidebar .logo span, .sidebar-menu li a span, .sidebar-footer span {
+                display: none;
+            }
+            .main-content {
+                margin-right: 70px;
+            }
+            .header .search-bar {
+                width: 200px;
+            }
+        }
+        
+        /* Loader */
+        .loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            display: none; /* Hidden by default */
+        }
+        .loader {
+            border: 8px solid var(--light-color);
+            border-top: 8px solid var(--primary-color);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 10000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .notification.success { background-color: var(--secondary-color); }
+        .notification.error { background-color: var(--danger-color); }
+        
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: var(--font-family);
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+        .btn-primary { background-color: var(--primary-color); color: #fff; }
+        .btn-primary:hover { background-color: var(--primary-hover-color); }
+        
+        /* Forms */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loader -->
+    <div class="loader-wrapper" id="loader">
         <div class="loader"></div>
     </div>
 
-    <!-- The rest of your HTML structure (header, sidebar, main, modal) remains the same -->
-    <!-- ... (from previous responses) ... -->
-    <header id="header">
-        <div class="header-left">
-            <button id="sidebar-toggle-btn" class="icon-btn"><i class="fas fa-bars"></i></button>
-            <div class="global-search-container">
-                <i class="fas fa-search"></i>
-                <input type="text" id="global-search-input" placeholder="ابحث عن مشترك بالاسم أو الهاتف...">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="logo">
+            <i class="fas fa-wifi"></i>
+            <span>إدارة النت</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#dashboard" class="nav-link active"><i class="fas fa-tachometer-alt"></i> <span>لوحة التحكم</span></a></li>
+            <li><a href="#subscribers" class="nav-link"><i class="fas fa-users"></i> <span>المشتركون</span></a></li>
+            <li><a href="#packages" class="nav-link"><i class="fas fa-box-open"></i> <span>الباقات</span></a></li>
+            <li><a href="#reports" class="nav-link"><i class="fas fa-chart-pie"></i> <span>التقارير المالية</span></a></li>
+            <li><a href="#settings" class="nav-link"><i class="fas fa-cog"></i> <span>الإعدادات</span></a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="theme-switcher" id="theme-switcher">
+                <i class="fas fa-moon"></i>
+                <span>الوضع الليلي</span>
             </div>
         </div>
-        <div class="header-right">
-            <button id="add-subscriber-btn" class="btn"><i class="fas fa-plus"></i> إضافة مشترك</button>
-        </div>
-    </header>
-    <aside id="sidebar">
-        <div class="sidebar-header">
-            <h3 id="app-logo-text">اسم الشبكة</h3>
-        </div>
-        <nav class="sidebar-nav">
-            <a href="#dashboard" class="nav-link active"><i class="fas fa-tachometer-alt fa-fw"></i><span>لوحة التحكم</span></a>
-            <a href="#subscribers" class="nav-link"><i class="fas fa-users fa-fw"></i><span>المشتركون</span></a>
-            <a href="#packages" class="nav-link"><i class="fas fa-box-open fa-fw"></i><span>الباقات</span></a>
-            <a href="#reports" class="nav-link"><i class="fas fa-chart-pie fa-fw"></i><span>التقارير</span></a>
-            <a href="#settings" class="nav-link"><i class="fas fa-cog fa-fw"></i><span>الإعدادات</span></a>
-        </nav>
-        <div class="sidebar-footer">
-            <a href="#how-to-use" class="nav-link"><i class="fas fa-question-circle fa-fw"></i><span>كيفية الاستخدام</span></a>
-            <a href="#about" class="nav-link"><i class="fas fa-info-circle fa-fw"></i><span>حول التطبيق</span></a>
-            <button id="theme-toggle-btn" class="icon-btn">
-                <i class="fas fa-moon"></i><span>الوضع الليلي</span>
-            </button>
-        </div>
     </aside>
-    <main id="main-content">
-        <div id="page-dashboard" class="page"></div>
-        <div id="page-subscribers" class="page hidden"></div>
-        <div id="page-packages" class="page hidden"></div>
-        <div id="page-reports" class="page hidden"></div>
-        <div id="page-settings" class="page hidden"></div>
-        <div id="page-how-to-use" class="page hidden"></div>
-        <div id="page-about" class="page hidden"></div>
-    </main>
-    <div id="modal-container" class="modal-container hidden">
-        <div class="modal-content">
-            <button id="modal-close-btn" class="modal-close-btn"><i class="fas fa-times"></i></button>
-            <div id="modal-body"></div>
-        </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+        <header class="header">
+            <i class="fas fa-bars menu-toggle" id="menu-toggle"></i>
+            <div class="search-bar">
+                <input type="text" id="global-search" placeholder="بحث عن مشترك بالاسم أو الهاتف...">
+                <i class="fas fa-search"></i>
+            </div>
+        </header>
+
+        <main class="page-container">
+            <!-- Dashboard Page -->
+            <section id="dashboard" class="page active">
+                <h1>لوحة التحكم</h1>
+                <!-- Content will be generated by JS -->
+            </section>
+
+            <!-- Subscribers Page -->
+            <section id="subscribers" class="page">
+                <h1>إدارة المشتركين</h1>
+                <!-- Content will be generated by JS -->
+            </section>
+
+            <!-- Packages Page -->
+            <section id="packages" class="page">
+                 <h1>إدارة الباقات</h1>
+                 <div class="card">
+                    <div class="card-header">إضافة باقة جديدة</div>
+                    <form id="package-form">
+                        <input type="hidden" id="package-id">
+                        <div class="form-group">
+                            <label for="package-name">اسم الباقة</label>
+                            <input type="text" id="package-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="package-price">سعر البيع</label>
+                            <input type="number" id="package-price" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="package-cost">التكلفة</label>
+                            <input type="number" id="package-cost" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">حفظ الباقة</button>
+                    </form>
+                </div>
+                <div class="card">
+                    <div class="card-header">قائمة الباقات</div>
+                    <div id="packages-table-container">
+                        <!-- Table will be generated by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reports Page -->
+            <section id="reports" class="page">
+                <h1>التقارير المالية</h1>
+                <!-- Content will be generated by JS -->
+            </section>
+
+            <!-- Settings Page -->
+            <section id="settings" class="page">
+                <h1>الإعدادات</h1>
+                <!-- Content will be generated by JS -->
+            </section>
+        </main>
     </div>
+
+    <!-- Notification Container -->
     <div id="notification-container"></div>
 
-    <!-- Chart.js for Charts -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    
+    <!-- Main App Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Elements ---
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.getElementById('menu-toggle');
+            const themeSwitcher = document.getElementById('theme-switcher');
+            const themeIcon = themeSwitcher.querySelector('i');
+            const themeText = themeSwitcher.querySelector('span');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const pages = document.querySelectorAll('.page');
+            const loader = document.getElementById('loader');
+            const notificationContainer = document.getElementById('notification-container');
+            const packageForm = document.getElementById('package-form');
 
-    <!-- Main Application Logic -->
-    <script src="./app.js" defer></script> <!-- Added defer attribute -->
+            // --- App State ---
+            let db;
+
+            // --- Utility Functions ---
+            const showLoader = () => loader.style.display = 'flex';
+            const hideLoader = () => loader.style.display = 'none';
+
+            const showNotification = (message, type = 'success') => {
+                const notif = document.createElement('div');
+                notif.className = `notification ${type}`;
+                notif.textContent = message;
+                notificationContainer.appendChild(notif);
+                
+                // Animate in
+                setTimeout(() => {
+                    notif.classList.add('show');
+                }, 10);
+
+                // Animate out and remove
+                setTimeout(() => {
+                    notif.classList.remove('show');
+                    setTimeout(() => {
+                        notif.remove();
+                    }, 300);
+                }, 3000);
+            };
+
+            // --- Database Initialization ---
+            function initDB() {
+                showLoader();
+                const request = indexedDB.open('InternetSubscriptionsDB', 1);
+
+                request.onerror = (event) => {
+                    console.error('Database error:', event.target.errorCode);
+                    showNotification('حدث خطأ أثناء فتح قاعدة البيانات', 'error');
+                    hideLoader();
+                };
+
+                request.onsuccess = (event) => {
+                    db = event.target.result;
+                    console.log('Database opened successfully.');
+                    // Initial load
+                    navigateTo('dashboard'); 
+                    loadPackages();
+                    hideLoader();
+                };
+
+                request.onupgradeneeded = (event) => {
+                    db = event.target.result;
+                    console.log('Upgrading database...');
+
+                    if (!db.objectStoreNames.contains('subscribers')) {
+                        const subscribersStore = db.createObjectStore('subscribers', { keyPath: 'id', autoIncrement: true });
+                        subscribersStore.createIndex('phone', 'phone', { unique: true });
+                    }
+                    if (!db.objectStoreNames.contains('packages')) {
+                        const packagesStore = db.createObjectStore('packages', { keyPath: 'id', autoIncrement: true });
+                        packagesStore.createIndex('name', 'name', { unique: true });
+                    }
+                    if (!db.objectStoreNames.contains('movements')) {
+                        const movementsStore = db.createObjectStore('movements', { keyPath: 'id', autoIncrement: true });
+                        movementsStore.createIndex('subscriberId', 'subscriberId', { unique: false });
+                    }
+                    if (!db.objectStoreNames.contains('settings')) {
+                        db.createObjectStore('settings', { keyPath: 'key' });
+                    }
+                };
+            }
+
+            // --- Navigation ---
+            function navigateTo(pageId) {
+                pages.forEach(page => page.classList.remove('active'));
+                document.getElementById(pageId).classList.add('active');
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${pageId}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const pageId = link.getAttribute('href').substring(1);
+                    navigateTo(pageId);
+                });
+            });
+
+            // --- UI Handlers ---
+            // Sidebar toggle
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                document.body.classList.toggle('sidebar-collapsed');
+            });
+
+            // Theme switcher
+            function applyTheme(theme) {
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark-mode');
+                    themeIcon.className = 'fas fa-sun';
+                    themeText.textContent = 'الوضع النهاري';
+                } else {
+                    document.documentElement.classList.remove('dark-mode');
+                    themeIcon.className = 'fas fa-moon';
+                    themeText.textContent = 'الوضع الليلي';
+                }
+            }
+
+            themeSwitcher.addEventListener('click', () => {
+                const currentTheme = document.documentElement.classList.contains('dark-mode') ? 'light' : 'dark';
+                localStorage.setItem('theme', currentTheme);
+                applyTheme(currentTheme);
+            });
+
+            // --- Packages Logic ---
+            packageForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                showLoader();
+                const newPackage = {
+                    name: document.getElementById('package-name').value,
+                    price: parseFloat(document.getElementById('package-price').value),
+                    cost: parseFloat(document.getElementById('package-cost').value)
+                };
+
+                const transaction = db.transaction(['packages'], 'readwrite');
+                const store = transaction.objectStore('packages');
+                const request = store.add(newPackage);
+
+                request.onsuccess = () => {
+                    showNotification('تمت إضافة الباقة بنجاح', 'success');
+                    packageForm.reset();
+                    loadPackages();
+                };
+
+                request.onerror = (event) => {
+                    showNotification('خطأ: اسم الباقة موجود بالفعل', 'error');
+                    console.error('Add package error:', event.target.error);
+                };
+                
+                transaction.oncomplete = () => {
+                    hideLoader();
+                }
+            });
+
+            function loadPackages() {
+                const transaction = db.transaction(['packages'], 'readonly');
+                const store = transaction.objectStore('packages');
+                const request = store.getAll();
+
+                request.onsuccess = () => {
+                    const packages = request.result;
+                    const container = document.getElementById('packages-table-container');
+                    
+                    if (packages.length === 0) {
+                        container.innerHTML = '<p>لم تتم إضافة أي باقات بعد.</p>';
+                        return;
+                    }
+
+                    const table = document.createElement('table');
+                    table.className = 'table'; // You'll need to style this class
+                    table.innerHTML = `
+                        <thead>
+                            <tr>
+                                <th>اسم الباقة</th>
+                                <th>السعر</th>
+                                <th>التكلفة</th>
+                                <th>الربح الصافي</th>
+                                <th>إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${packages.map(p => `
+                                <tr>
+                                    <td>${p.name}</td>
+                                    <td>${p.price} د.ع</td>
+                                    <td>${p.cost} د.ع</td>
+                                    <td>${p.price - p.cost} د.ع</td>
+                                    <td>
+                                        <button class="btn-icon btn-edit" data-id="${p.id}"><i class="fas fa-edit"></i></button>
+                                        <button class="btn-icon btn-delete" data-id="${p.id}"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    `;
+                    container.innerHTML = '';
+                    container.appendChild(table);
+                };
+                
+                request.onerror = (event) => {
+                    showNotification('فشل تحميل الباقات', 'error');
+                }
+            }
+
+
+            // --- PWA Service Worker Registration ---
+            function registerServiceWorker() {
+                if ('serviceWorker' in navigator) {
+                    window.addEventListener('load', () => {
+                        navigator.serviceWorker.register('/sw.js')
+                            .then(registration => {
+                                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                            })
+                            .catch(err => {
+                                console.log('ServiceWorker registration failed: ', err);
+                            });
+                    });
+                }
+            }
+            
+            // --- Initial Load ---
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(savedTheme);
+            initDB();
+            registerServiceWorker();
+
+        });
+    </script>
 </body>
 </html>
