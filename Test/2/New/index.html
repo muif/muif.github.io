@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#4a90e2">
+    <title>نظام إدارة الاشتراكات</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="manifest" href="manifest.json">
+    <style>
+        /* --- المتغيرات العامة والألوان --- */
+        :root {
+            --primary-color: #4a90e2;
+            --primary-color-dark: #357ABD;
+            --secondary-color: #f5a623;
+            --success-color: #7ed321;
+            --danger-color: #d0021b;
+            --background-light: #f4f7fc;
+            --surface-light: #ffffff;
+            --text-primary-light: #333;
+            --text-secondary-light: #777;
+            --border-light: #e0e0e0;
+            
+            --background-dark: #121212;
+            --surface-dark: #1e1e1e;
+            --text-primary-dark: #e0e0e0;
+            --text-secondary-dark: #a0a0a0;
+            --border-dark: #333333;
+
+            --font-family: 'Cairo', sans-serif;
+            --border-radius: 8px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+        /* --- الوضع الليلي --- */
+        [data-theme="dark"] {
+            --background: var(--background-dark);
+            --surface: var(--surface-dark);
+            --text-primary: var(--text-primary-dark);
+            --text-secondary: var(--text-secondary-dark);
+            --border: var(--border-dark);
+        }
+
+        /* --- الوضع النهاري --- */
+        [data-theme="light"] {
+            --background: var(--background-light);
+            --surface: var(--surface-light);
+            --text-primary: var(--text-primary-light);
+            --text-secondary: var(--text-secondary-light);
+            --border: var(--border-light);
+        }
+
+        /* --- الإعدادات الأساسية --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--background);
+            color: var(--text-primary);
+            transition: var(--transition);
+            line-height: 1.6;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* --- الشريط الجانبي --- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--surface);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s ease, transform 0.3s ease;
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100%;
+            z-index: 1000;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-header .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+            padding: 15px 0;
+        }
+
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .sidebar nav a i {
+            margin-left: 15px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar nav a:hover,
+        .sidebar nav a.active {
+            background-color: rgba(74, 144, 226, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .theme-switcher {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--background);
+            border-radius: var(--border-radius);
+            padding: 5px;
+        }
+
+        .theme-switcher button {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+
+        .theme-switcher button.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        /* --- المحتوى الرئيسي --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 25px;
+            margin-right: 260px;
+            transition: margin-right 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        /* --- البطاقات --- */
+        .card {
+            background: var(--surface);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 25px;
+        }
+
+        /* --- الأزرار --- */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            font-family: var(--font-family);
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-color-dark);
+        }
+
+        /* --- النوافذ المنبثقة (Modals) --- */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none; /* Hidden by default */
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: var(--surface);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        /* --- إشعارات Toast --- */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .toast.success { background-color: var(--success-color); }
+        .toast.error { background-color: var(--danger-color); }
+        
+        /* --- مؤشر التحميل (Loader) --- */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        #loader.show {
+            display: flex;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* --- التصميم المتجاوب --- */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(260px); /* Hide sidebar off-screen */
+                box-shadow: var(--shadow);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-right: 0;
+            }
+            body.sidebar-open .main-content::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.4);
+                z-index: 999;
+            }
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2 class="logo"><i class="fas fa-wifi"></i> نظامي</h2>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#dashboard" class="nav-link active"><i class="fas fa-tachometer-alt"></i> لوحة التحكم</a></li>
+                    <li><a href="#subscribers" class="nav-link"><i class="fas fa-users"></i> المشتركون</a></li>
+                    <li><a href="#packages" class="nav-link"><i class="fas fa-box-open"></i> الباقات</a></li>
+                    <li><a href="#expenses" class="nav-link"><i class="fas fa-file-invoice-dollar"></i> المصاريف</a></li>
+                    <li><a href="#reports" class="nav-link"><i class="fas fa-chart-pie"></i> التقارير</a></li>
+                    <li><a href="#settings" class="nav-link"><i class="fas fa-cog"></i> الإعدادات</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="theme-switcher">
+                    <button id="light-mode-btn" title="وضع نهاري"><i class="fas fa-sun"></i></button>
+                    <button id="dark-mode-btn" title="وضع ليلي"><i class="fas fa-moon"></i></button>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content" id="main-content">
+            <header class="mobile-header" style="display: none; margin-bottom: 20px; align-items:center; justify-content: space-between;">
+                 <button id="menu-toggle" class="btn"><i class="fas fa-bars"></i></button>
+                 <h2 class="logo" style="color: var(--primary-color);"><i class="fas fa-wifi"></i> نظامي</h2>
+            </header>
+            
+            <section id="dashboard" class="page active">
+                <div class="page-header"><h1>لوحة التحكم</h1></div>
+                <div class="card">هنا ستكون الإحصائيات والرسوم البيانية...</div>
+            </section>
+
+            <section id="subscribers" class="page">
+                <div class="page-header"><h1>المشتركون</h1></div>
+                <div class="card">
+                    <p>هنا ستكون قائمة المشتركين مع البحث والفلترة والإجراءات.</p>
+                    <button class="btn btn-primary"><i class="fas fa-plus"></i> إضافة مشترك جديد</button>
+                </div>
+            </section>
+            
+            <section id="packages" class="page">
+                 <div class="page-header"><h1>إدارة الباقات</h1></div>
+                 <div class="card">هنا ستكون واجهة إدارة الباقات (إضافة، تعديل، حذف).</div>
+            </section>
+            
+            <section id="expenses" class="page">
+                 <div class="page-header"><h1>إدارة المصاريف</h1></div>
+                 <div class="card">هنا ستكون واجهة إدارة المصاريف (إضافة، تعديل، حذف).</div>
+            </section>
+
+            <section id="reports" class="page">
+                <div class="page-header"><h1>التقارير</h1></div>
+                <div class="card">هنا ستكون واجهة توليد التقارير المالية مع خيار الطباعة.</div>
+            </section>
+
+            <section id="settings" class="page">
+                <div class="page-header"><h1>الإعدادات</h1></div>
+                <div class="card">
+                    <h3>ملف تعريف الشركة</h3>
+                    <p>هنا ستكون حقول تعديل اسم وشعار الشركة ومعلومات التواصل.</p>
+                    <hr style="margin: 20px 0; border-color: var(--border);">
+                    <h3>قوالب رسائل واتساب</h3>
+                    <p>هنا ستكون حقول تعديل قوالب الرسائل.</p>
+                    <hr style="margin: 20px 0; border-color: var(--border);">
+                    <h3>إدارة البيانات</h3>
+                    <button class="btn">تصدير البيانات</button>
+                    <button class="btn">استيراد البيانات</button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+    
+    <div id="generic-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">عنوان النافذة</h3>
+                <button id="modal-close-btn" class="modal-close">&times;</button>
+            </div>
+            <div id="modal-body" class="modal-body">
+                <p>محتوى النافذة المنبثقة هنا...</p>
+            </div>
+        </div>
+    </div>
+    
+    <div id="toast-container"></div>
+    <div id="loader"><div class="spinner"></div></div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- GLOBAL APP STATE & CONFIG ---
+            const APP = {
+                db: null,
+                DB_NAME: 'InternetSubscriptionsDB',
+                DB_VERSION: 1,
+                currentPage: 'dashboard'
+            };
+
+            // --- UI SELECTORS ---
+            const ui = {
+                sidebar: document.getElementById('sidebar'),
+                mainContent: document.getElementById('main-content'),
+                navLinks: document.querySelectorAll('.nav-link'),
+                pages: document.querySelectorAll('.page'),
+                lightModeBtn: document.getElementById('light-mode-btn'),
+                darkModeBtn: document.getElementById('dark-mode-btn'),
+                loader: document.getElementById('loader'),
+                toastContainer: document.getElementById('toast-container'),
+                mobileHeader: document.querySelector('.mobile-header'),
+                menuToggle: document.getElementById('menu-toggle')
+            };
+
+            // --- INITIALIZATION ---
+            function init() {
+                console.log("🚀 Initializing Application...");
+                setupEventListeners();
+                initTheme();
+                initDB();
+                navigateTo(window.location.hash || '#dashboard');
+                checkScreenSize();
+            }
+
+            // --- DATABASE (IndexedDB) ---
+            function initDB() {
+                const request = indexedDB.open(APP.DB_NAME, APP.DB_VERSION);
+
+                request.onerror = (event) => {
+                    console.error("Database error:", event.target.error);
+                    showToast("حدث خطأ في قاعدة البيانات", "error");
+                };
+
+                request.onsuccess = (event) => {
+                    APP.db = event.target.result;
+                    console.log("🗃️ Database opened successfully.");
+                    // You can load initial data here
+                };
+                
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    console.log("Database upgrade needed.");
+
+                    // 1. Subscribers Store
+                    if (!db.objectStoreNames.contains('subscribers')) {
+                        const subscribersStore = db.createObjectStore('subscribers', { keyPath: 'id', autoIncrement: true });
+                        subscribersStore.createIndex('name', 'name', { unique: false });
+                        subscribersStore.createIndex('phone', 'phone', { unique: true });
+                    }
+                    
+                    // 2. Packages Store
+                    if (!db.objectStoreNames.contains('packages')) {
+                        const packagesStore = db.createObjectStore('packages', { keyPath: 'id', autoIncrement: true });
+                        packagesStore.createIndex('name', 'name', { unique: true });
+                    }
+
+                    // 3. Movements Store
+                    if (!db.objectStoreNames.contains('movements')) {
+                        const movementsStore = db.createObjectStore('movements', { keyPath: 'id', autoIncrement: true });
+                        movementsStore.createIndex('subscriberId', 'subscriberId', { unique: false });
+                        movementsStore.createIndex('timestamp', 'timestamp', { unique: false });
+                    }
+                    
+                    // 4. Settings Store
+                    if (!db.objectStoreNames.contains('settings')) {
+                        const settingsStore = db.createObjectStore('settings', { keyPath: 'key' });
+                        // Populate with default settings
+                        settingsStore.transaction.oncomplete = () => {
+                            const settingsObjectStore = db.transaction('settings', 'readwrite').objectStore('settings');
+                            const defaultSettings = {
+                                companyProfile: { name: 'شركتي', logo: '', contact: '', countryCode: '+964' },
+                                whatsappTemplates: {
+                                    activation: 'مرحباً {{اسم_المشترك}}، تم تفعيل اشتراكك بنجاح. سينتهي بتاريخ {{تاريخ_الانتهاء}}.',
+                                    payment: 'مرحباً {{اسم_المشترك}}، تم استلام دفعة. الدين المتبقي هو {{قيمة_الدين}}.'
+                                }
+                            };
+                            for (const key in defaultSettings) {
+                                settingsObjectStore.add({ key: key, value: defaultSettings[key] });
+                            }
+                        };
+                    }
+
+                    // 5. Expenses Store
+                    if (!db.objectStoreNames.contains('expenses')) {
+                        const expensesStore = db.createObjectStore('expenses', { keyPath: 'id', autoIncrement: true });
+                        expensesStore.createIndex('date', 'date', { unique: false });
+                    }
+
+                    console.log("🗃️ Database schema created/updated successfully.");
+                };
+            }
+
+            // --- UI & THEME LOGIC ---
+            function setupEventListeners() {
+                // Navigation
+                ui.navLinks.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        navigateTo(link.getAttribute('href'));
+                        if (window.innerWidth <= 768) {
+                            ui.sidebar.classList.remove('open');
+                            document.body.classList.remove('sidebar-open');
+                        }
+                    });
+                });
+                
+                // Theme switcher
+                ui.lightModeBtn.addEventListener('click', () => setTheme('light'));
+                ui.darkModeBtn.addEventListener('click', () => setTheme('dark'));
+
+                // Mobile menu
+                ui.menuToggle.addEventListener('click', toggleSidebar);
+                document.body.addEventListener('click', (e) => {
+                    if (window.innerWidth <= 768 && document.body.classList.contains('sidebar-open') && !ui.sidebar.contains(e.target) && e.target !== ui.menuToggle) {
+                         toggleSidebar();
+                    }
+                });
+
+                // Window resize
+                window.addEventListener('resize', checkScreenSize);
+            }
+
+            function navigateTo(hash) {
+                const pageId = hash.substring(1);
+                
+                ui.pages.forEach(page => page.classList.remove('active'));
+                document.getElementById(pageId)?.classList.add('active');
+
+                ui.navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === hash) {
+                        link.classList.add('active');
+                    }
+                });
+                
+                APP.currentPage = pageId;
+                window.location.hash = hash;
+                console.log(`Mapsd to: ${pageId}`);
+            }
+
+            function setTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+                if (theme === 'dark') {
+                    ui.darkModeBtn.classList.add('active');
+                    ui.lightModeBtn.classList.remove('active');
+                } else {
+                    ui.lightModeBtn.classList.add('active');
+                    ui.darkModeBtn.classList.remove('active');
+                }
+            }
+
+            function initTheme() {
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                setTheme(savedTheme);
+            }
+            
+            function toggleSidebar() {
+                ui.sidebar.classList.toggle('open');
+                document.body.classList.toggle('sidebar-open');
+            }
+            
+            function checkScreenSize() {
+                if (window.innerWidth <= 768) {
+                    ui.mobileHeader.style.display = 'flex';
+                } else {
+                    ui.mobileHeader.style.display = 'none';
+                    ui.sidebar.classList.remove('open');
+                     document.body.classList.remove('sidebar-open');
+                }
+            }
+            
+            // --- UTILITIES (Loader, Toasts) ---
+            function showLoader() { ui.loader.classList.add('show'); }
+            function hideLoader() { ui.loader.classList.remove('show'); }
+
+            function showToast(message, type = 'success') {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+                ui.toastContainer.appendChild(toast);
+                
+                setTimeout(() => toast.classList.add('show'), 10);
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    toast.addEventListener('transitionend', () => toast.remove());
+                }, 3000);
+            }
+
+            // --- PWA Service Worker Registration ---
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then(registration => console.log('ServiceWorker registration successful with scope: ', registration.scope))
+                        .catch(err => console.log('ServiceWorker registration failed: ', err));
+                });
+            }
+
+            // Start the application
+            init();
+
+        });
+    </script>
+</body>
+</html>
