@@ -5,55 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#4a90e2">
     <title>نظام إدارة الاشتراكات</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Manifest for PWA -->
     <link rel="manifest" href="manifest.json">
+    
+    <!-- Font Awesome for Icons (via CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" xintegrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Google Fonts: Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- ==================================================== -->
+    <!--                  CSS STYLES                        -->
+    <!-- ==================================================== -->
     <style>
-        /* --- المتغيرات العامة والألوان --- */
+        /* --- 1. Variables & Global Resets --- */
         :root {
             --primary-color: #4a90e2;
-            --primary-color-dark: #357ABD;
-            --secondary-color: #f5a623;
-            --success-color: #7ed321;
-            --danger-color: #d0021b;
-            --background-light: #f4f7fc;
-            --surface-light: #ffffff;
-            --text-primary-light: #333;
-            --text-secondary-light: #777;
-            --border-light: #e0e0e0;
+            --primary-color-dark: #3a7bc8;
+            --secondary-color: #50e3c2;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --success-color: #2ecc71;
+            --status-active: #2ecc71;
+            --status-expiring: #f39c12;
+            --status-expired: #e74c3c;
             
-            --background-dark: #121212;
-            --surface-dark: #1e1e1e;
-            --text-primary-dark: #e0e0e0;
-            --text-secondary-dark: #a0a0a0;
-            --border-dark: #333333;
-
-            --font-family: 'Cairo', sans-serif;
+            --bg-color: #f4f7fa;
+            --bg-color-alt: #ffffff;
+            --border-color: #e1e8ed;
+            --text-color: #2c3e50;
+            --text-color-muted: #8492a6;
+            --sidebar-bg: #ffffff;
+            --header-bg: #ffffff;
+            
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             --border-radius: 8px;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            --transition: all 0.3s ease;
+            --transition-speed: 0.3s;
         }
 
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
-
-        /* --- الوضع الليلي --- */
-        [data-theme="dark"] {
-            --background: var(--background-dark);
-            --surface: var(--surface-dark);
-            --text-primary: var(--text-primary-dark);
-            --text-secondary: var(--text-secondary-dark);
-            --border: var(--border-dark);
+        body.dark-mode {
+            --primary-color: #58a6ff;
+            --primary-color-dark: #3a7bc8;
+            --bg-color: #1c2128;
+            --bg-color-alt: #2d333b;
+            --border-color: #444c56;
+            --text-color: #cdd9e5;
+            --text-color-muted: #768390;
+            --sidebar-bg: #22272e;
+            --header-bg: #22272e;
         }
 
-        /* --- الوضع النهاري --- */
-        [data-theme="light"] {
-            --background: var(--background-light);
-            --surface: var(--surface-light);
-            --text-primary: var(--text-primary-light);
-            --text-secondary: var(--text-secondary-light);
-            --border: var(--border-light);
-        }
-
-        /* --- الإعدادات الأساسية --- */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -61,594 +65,666 @@
         }
 
         body {
-            font-family: var(--font-family);
-            background-color: var(--background);
-            color: var(--text-primary);
-            transition: var(--transition);
-            line-height: 1.6;
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            overflow-x: hidden;
         }
 
-        .app-container {
-            display: flex;
-            height: 100vh;
-        }
-
-        /* --- الشريط الجانبي --- */
-        .sidebar {
+        /* --- 2. Layout & Structure --- */
+        #app-container { display: flex; min-height: 100vh; }
+        #sidebar {
             width: 260px;
-            background-color: var(--surface);
-            border-left: 1px solid var(--border);
+            background-color: var(--sidebar-bg);
+            border-left: 1px solid var(--border-color);
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            transition: width 0.3s ease, transform 0.3s ease;
-            position: fixed;
-            top: 0;
-            right: 0;
-            height: 100%;
-            z-index: 1000;
+            transition: margin-right var(--transition-speed), transform var(--transition-speed);
+            flex-shrink: 0;
         }
-        
         .sidebar-header {
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 30px; padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
         }
+        .sidebar-header i { font-size: 24px; color: var(--primary-color); }
+        .sidebar-header h1 { font-size: 18px; font-weight: 700; }
+        #sidebar nav a {
+            display: flex; align-items: center; gap: 15px;
+            padding: 12px 15px; border-radius: var(--border-radius);
+            color: var(--text-color-muted); text-decoration: none;
+            font-weight: 600; margin-bottom: 5px;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+        }
+        #sidebar nav a:hover { background-color: var(--bg-color); color: var(--primary-color); }
+        #sidebar nav a.active { background-color: var(--primary-color); color: white; }
+        #sidebar nav a i { width: 20px; text-align: center; }
+        .sidebar-footer { margin-top: auto; font-size: 12px; color: var(--text-color-muted); text-align: center; }
+        #main-content { flex-grow: 1; display: flex; flex-direction: column; width: calc(100% - 260px); }
+        #header {
+            background-color: var(--header-bg); border-bottom: 1px solid var(--border-color);
+            padding: 15px 30px; display: flex; justify-content: space-between;
+            align-items: center; box-shadow: var(--shadow);
+        }
+        .header-left, .header-right { display: flex; align-items: center; gap: 20px; }
+        #menu-toggle, #theme-toggle { background: none; border: none; color: var(--text-color-muted); font-size: 20px; cursor: pointer; }
+        #page-view { padding: 30px; flex-grow: 1; overflow-y: auto; }
 
-        .sidebar-header .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        .sidebar nav ul {
-            list-style: none;
-            padding: 15px 0;
-        }
-
-        .sidebar nav a {
-            display: flex;
-            align-items: center;
-            padding: 12px 20px;
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: var(--transition);
-            font-size: 1rem;
-            font-weight: 600;
-        }
-
-        .sidebar nav a i {
-            margin-left: 15px;
-            width: 20px;
-            text-align: center;
-        }
-
-        .sidebar nav a:hover,
-        .sidebar nav a.active {
-            background-color: rgba(74, 144, 226, 0.1);
-            color: var(--primary-color);
-        }
-        
-        .sidebar-footer {
-            margin-top: auto;
-            padding: 20px;
-            border-top: 1px solid var(--border);
-        }
-
-        .theme-switcher {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--background);
-            border-radius: var(--border-radius);
-            padding: 5px;
-        }
-
-        .theme-switcher button {
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            padding: 8px 12px;
-            border-radius: 6px;
-            transition: var(--transition);
-        }
-
-        .theme-switcher button.active {
-            background: var(--primary-color);
-            color: white;
-        }
-        
-        /* --- المحتوى الرئيسي --- */
-        .main-content {
-            flex-grow: 1;
-            padding: 25px;
-            margin-right: 260px;
-            transition: margin-right 0.3s ease;
-            overflow-y: auto;
-        }
-        
-        .page {
-            display: none;
-        }
-        .page.active {
-            display: block;
-        }
-        
-        .page-header {
-            margin-bottom: 25px;
-        }
-
-        .page-header h1 {
-            font-size: 2rem;
-            font-weight: 700;
-        }
-        
-        /* --- البطاقات --- */
+        /* --- 3. UI Components --- */
         .card {
-            background: var(--surface);
-            border-radius: var(--border-radius);
-            padding: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            margin-bottom: 25px;
+            background-color: var(--bg-color-alt); border: 1px solid var(--border-color);
+            border-radius: var(--border-radius); padding: 25px;
+            box-shadow: var(--shadow); margin-bottom: 25px;
         }
-
-        /* --- الأزرار --- */
         .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
-            font-family: var(--font-family);
+            padding: 10px 20px; border-radius: var(--border-radius); border: none;
+            cursor: pointer; font-weight: 600; font-family: 'Cairo', sans-serif;
+            transition: background-color var(--transition-speed), transform 0.1s;
+            display: inline-flex; align-items: center; gap: 8px;
         }
-        .btn-primary {
-            background-color: var(--primary-color);
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary:hover { background-color: var(--primary-color-dark); }
+        .btn-danger { background-color: var(--danger-color); color: white; }
+        
+        /* Forms */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
+        .form-control {
+            width: 100%; padding: 12px; border: 1px solid var(--border-color);
+            border-radius: var(--border-radius); background-color: var(--bg-color);
+            color: var(--text-color); transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-control:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 20%, transparent); }
+        
+        /* Tables */
+        .table { width:100%; text-align: right; border-collapse: collapse; }
+        .table th, .table td { padding: 12px; }
+        .table thead tr { border-bottom: 2px solid var(--border-color); }
+        .table tbody tr { border-bottom: 1px solid var(--border-color); }
+        .table tbody tr:last-child { border-bottom: none; }
+        
+        /* Status Badge */
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
             color: white;
         }
-        .btn-primary:hover {
-            background-color: var(--primary-color-dark);
-        }
+        .status-badge.active { background-color: var(--status-active); }
+        .status-badge.expiring { background-color: var(--status-expiring); }
+        .status-badge.expired { background-color: var(--status-expired); }
 
-        /* --- النوافذ المنبثقة (Modals) --- */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            display: none; /* Hidden by default */
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); display: flex;
+            justify-content: center; align-items: center; z-index: 1000;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s;
         }
-        .modal.active {
-            display: flex;
-        }
+        .modal-overlay.visible { opacity: 1; visibility: visible; }
         .modal-content {
-            background: var(--surface);
-            padding: 30px;
-            border-radius: var(--border-radius);
-            width: 90%;
-            max-width: 500px;
-            animation: fadeIn 0.3s ease;
+            background-color: var(--bg-color-alt); padding: 0;
+            border-radius: var(--border-radius); width: 90%;
+            max-width: 700px; max-height: 90vh;
+            display: flex; flex-direction: column;
+            transform: scale(0.95); transition: transform 0.3s;
+            overflow: hidden;
         }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 15px;
-        }
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-secondary);
-        }
+        .modal-overlay.visible .modal-content { transform: scale(1); }
+        .modal-header { padding: 20px 30px; border-bottom: 1px solid var(--border-color); }
+        .modal-header h2 { font-size: 20px; }
+        .modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-color-muted); position: absolute; top: 20px; left: 20px; }
+        .modal-body { padding: 30px; overflow-y: auto; }
+        .modal-footer { padding: 20px 30px; border-top: 1px solid var(--border-color); background-color: var(--bg-color); }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+        /* Dashboard Cards */
+        .dashboard-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .stat-card {
+            padding: 20px; text-align: center;
+            border-radius: var(--border-radius); color: white;
         }
-        
-        /* --- إشعارات Toast --- */
-        #toast-container {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 3000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .toast {
-            padding: 12px 20px;
-            border-radius: var(--border-radius);
-            color: white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            opacity: 0;
-            transform: translateY(-20px);
-            transition: all 0.4s ease;
-            display: flex;
-            align-items: center;
-        }
-        .toast.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .toast.success { background-color: var(--success-color); }
-        .toast.error { background-color: var(--danger-color); }
-        
-        /* --- مؤشر التحميل (Loader) --- */
-        #loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-        }
-        #loader.show {
-            display: flex;
-        }
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(255, 255, 255, 0.3);
-            border-top-color: var(--primary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        .stat-card h3 { font-size: 16px; margin-bottom: 10px; opacity: 0.9; }
+        .stat-card .stat-value { font-size: 32px; font-weight: 700; }
+        .stat-card-1 { background: linear-gradient(45deg, #4a90e2, #58a6ff); }
+        .stat-card-2 { background: linear-gradient(45deg, #2ecc71, #50e3c2); }
+        .stat-card-3 { background: linear-gradient(45deg, #e74c3c, #f1c40f); }
+        .stat-card-4 { background: linear-gradient(45deg, #9b59b6, #8e44ad); }
 
-        /* --- التصميم المتجاوب --- */
+        /* --- 4. Responsive Design --- */
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(260px); /* Hide sidebar off-screen */
-                box-shadow: var(--shadow);
-            }
-            .sidebar.open {
-                transform: translateX(0);
-            }
-            .main-content {
-                margin-right: 0;
-            }
-            body.sidebar-open .main-content::before {
-                content: '';
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.4);
-                z-index: 999;
-            }
-            .page-header h1 {
-                font-size: 1.8rem;
-            }
+            #sidebar { position: fixed; top: 0; right: 0; height: 100%; z-index: 100; transform: translateX(280px); }
+            #sidebar.open { transform: translateX(0); }
+            #main-content { width: 100%; }
+            #header, #page-view { padding: 15px; }
+            #menu-toggle { display: block; }
         }
+        @media (min-width: 769px) { #menu-toggle { display: none; } }
+
     </style>
 </head>
 <body>
-
-    <div class="app-container">
-        <aside class="sidebar" id="sidebar">
+    <!-- App Structure -->
+    <div id="app-container">
+        <!-- Sidebar -->
+        <aside id="sidebar">
             <div class="sidebar-header">
-                <h2 class="logo"><i class="fas fa-wifi"></i> نظامي</h2>
+                <i class="fas fa-wifi"></i>
+                <h1>إدارة الاشتراكات</h1>
             </div>
-            <nav>
-                <ul>
-                    <li><a href="#dashboard" class="nav-link active"><i class="fas fa-tachometer-alt"></i> لوحة التحكم</a></li>
-                    <li><a href="#subscribers" class="nav-link"><i class="fas fa-users"></i> المشتركون</a></li>
-                    <li><a href="#packages" class="nav-link"><i class="fas fa-box-open"></i> الباقات</a></li>
-                    <li><a href="#expenses" class="nav-link"><i class="fas fa-file-invoice-dollar"></i> المصاريف</a></li>
-                    <li><a href="#reports" class="nav-link"><i class="fas fa-chart-pie"></i> التقارير</a></li>
-                    <li><a href="#settings" class="nav-link"><i class="fas fa-cog"></i> الإعدادات</a></li>
-                </ul>
+            <nav id="main-nav">
+                <a href="#dashboard" class="nav-link"><i class="fas fa-tachometer-alt fa-fw"></i><span>لوحة التحكم</span></a>
+                <a href="#subscribers" class="nav-link"><i class="fas fa-users fa-fw"></i><span>المشتركون</span></a>
+                <a href="#packages" class="nav-link"><i class="fas fa-box-open fa-fw"></i><span>الباقات</span></a>
+                <a href="#expenses" class="nav-link"><i class="fas fa-file-invoice-dollar fa-fw"></i><span>المصاريف</span></a>
+                <a href="#reports" class="nav-link"><i class="fas fa-chart-pie fa-fw"></i><span>التقارير</span></a>
+                <a href="#settings" class="nav-link"><i class="fas fa-cog fa-fw"></i><span>الإعدادات</span></a>
             </nav>
             <div class="sidebar-footer">
-                <div class="theme-switcher">
-                    <button id="light-mode-btn" title="وضع نهاري"><i class="fas fa-sun"></i></button>
-                    <button id="dark-mode-btn" title="وضع ليلي"><i class="fas fa-moon"></i></button>
-                </div>
+                <p>&copy; 2025 - إصدار 1.5.0</p>
             </div>
         </aside>
 
-        <main class="main-content" id="main-content">
-            <header class="mobile-header" style="display: none; margin-bottom: 20px; align-items:center; justify-content: space-between;">
-                 <button id="menu-toggle" class="btn"><i class="fas fa-bars"></i></button>
-                 <h2 class="logo" style="color: var(--primary-color);"><i class="fas fa-wifi"></i> نظامي</h2>
+        <!-- Main Content -->
+        <main id="main-content">
+            <header id="header">
+                <div class="header-left">
+                    <button id="menu-toggle"><i class="fas fa-bars"></i></button>
+                    <h2 id="page-title"></h2>
+                </div>
+                <div class="header-right">
+                    <button id="theme-toggle" title="تغيير المظهر"><i class="fas fa-moon"></i></button>
+                </div>
             </header>
-            
-            <section id="dashboard" class="page active">
-                <div class="page-header"><h1>لوحة التحكم</h1></div>
-                <div class="card">هنا ستكون الإحصائيات والرسوم البيانية...</div>
-            </section>
-
-            <section id="subscribers" class="page">
-                <div class="page-header"><h1>المشتركون</h1></div>
-                <div class="card">
-                    <p>هنا ستكون قائمة المشتركين مع البحث والفلترة والإجراءات.</p>
-                    <button class="btn btn-primary"><i class="fas fa-plus"></i> إضافة مشترك جديد</button>
-                </div>
-            </section>
-            
-            <section id="packages" class="page">
-                 <div class="page-header"><h1>إدارة الباقات</h1></div>
-                 <div class="card">هنا ستكون واجهة إدارة الباقات (إضافة، تعديل، حذف).</div>
-            </section>
-            
-            <section id="expenses" class="page">
-                 <div class="page-header"><h1>إدارة المصاريف</h1></div>
-                 <div class="card">هنا ستكون واجهة إدارة المصاريف (إضافة، تعديل، حذف).</div>
-            </section>
-
-            <section id="reports" class="page">
-                <div class="page-header"><h1>التقارير</h1></div>
-                <div class="card">هنا ستكون واجهة توليد التقارير المالية مع خيار الطباعة.</div>
-            </section>
-
-            <section id="settings" class="page">
-                <div class="page-header"><h1>الإعدادات</h1></div>
-                <div class="card">
-                    <h3>ملف تعريف الشركة</h3>
-                    <p>هنا ستكون حقول تعديل اسم وشعار الشركة ومعلومات التواصل.</p>
-                    <hr style="margin: 20px 0; border-color: var(--border);">
-                    <h3>قوالب رسائل واتساب</h3>
-                    <p>هنا ستكون حقول تعديل قوالب الرسائل.</p>
-                    <hr style="margin: 20px 0; border-color: var(--border);">
-                    <h3>إدارة البيانات</h3>
-                    <button class="btn">تصدير البيانات</button>
-                    <button class="btn">استيراد البيانات</button>
-                </div>
-            </section>
-
+            <div id="page-view"></div>
         </main>
     </div>
-    
-    <div id="generic-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modal-title">عنوان النافذة</h3>
-                <button id="modal-close-btn" class="modal-close">&times;</button>
-            </div>
-            <div id="modal-body" class="modal-body">
-                <p>محتوى النافذة المنبثقة هنا...</p>
-            </div>
-        </div>
-    </div>
-    
+
+    <!-- Global Elements -->
+    <div id="modal-container"></div>
     <div id="toast-container"></div>
-    <div id="loader"><div class="spinner"></div></div>
-
-
+    <div class="loader-overlay" id="loader"><div class="loader"></div></div>
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- ==================================================== -->
+    <!--                  JAVASCRIPT LOGIC                    -->
+    <!-- ==================================================== -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            
-            // --- GLOBAL APP STATE & CONFIG ---
-            const APP = {
-                db: null,
-                DB_NAME: 'InternetSubscriptionsDB',
-                DB_VERSION: 1,
-                currentPage: 'dashboard'
-            };
-
-            // --- UI SELECTORS ---
-            const ui = {
-                sidebar: document.getElementById('sidebar'),
-                mainContent: document.getElementById('main-content'),
-                navLinks: document.querySelectorAll('.nav-link'),
-                pages: document.querySelectorAll('.page'),
-                lightModeBtn: document.getElementById('light-mode-btn'),
-                darkModeBtn: document.getElementById('dark-mode-btn'),
-                loader: document.getElementById('loader'),
-                toastContainer: document.getElementById('toast-container'),
-                mobileHeader: document.querySelector('.mobile-header'),
-                menuToggle: document.getElementById('menu-toggle')
-            };
-
-            // --- INITIALIZATION ---
-            function init() {
-                console.log("🚀 Initializing Application...");
-                setupEventListeners();
-                initTheme();
-                initDB();
-                navigateTo(window.location.hash || '#dashboard');
-                checkScreenSize();
-            }
-
-            // --- DATABASE (IndexedDB) ---
-            function initDB() {
-                const request = indexedDB.open(APP.DB_NAME, APP.DB_VERSION);
-
-                request.onerror = (event) => {
-                    console.error("Database error:", event.target.error);
-                    showToast("حدث خطأ في قاعدة البيانات", "error");
-                };
-
-                request.onsuccess = (event) => {
-                    APP.db = event.target.result;
-                    console.log("🗃️ Database opened successfully.");
-                    // You can load initial data here
-                };
-                
-                request.onupgradeneeded = (event) => {
-                    const db = event.target.result;
-                    console.log("Database upgrade needed.");
-
-                    // 1. Subscribers Store
-                    if (!db.objectStoreNames.contains('subscribers')) {
-                        const subscribersStore = db.createObjectStore('subscribers', { keyPath: 'id', autoIncrement: true });
-                        subscribersStore.createIndex('name', 'name', { unique: false });
-                        subscribersStore.createIndex('phone', 'phone', { unique: true });
-                    }
-                    
-                    // 2. Packages Store
-                    if (!db.objectStoreNames.contains('packages')) {
-                        const packagesStore = db.createObjectStore('packages', { keyPath: 'id', autoIncrement: true });
-                        packagesStore.createIndex('name', 'name', { unique: true });
-                    }
-
-                    // 3. Movements Store
-                    if (!db.objectStoreNames.contains('movements')) {
-                        const movementsStore = db.createObjectStore('movements', { keyPath: 'id', autoIncrement: true });
-                        movementsStore.createIndex('subscriberId', 'subscriberId', { unique: false });
-                        movementsStore.createIndex('timestamp', 'timestamp', { unique: false });
-                    }
-                    
-                    // 4. Settings Store
-                    if (!db.objectStoreNames.contains('settings')) {
-                        const settingsStore = db.createObjectStore('settings', { keyPath: 'key' });
-                        // Populate with default settings
-                        settingsStore.transaction.oncomplete = () => {
-                            const settingsObjectStore = db.transaction('settings', 'readwrite').objectStore('settings');
-                            const defaultSettings = {
-                                companyProfile: { name: 'شركتي', logo: '', contact: '', countryCode: '+964' },
-                                whatsappTemplates: {
-                                    activation: 'مرحباً {{اسم_المشترك}}، تم تفعيل اشتراكك بنجاح. سينتهي بتاريخ {{تاريخ_الانتهاء}}.',
-                                    payment: 'مرحباً {{اسم_المشترك}}، تم استلام دفعة. الدين المتبقي هو {{قيمة_الدين}}.'
-                                }
-                            };
-                            for (const key in defaultSettings) {
-                                settingsObjectStore.add({ key: key, value: defaultSettings[key] });
-                            }
-                        };
-                    }
-
-                    // 5. Expenses Store
-                    if (!db.objectStoreNames.contains('expenses')) {
-                        const expensesStore = db.createObjectStore('expenses', { keyPath: 'id', autoIncrement: true });
-                        expensesStore.createIndex('date', 'date', { unique: false });
-                    }
-
-                    console.log("🗃️ Database schema created/updated successfully.");
-                };
-            }
-
-            // --- UI & THEME LOGIC ---
-            function setupEventListeners() {
-                // Navigation
-                ui.navLinks.forEach(link => {
-                    link.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        navigateTo(link.getAttribute('href'));
-                        if (window.innerWidth <= 768) {
-                            ui.sidebar.classList.remove('open');
-                            document.body.classList.remove('sidebar-open');
-                        }
-                    });
-                });
-                
-                // Theme switcher
-                ui.lightModeBtn.addEventListener('click', () => setTheme('light'));
-                ui.darkModeBtn.addEventListener('click', () => setTheme('dark'));
-
-                // Mobile menu
-                ui.menuToggle.addEventListener('click', toggleSidebar);
-                document.body.addEventListener('click', (e) => {
-                    if (window.innerWidth <= 768 && document.body.classList.contains('sidebar-open') && !ui.sidebar.contains(e.target) && e.target !== ui.menuToggle) {
-                         toggleSidebar();
-                    }
-                });
-
-                // Window resize
-                window.addEventListener('resize', checkScreenSize);
-            }
-
-            function navigateTo(hash) {
-                const pageId = hash.substring(1);
-                
-                ui.pages.forEach(page => page.classList.remove('active'));
-                document.getElementById(pageId)?.classList.add('active');
-
-                ui.navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === hash) {
-                        link.classList.add('active');
-                    }
-                });
-                
-                APP.currentPage = pageId;
-                window.location.hash = hash;
-                console.log(`Mapsd to: ${pageId}`);
-            }
-
-            function setTheme(theme) {
-                document.documentElement.setAttribute('data-theme', theme);
-                localStorage.setItem('theme', theme);
-                if (theme === 'dark') {
-                    ui.darkModeBtn.classList.add('active');
-                    ui.lightModeBtn.classList.remove('active');
-                } else {
-                    ui.lightModeBtn.classList.add('active');
-                    ui.darkModeBtn.classList.remove('active');
-                }
-            }
-
-            function initTheme() {
-                const savedTheme = localStorage.getItem('theme') || 'light';
-                setTheme(savedTheme);
-            }
-            
-            function toggleSidebar() {
-                ui.sidebar.classList.toggle('open');
-                document.body.classList.toggle('sidebar-open');
-            }
-            
-            function checkScreenSize() {
-                if (window.innerWidth <= 768) {
-                    ui.mobileHeader.style.display = 'flex';
-                } else {
-                    ui.mobileHeader.style.display = 'none';
-                    ui.sidebar.classList.remove('open');
-                     document.body.classList.remove('sidebar-open');
-                }
-            }
-            
-            // --- UTILITIES (Loader, Toasts) ---
-            function showLoader() { ui.loader.classList.add('show'); }
-            function hideLoader() { ui.loader.classList.remove('show'); }
-
-            function showToast(message, type = 'success') {
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        const $ = (selector) => document.querySelector(selector);
+        
+        // --- 1. UI Manager ---
+        const UI = {
+            showLoader: () => $('#loader').classList.add('visible'),
+            hideLoader: () => $('#loader').classList.remove('visible'),
+            showToast(message, type = 'info') {
                 const toast = document.createElement('div');
                 toast.className = `toast ${type}`;
                 toast.textContent = message;
-                ui.toastContainer.appendChild(toast);
-                
-                setTimeout(() => toast.classList.add('show'), 10);
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                    toast.addEventListener('transitionend', () => toast.remove());
-                }, 3000);
-            }
-
-            // --- PWA Service Worker Registration ---
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('/sw.js')
-                        .then(registration => console.log('ServiceWorker registration successful with scope: ', registration.scope))
-                        .catch(err => console.log('ServiceWorker registration failed: ', err));
+                $('#toast-container').appendChild(toast);
+                setTimeout(() => toast.remove(), 4000);
+            },
+            createModal(title, contentHTML, footerHTML = '') {
+                const modalId = `modal-${Date.now()}`;
+                $('#modal-container').innerHTML = `
+                    <div class="modal-overlay visible" id="${modalId}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h2>${title}</h2>
+                                <button class="modal-close">&times;</button>
+                            </div>
+                            <div class="modal-body">${contentHTML}</div>
+                            ${footerHTML ? `<div class="modal-footer">${footerHTML}</div>` : ''}
+                        </div>
+                    </div>`;
+                const modalElement = $(`#${modalId}`);
+                modalElement.querySelector('.modal-close').addEventListener('click', () => UI.closeModal(modalId));
+                modalElement.addEventListener('click', (e) => {
+                    if (e.target === modalElement) UI.closeModal(modalId);
                 });
+            },
+            closeModal: (id) => $(`#${id}`)?.remove()
+        };
+
+        // --- 2. Database Helper (IndexedDB) ---
+        const DB = {
+            DB_NAME: 'ISP_Manager_DB_v2',
+            DB_VERSION: 1,
+            db: null,
+            init() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
+                    request.onerror = e => reject("Database error: " + e.target.errorCode);
+                    request.onsuccess = e => { this.db = e.target.result; resolve(this.db); };
+                    request.onupgradeneeded = e => {
+                        const db = e.target.result;
+                        const stores = ['subscribers', 'packages', 'movements', 'expenses', 'settings'];
+                        stores.forEach(s => {
+                            if (!db.objectStoreNames.contains(s)) {
+                                db.createObjectStore(s, { keyPath: 'id', autoIncrement: true });
+                            }
+                        });
+                        if (db.objectStoreNames.contains('settings')) db.deleteObjectStore('settings');
+                        db.createObjectStore('settings', { keyPath: 'key' });
+                    };
+                });
+            },
+            // Generic CRUD operations
+            exec: (storeName, method, ...args) => new Promise((resolve, reject) => {
+                const tx = DB.db.transaction(storeName, ['add', 'put', 'delete'].includes(method) ? 'readwrite' : 'readonly');
+                const store = tx.objectStore(storeName);
+                const request = store[method](...args);
+                tx.oncomplete = () => resolve(request.result);
+                tx.onerror = () => reject(tx.error);
+            }),
+            add: (store, item) => DB.exec(store, 'add', item),
+            get: (store, key) => DB.exec(store, 'get', key),
+            getAll: (store) => DB.exec(store, 'getAll'),
+            update: (store, item) => DB.exec(store, 'put', item),
+            delete: (store, key) => DB.exec(store, 'delete', key),
+        };
+
+        // --- 3. Business Logic & Helpers ---
+        const Logic = {
+            getSubscriberStatus(subscriber) {
+                if (!subscriber.endDate) return { text: 'غير فعال', class: 'expired' };
+                const now = new Date();
+                const endDate = new Date(subscriber.endDate);
+                const diffDays = (endDate - now) / (1000 * 60 * 60 * 24);
+                if (diffDays < 0) return { text: 'منتهي', class: 'expired' };
+                if (diffDays <= 3) return { text: `سينتهي بعد ${Math.ceil(diffDays)} يوم`, class: 'expiring' };
+                return { text: 'فعال', class: 'active' };
+            },
+            formatDate: (date) => new Date(date).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' })
+        };
+
+        // --- 4. Page Modules ---
+        const Pages = {
+            Dashboard: {
+                async render() {
+                    const [subs, expenses] = await Promise.all([DB.getAll('subscribers'), DB.getAll('expenses')]);
+                    const stats = {
+                        total: subs.length,
+                        active: subs.filter(s => Logic.getSubscriberStatus(s).class === 'active').length,
+                        expiring: subs.filter(s => Logic.getSubscriberStatus(s).class === 'expiring').length,
+                        expired: subs.filter(s => Logic.getSubscriberStatus(s).class === 'expired').length,
+                        debt: subs.reduce((acc, s) => acc + (s.debt || 0), 0)
+                    };
+                    $('#page-view').innerHTML = `
+                        <div class="dashboard-cards">
+                            <div class="stat-card stat-card-1"><h3>إجمالي المشتركين</h3><div class="stat-value">${stats.total}</div></div>
+                            <div class="stat-card stat-card-2"><h3>المشتركون الفعالون</h3><div class="stat-value">${stats.active}</div></div>
+                            <div class="stat-card stat-card-3"><h3>إجمالي الديون</h3><div class="stat-value">${stats.debt.toLocaleString()}</div></div>
+                            <div class="stat-card stat-card-4"><h3>قيد التطوير</h3><div class="stat-value">...</div></div>
+                        </div>
+                        <div class="card"><h2>رسوم بيانية وتنبيهات</h2><p>سيتم تطوير هذا القسم قريباً.</p></div>
+                    `;
+                }
+            },
+            Subscribers: {
+                state: { subscribers: [], filter: 'all', searchTerm: '' },
+                async render() {
+                    this.state.subscribers = await DB.getAll('subscribers');
+                    $('#page-view').innerHTML = `
+                        <div class="card">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                                <input type="search" id="search-sub" class="form-control" placeholder="ابحث بالاسم أو الهاتف..." style="flex-basis: 300px;">
+                                <div id="filter-btns" style="display: flex; gap: 10px;"></div>
+                                <button id="add-sub-btn" class="btn btn-primary"><i class="fas fa-plus"></i> إضافة مشترك</button>
+                            </div>
+                        </div>
+                        <div id="subscribers-list" class="card"></div>`;
+                    
+                    const filters = { all: 'الكل', active: 'فعال', expiring: 'سينتهي قريباً', expired: 'منتهي', debt: 'عليه دين' };
+                    $('#filter-btns').innerHTML = Object.entries(filters).map(([key, text]) => `<button class="btn btn-filter" data-filter="${key}">${text}</button>`).join('');
+                    
+                    $('#add-sub-btn').addEventListener('click', () => this.showSubscriberModal());
+                    $('#search-sub').addEventListener('input', e => { this.state.searchTerm = e.target.value; this.renderList(); });
+                    $('#filter-btns').addEventListener('click', e => {
+                        if(e.target.matches('.btn-filter')) {
+                            this.state.filter = e.target.dataset.filter;
+                            this.renderList();
+                        }
+                    });
+                    this.renderList();
+                },
+                renderList() {
+                    let filtered = this.state.subscribers;
+                    // Search
+                    if (this.state.searchTerm) {
+                        const term = this.state.searchTerm.toLowerCase();
+                        filtered = filtered.filter(s => s.name.toLowerCase().includes(term) || s.phone.includes(term));
+                    }
+                    // Filter
+                    if (this.state.filter !== 'all') {
+                        filtered = filtered.filter(s => {
+                            if (this.state.filter === 'debt') return s.debt > 0;
+                            return Logic.getSubscriberStatus(s).class === this.state.filter;
+                        });
+                    }
+
+                    const listEl = $('#subscribers-list');
+                    if (filtered.length === 0) {
+                        listEl.innerHTML = '<p>لا يوجد مشتركين لعرضهم.</p>'; return;
+                    }
+                    listEl.innerHTML = `
+                        <table class="table">
+                            <thead><tr><th>الاسم</th><th>الهاتف</th><th>الدين</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+                            <tbody>${filtered.map(s => `
+                                <tr>
+                                    <td><a href="#" class="details-link" data-id="${s.id}">${s.name}</a></td>
+                                    <td>${s.phone}</td>
+                                    <td>${s.debt?.toLocaleString() || 0}</td>
+                                    <td><span class="status-badge ${Logic.getSubscriberStatus(s).class}">${Logic.getSubscriberStatus(s).text}</span></td>
+                                    <td>
+                                        <button class="btn-edit" data-id="${s.id}"><i class="fas fa-edit"></i></button>
+                                        <button class="btn-delete" data-id="${s.id}"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>`).join('')}
+                            </tbody>
+                        </table>`;
+                    
+                    listEl.querySelectorAll('.details-link').forEach(l => l.addEventListener('click', e => { e.preventDefault(); this.showDetailsModal(parseInt(e.target.dataset.id)); }));
+                    listEl.querySelectorAll('.btn-edit').forEach(b => b.addEventListener('click', e => this.showSubscriberModal(parseInt(e.currentTarget.dataset.id))));
+                    listEl.querySelectorAll('.btn-delete').forEach(b => b.addEventListener('click', e => this.deleteSubscriber(parseInt(e.currentTarget.dataset.id))));
+                },
+                async showSubscriberModal(id = null) {
+                    const sub = id ? await DB.get('subscribers', id) : {};
+                    const title = id ? 'تعديل مشترك' : 'إضافة مشترك جديد';
+                    const content = `
+                        <form id="sub-form">
+                            <input type="hidden" name="id" value="${sub.id || ''}">
+                            <div class="form-group"><label>الاسم</label><input type="text" name="name" class="form-control" value="${sub.name || ''}" required></div>
+                            <div class="form-group"><label>الهاتف</label><input type="tel" name="phone" class="form-control" value="${sub.phone || ''}" required></div>
+                            <div class="form-group"><label>العنوان</label><input type="text" name="address" class="form-control" value="${sub.address || ''}"></div>
+                            <div class="form-group"><label>الدين الأولي</label><input type="number" name="debt" class="form-control" value="${sub.debt || 0}"></div>
+                            <div class="form-group"><label>ملاحظات</label><textarea name="notes" class="form-control">${sub.notes || ''}</textarea></div>
+                        </form>`;
+                    const footer = `<button id="save-sub-btn" class="btn btn-primary">حفظ</button>`;
+                    UI.createModal(title, content, footer);
+                    $('#save-sub-btn').addEventListener('click', () => this.saveSubscriber());
+                },
+                async saveSubscriber() {
+                    const form = new FormData($('#sub-form'));
+                    const id = parseInt(form.get('id'));
+                    const subData = {
+                        name: form.get('name'),
+                        phone: form.get('phone'),
+                        address: form.get('address'),
+                        debt: parseFloat(form.get('debt')) || 0,
+                        notes: form.get('notes'),
+                    };
+                    if (id) {
+                        const existing = await DB.get('subscribers', id);
+                        await DB.update('subscribers', { ...existing, ...subData });
+                    } else {
+                        await DB.add('subscribers', subData);
+                    }
+                    UI.closeModal($('.modal-overlay').id);
+                    this.render();
+                },
+                async deleteSubscriber(id) {
+                    if (confirm('هل أنت متأكد من حذف هذا المشترك؟ سيتم حذف جميع سجلاته.')) {
+                        await DB.delete('subscribers', id);
+                        this.render();
+                    }
+                },
+                async showDetailsModal(id) {
+                    const [sub, packages, movements] = await Promise.all([
+                        DB.get('subscribers', id),
+                        DB.getAll('packages'),
+                        DB.exec('movements', 'getAll') // A bit inefficient, better to use index later
+                    ]);
+                    const subMovements = movements.filter(m => m.subscriberId === id).sort((a,b) => b.timestamp - a.timestamp);
+
+                    const content = `
+                        <h4>تفعيل/تسديد</h4>
+                        <div class="card" style="display:flex; gap: 20px;">
+                            <form id="activation-form" style="flex:1; border-left: 1px solid var(--border-color); padding-left: 20px;">
+                                <h5>تفعيل اشتراك</h5>
+                                <div class="form-group">
+                                    <label>اختر باقة</label>
+                                    <select name="packageId" class="form-control">${packages.map(p => `<option value="${p.id}">${p.name} - ${p.price}</option>`).join('')}</select>
+                                </div>
+                                <button type="submit" class="btn btn-primary">تفعيل الآن</button>
+                            </form>
+                            <form id="payment-form" style="flex:1;">
+                                <h5>تسديد دين</h5>
+                                <div class="form-group">
+                                    <label>المبلغ المدفوع</label>
+                                    <input type="number" name="amount" class="form-control" required>
+                                </div>
+                                <button type="submit" class="btn btn-success">تسديد</button>
+                            </form>
+                        </div>
+                        <h4>سجل الحركات</h4>
+                        <div id="movements-history">
+                            ${subMovements.length ? subMovements.map(m => `<p>${Logic.formatDate(m.timestamp)}: ${m.type === 'activation' ? `تفعيل باقة ${m.packageName}` : `تسديد مبلغ ${m.amount}`}</p>`).join('') : '<p>لا يوجد حركات.</p>'}
+                        </div>
+                    `;
+                    UI.createModal(`تفاصيل المشترك: ${sub.name}`, content);
+                    
+                    // Event Listeners for the modal forms
+                    $('#activation-form').addEventListener('submit', async e => {
+                        e.preventDefault();
+                        const pkgId = parseInt(new FormData(e.target).get('packageId'));
+                        const pkg = packages.find(p => p.id === pkgId);
+                        
+                        sub.debt = (sub.debt || 0) + pkg.price;
+                        sub.endDate = new Date(Date.now() + pkg.duration_days * 24 * 60 * 60 * 1000).toISOString();
+                        
+                        await DB.update('subscribers', sub);
+                        await DB.add('movements', { subscriberId: id, type: 'activation', packageName: pkg.name, amount: pkg.price, timestamp: Date.now() });
+                        
+                        UI.showToast('تم التفعيل بنجاح!', 'success');
+                        UI.closeModal($('.modal-overlay').id);
+                        this.render();
+                    });
+
+                    $('#payment-form').addEventListener('submit', async e => {
+                        e.preventDefault();
+                        const amount = parseFloat(new FormData(e.target).get('amount'));
+                        if (isNaN(amount) || amount <= 0) { UI.showToast('أدخل مبلغ صحيح', 'error'); return; }
+
+                        sub.debt = (sub.debt || 0) - amount;
+                        await DB.update('subscribers', sub);
+                        await DB.add('movements', { subscriberId: id, type: 'payment', amount: amount, timestamp: Date.now() });
+
+                        UI.showToast('تم التسديد بنجاح!', 'success');
+                        UI.closeModal($('.modal-overlay').id);
+                        this.render();
+                    });
+                }
+            },
+            Packages: { // This page is mostly complete from previous steps
+                async render() {
+                    const packages = await DB.getAll('packages');
+                    $('#page-view').innerHTML = `
+                        <div class="card">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                <h2>إدارة الباقات</h2>
+                                <button id="add-package-btn" class="btn btn-primary"><i class="fas fa-plus"></i> إضافة باقة</button>
+                            </div>
+                            <div id="packages-list"></div>
+                        </div>`;
+                    this.renderList(packages);
+                    $('#add-package-btn').addEventListener('click', () => this.showPackageModal());
+                },
+                renderList(packages) {
+                    const listEl = $('#packages-list');
+                    if (!packages || packages.length === 0) { listEl.innerHTML = '<p>لم تتم إضافة أي باقات بعد.</p>'; return; }
+                    listEl.innerHTML = `
+                        <table class="table">
+                            <thead><tr><th>الاسم</th><th>السعر</th><th>التكلفة</th><th>المدة (أيام)</th><th>إجراءات</th></tr></thead>
+                            <tbody>${packages.map(p => `
+                                <tr>
+                                    <td>${p.name}</td><td>${p.price}</td><td>${p.cost}</td><td>${p.duration_days}</td>
+                                    <td>
+                                        <button class="btn-edit" data-id="${p.id}"><i class="fas fa-edit"></i></button>
+                                        <button class="btn-delete" data-id="${p.id}"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>`).join('')}
+                            </tbody>
+                        </table>`;
+                    listEl.querySelectorAll('.btn-edit').forEach(b => b.addEventListener('click', e => this.showPackageModal(parseInt(e.currentTarget.dataset.id))));
+                    listEl.querySelectorAll('.btn-delete').forEach(b => b.addEventListener('click', e => this.deletePackage(parseInt(e.currentTarget.dataset.id))));
+                },
+                async showPackageModal(id = null) {
+                    const pkg = id ? await DB.get('packages', id) : {};
+                    const content = `
+                        <form id="pkg-form">
+                            <div class="form-group"><label>اسم الباقة</label><input type="text" name="name" class="form-control" value="${pkg.name || ''}" required></div>
+                            <div class="form-group"><label>السعر</label><input type="number" name="price" class="form-control" value="${pkg.price || ''}" required></div>
+                            <div class="form-group"><label>التكلفة</label><input type="number" name="cost" class="form-control" value="${pkg.cost || ''}" required></div>
+                            <div class="form-group"><label>المدة (أيام)</label><input type="number" name="duration_days" class="form-control" value="${pkg.duration_days || ''}" required></div>
+                        </form>`;
+                    const footer = `<button id="save-pkg-btn" class="btn btn-primary">حفظ</button>`;
+                    UI.createModal(id ? 'تعديل باقة' : 'إضافة باقة', content, footer);
+                    $('#save-pkg-btn').addEventListener('click', () => this.savePackage(id));
+                },
+                async savePackage(id = null) {
+                    const form = new FormData($('#pkg-form'));
+                    const data = {
+                        name: form.get('name'),
+                        price: parseFloat(form.get('price')),
+                        cost: parseFloat(form.get('cost')),
+                        duration_days: parseInt(form.get('duration_days')),
+                    };
+                    if (id) data.id = id;
+                    await DB[id ? 'update' : 'add']('packages', data);
+                    UI.closeModal($('.modal-overlay').id);
+                    this.render();
+                },
+                async deletePackage(id) {
+                    if (confirm('هل أنت متأكد؟')) { await DB.delete('packages', id); this.render(); }
+                }
+            },
+            Expenses: {
+                async render() {
+                    const expenses = await DB.getAll('expenses');
+                     $('#page-view').innerHTML = `
+                        <div class="card">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                <h2>إدارة المصاريف</h2>
+                                <button id="add-expense-btn" class="btn btn-primary"><i class="fas fa-plus"></i> إضافة مصروف</button>
+                            </div>
+                            <div id="expenses-list"></div>
+                        </div>`;
+                    this.renderList(expenses);
+                    $('#add-expense-btn').addEventListener('click', () => this.showExpenseModal());
+                },
+                renderList(expenses) {
+                     const listEl = $('#expenses-list');
+                    if (!expenses || expenses.length === 0) { listEl.innerHTML = '<p>لم يتم تسجيل أي مصاريف بعد.</p>'; return; }
+                    listEl.innerHTML = `
+                        <table class="table">
+                            <thead><tr><th>الوصف</th><th>المبلغ</th><th>التاريخ</th><th>إجراءات</th></tr></thead>
+                            <tbody>${expenses.map(ex => `
+                                <tr>
+                                    <td>${ex.description}</td><td>${ex.amount.toLocaleString()}</td><td>${Logic.formatDate(ex.date)}</td>
+                                    <td>
+                                        <button class="btn-edit" data-id="${ex.id}"><i class="fas fa-edit"></i></button>
+                                        <button class="btn-delete" data-id="${ex.id}"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>`).join('')}
+                            </tbody>
+                        </table>`;
+                    listEl.querySelectorAll('.btn-edit').forEach(b => b.addEventListener('click', e => this.showExpenseModal(parseInt(e.currentTarget.dataset.id))));
+                    listEl.querySelectorAll('.btn-delete').forEach(b => b.addEventListener('click', e => this.deleteExpense(parseInt(e.currentTarget.dataset.id))));
+                },
+                 async showExpenseModal(id = null) {
+                    const ex = id ? await DB.get('expenses', id) : {};
+                    const content = `
+                        <form id="ex-form">
+                            <div class="form-group"><label>الوصف</label><input type="text" name="description" class="form-control" value="${ex.description || ''}" required></div>
+                            <div class="form-group"><label>المبلغ</label><input type="number" name="amount" class="form-control" value="${ex.amount || ''}" required></div>
+                            <div class="form-group"><label>التاريخ</label><input type="date" name="date" class="form-control" value="${(ex.date || new Date().toISOString()).split('T')[0]}" required></div>
+                        </form>`;
+                    const footer = `<button id="save-ex-btn" class="btn btn-primary">حفظ</button>`;
+                    UI.createModal(id ? 'تعديل مصروف' : 'إضافة مصروف', content, footer);
+                    $('#save-ex-btn').addEventListener('click', () => this.saveExpense(id));
+                },
+                async saveExpense(id = null) {
+                    const form = new FormData($('#ex-form'));
+                    const data = {
+                        description: form.get('description'),
+                        amount: parseFloat(form.get('amount')),
+                        date: new Date(form.get('date')).toISOString(),
+                    };
+                    if (id) data.id = id;
+                    await DB[id ? 'update' : 'add']('expenses', data);
+                    UI.closeModal($('.modal-overlay').id);
+                    this.render();
+                },
+                async deleteExpense(id) {
+                    if (confirm('هل أنت متأكد؟')) { await DB.delete('expenses', id); this.render(); }
+                }
+            },
+            Reports: {
+                async render() {
+                    $('#page-view').innerHTML = `<div class="card"><h2>التقارير المالية</h2><p>سيتم تطوير هذا القسم قريباً.</p></div>`;
+                }
+            },
+            Settings: {
+                async render() {
+                    $('#page-view').innerHTML = `<div class="card"><h2>الإعدادات</h2><p>سيتم تطوير هذا القسم قريباً.</p></div>`;
+                }
             }
+        };
 
-            // Start the application
-            init();
+        // --- 5. Main App Controller & Router ---
+        const App = {
+            init() {
+                this.setupEventListeners();
+                this.loadTheme();
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('sw.js').catch(err => console.error('SW registration failed:', err));
+                }
+                UI.showLoader();
+                DB.init().then(() => {
+                    this.handleRouteChange();
+                    UI.hideLoader();
+                }).catch(err => {
+                    UI.showToast(err, 'error');
+                    UI.hideLoader();
+                });
+            },
+            handleRouteChange() {
+                const hash = window.location.hash || '#dashboard';
+                const page = Pages[hash.substring(1)];
+                if (page) {
+                    page.render().catch(err => {
+                        console.error(`Error rendering ${hash}:`, err);
+                        UI.showToast('حدث خطأ في تحميل الصفحة', 'error');
+                    });
+                    document.querySelectorAll('#sidebar nav a').forEach(a => a.classList.toggle('active', a.hash === hash));
+                    $('#page-title').textContent = $(`a[href="${hash}"] span`).textContent;
+                }
+            },
+            setupEventListeners() {
+                $('#theme-toggle').addEventListener('click', () => this.toggleTheme());
+                $('#menu-toggle').addEventListener('click', () => $('#sidebar').classList.toggle('open'));
+                window.addEventListener('hashchange', () => this.handleRouteChange());
+            },
+            loadTheme() {
+                document.body.className = localStorage.getItem('theme') || '';
+                $('#theme-toggle i').className = document.body.classList.contains('dark-mode') ? 'fas fa-sun' : 'fas fa-moon';
+            },
+            toggleTheme() {
+                document.body.classList.toggle('dark-mode');
+                localStorage.setItem('theme', document.body.className);
+                this.loadTheme();
+            }
+        };
 
-        });
+        // --- 6. Start the Application ---
+        App.init();
+    });
     </script>
 </body>
 </html>
