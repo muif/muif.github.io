@@ -1,21 +1,22 @@
 {
-  "name": "نظام إدارة اشتراكات الإنترنت الاحترافي",
-  "short_name": "نظامي",
-  "description": "تطبيق ويب تقدمي لإدارة اشتراكات الإنترنت والمشتركين والتقارير المالية.",
-  "start_url": "/index.html",
+  "name": "نظام إدارة اشتراكات الإنترنت",
+  "short_name": "إدارة الاشتراكات",
+  "description": "تطبيق ويب تقدمي احترافي لإدارة شبكات ومكاتب الإنترنت.",
+  "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#f4f7fc",
+  "background_color": "#f4f7fa",
   "theme_color": "#4a90e2",
+  "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png"
+      "src": "https://placehold.co/192x192/4a90e2/ffffff?text=ISP",
+      "type": "image/png",
+      "sizes": "192x192"
     },
     {
-      "src": "icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "https://placehold.co/512x512/4a90e2/ffffff?text=ISP",
+      "type": "image/png",
+      "sizes": "512x512"
     }
   ]
 }
