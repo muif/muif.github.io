@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تسجيل الدخول - نظام الاشتراكات</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --primary-color-dark: #357ABD;
+            --bg-start: #0f2027;
+            --bg-end: #2c5364;
+            --surface-color: rgba(255, 255, 255, 0.1);
+            --text-color: #f0f0f0;
+            --text-color-light: #a7a7a7;
+            --danger-color: #e74c3c;
+            --success-color: #2ecc71;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        html, body {
+            height: 100%;
+            overflow: hidden; /* منع السكرول على مستوى الصفحة */
+        }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+        /* خلفية متحركة */
+        .background-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-color), #56a8e9);
+            opacity: 0.15;
+            animation: move 25s infinite ease-in-out alternate;
+        }
+        .shape1 { width: 200px; height: 200px; top: 10%; left: 10%; animation-duration: 30s; }
+        .shape2 { width: 300px; height: 300px; top: 60%; left: 70%; animation-duration: 35s; animation-delay: 5s; }
+        .shape3 { width: 150px; height: 150px; top: 40%; left: 40%; animation-duration: 20s; animation-delay: 2s; }
+        .shape4 { width: 250px; height: 250px; top: 80%; left: 15%; animation-duration: 40s; animation-delay: 7s; }
+
+        @keyframes move {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1.2); }
+            100% { transform: translate(calc(50vw - 100px), calc(50vh - 100px)) rotate(360deg) scale(1); }
+        }
+
+        .login-container {
+            position: relative;
+            z-index: 1;
+            background: var(--surface-color);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .login-container .logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px auto;
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            object-fit: cover;
+        }
+        .login-container h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .login-container p {
+            color: var(--text-color-light);
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+        .input-wrapper {
+            position: relative;
+        }
+        .form-control {
+            width: 100%;
+            padding: 15px 50px 15px 20px; /* مساحة للأيقونة */
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: rgba(0, 0, 0, 0.2);
+            color: var(--text-color);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+        .form-control::placeholder {
+            color: var(--text-color-light);
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.4);
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+        .input-icon {
+            position: absolute;
+            top: 50%;
+            right: 18px;
+            transform: translateY(-50%);
+            color: var(--text-color-light);
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+        .form-control:focus + .input-icon {
+            color: var(--primary-color);
+        }
+        #toggle-password {
+            left: 18px;
+            right: auto;
+            cursor: pointer;
+        }
+        .btn {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-color-dark));
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+        }
+        .btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        #toast-container { 
+            position: fixed; 
+            bottom: 20px; 
+            top: auto;
+            left: 50%; 
+            transform: translateX(-50%); 
+            z-index: 9999; 
+            width: calc(100% - 40px); 
+            max-width: 400px; 
+        }
+        .toast {
+            padding: 15px 20px; 
+            margin-bottom: 10px; 
+            border-radius: 12px; 
+            color: #fff;
+            background-color: var(--primary-color); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            opacity: 0; 
+            transform: translateY(100%); 
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+            font-weight: 600;
+        }
+        .toast.show { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+        .toast.error { 
+            background-color: var(--danger-color); 
+        }
+        .toast.success { 
+            background-color: var(--success-color); 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-shapes">
+        <div class="shape shape1"></div>
+        <div class="shape shape2"></div>
+        <div class="shape shape3"></div>
+        <div class="shape shape4"></div>
+    </div>
+    
+    <div id="toast-container"></div>
+
+    <div class="login-container">
+        <img src="https://placehold.co/150x150/ffffff/4a90e2?text=DashNET" alt="شعار الشركة" class="logo">
+        <h1>مرحباً بعودتك</h1>
+        <p>سجّل الدخول للمتابعة إلى نظامك</p>
+        <form id="login-form">
+            <div class="form-group">
+                <div class="input-wrapper">
+                    <input type="text" id="username" class="form-control" required placeholder="اسم المستخدم">
+                    <i class="fas fa-user input-icon"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-wrapper">
+                    <input type="password" id="password" class="form-control" required placeholder="كلمة المرور">
+                    <i class="fas fa-lock input-icon"></i>
+                    <i class="fas fa-eye input-icon" id="toggle-password"></i>
+                </div>
+            </div>
+            <button type="submit" id="login-btn" class="btn">دخول</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('login-form');
+            const loginBtn = document.getElementById('login-btn');
+            const passwordInput = document.getElementById('password');
+            const togglePassword = document.getElementById('toggle-password');
+            
+            // --- دالة للحصول على معرف جهاز فريد أو إنشائه ---
+            function getOrSetDeviceId() {
+                let deviceId = localStorage.getItem('deviceId');
+                if (!deviceId) {
+                    deviceId = crypto.randomUUID();
+                    localStorage.setItem('deviceId', deviceId);
+                }
+                return deviceId;
+            }
+
+            // --- وظيفة تبديل رؤية كلمة المرور ---
+            togglePassword.addEventListener('click', function (e) {
+                e.preventDefault();
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+
+            // --- وظيفة التعامل مع إرسال النموذج ---
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const username = document.getElementById('username').value.trim();
+                const password = passwordInput.value.trim();
+                const gSheetApiUrl = 'https://script.google.com/macros/s/AKfycbyCQimNQovH8M_IhkmRZggjeCLE4WBi3wGg5qqL7oSWHM2U7wYdrivmCVm88sAjTvwH/exec';
+
+                if (!username || !password) {
+                    showToast('الرجاء إدخال اسم المستخدم وكلمة المرور.', 'error');
+                    return;
+                }
+
+                setLoading(true);
+                const deviceId = getOrSetDeviceId();
+
+                const requestBody = {
+                    action: 'login',
+                    username: username,
+                    password: password,
+                    deviceId: deviceId
+                };
+
+                try {
+                    const response = await fetch(gSheetApiUrl, {
+                        method: 'POST',
+                        mode: 'cors',
+                        headers: {
+                            'Content-Type': 'text/plain;charset=utf-8',
+                        },
+                        body: JSON.stringify(requestBody)
+                    });
+                    
+                    const resultText = await response.text();
+                    const result = JSON.parse(resultText);
+
+                    if (result.success) {
+                        localStorage.setItem('isLoggedIn', 'true');
+                        localStorage.setItem('loggedInUser', JSON.stringify(result.data));
+                        localStorage.setItem('gSheetApiUrl', gSheetApiUrl);
+                        
+                        showToast('تم تسجيل الدخول بنجاح!', 'success');
+                        setTimeout(() => {
+                            window.location.href = './index.html';
+                        }, 1500);
+                    } else {
+                        showToast(result.message || 'اسم المستخدم أو كلمة المرور غير صحيحة.', 'error');
+                        setLoading(false);
+                    }
+                } catch (error) {
+                    console.error('Login Error:', error);
+                    showToast('لا يمكن الوصول للخادم. تحقق من اتصالك بالإنترنت.', 'error');
+                    setLoading(false);
+                }
+            });
+
+            // --- وظيفة عرض التنبيهات (Toast) ---
+            function showToast(message, type = 'info') {
+                const container = document.getElementById('toast-container');
+                container.innerHTML = ''; 
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+                container.appendChild(toast);
+
+                setTimeout(() => toast.classList.add('show'), 10);
+
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 500);
+                }, 4000);
+            }
+
+            // --- وظيفة التحكم بحالة التحميل للزر ---
+            function setLoading(isLoading) {
+                loginBtn.disabled = isLoading;
+                if (isLoading) {
+                    loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                } else {
+                    loginBtn.textContent = 'دخول';
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
