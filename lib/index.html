@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صانع قصة انستغرام</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- html2canvas for exporting the story as an image -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Applying the same font as the index.html file */
+        body { 
+            font-family: 'Tajawal', sans-serif;
+            background-color: #111827; /* bg-gray-900 */
+            color: #d1d5db; /* text-gray-300 */
+        }
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1f2937; /* bg-gray-800 */ }
+        ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 10px; /* bg-gray-600 */ }
+        
+        /* The main container for the story preview with a 9:16 aspect ratio */
+        #story-preview-container {
+            aspect-ratio: 9 / 16;
+            width: 100%;
+            max-width: 405px; /* 9 * 45 */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease;
+        }
+        #story-preview-container:hover {
+            transform: scale(1.02);
+        }
+
+        /* The actual content that will be converted to an image */
+        #story-output {
+            background-size: cover;
+            background-position: center;
+            border: 2px solid rgba(255, 255, 255, 0.4); /* Added the main frame */
+        }
+
+        /* Highlight class for special words in the content */
+        .highlight-word {
+            color: var(--highlight-color, #facc15); /* Default yellow color */
+            font-weight: 500;
+        }
+
+        /* Styling for the control panel inputs */
+        .control-input {
+            background-color: #374151; /* bg-gray-700 */
+            border: 1px solid #4b5563; /* border-gray-600 */
+            color: white;
+            transition: all 0.2s ease;
+        }
+        .control-input:focus {
+            outline: none;
+            border-color: #f59e0b; /* border-yellow-500 */
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.5);
+        }
+        
+        /* Styling for selection items like backgrounds and palettes */
+        .selection-item {
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .selection-item.active {
+            border-color: #f59e0b; /* border-yellow-500 */
+            transform: scale(1.05);
+        }
+        
+        /* Custom styles for the loader */
+        .loader {
+            border: 5px solid #374151;
+            border-top: 5px solid #f59e0b;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* The container for the uploaded image and its decorative frame */
+        #image-container {
+            position: relative;
+            padding: 1.5rem; /* Space for the frame corners */
+            margin-top: 1rem;
+        }
+
+        #image-container::before,
+        #image-container::after {
+            content: '';
+            position: absolute;
+            width: 3rem;
+            height: 3rem;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        #image-container::before {
+            top: 0;
+            right: 0;
+            border-bottom-width: 0;
+            border-left-width: 0;
+            border-top-right-radius: 0.5rem;
+        }
+
+        #image-container::after {
+            bottom: 0;
+            left: 0;
+            border-top-width: 0;
+            border-right-width: 0;
+            border-bottom-left-radius: 0.5rem;
+        }
+
+        #uploaded-image-preview {
+            max-height: 200px;
+            width: 100%;
+            object-fit: contain;
+            /* Rules for spacing and subtle border */
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 0.25rem; /* 4px */
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 0.375rem; /* 6px */
+        }
+
+        /* Modal animation */
+        .modal-content { animation: zoomIn 0.3s ease-out; }
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-70 z-[100] hidden items-center justify-center flex-col">
+        <div class="loader"></div>
+        <p class="text-yellow-400 mt-4 text-center">جاري تجهيز الصورة...</p>
+    </div>
+
+    <!-- Share/Preview Modal -->
+    <div id="share-modal" class="fixed inset-0 bg-black bg-opacity-80 z-[110] hidden flex items-center justify-center p-4">
+        <div class="modal-content bg-gray-800 w-full max-w-md rounded-lg shadow-xl flex flex-col max-h-[90vh]">
+            <div class="flex justify-between items-center p-4 border-b border-gray-700">
+                <h2 class="text-xl font-bold text-white">معاينة القصة</h2>
+                <button id="close-modal-btn" class="p-2 rounded-full hover:bg-red-500"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <div class="p-4 flex-grow flex items-center justify-center">
+                <img id="final-image-preview" src="" alt="معاينة القصة" class="max-w-full max-h-full object-contain rounded-md">
+            </div>
+            <p class="text-xs text-center text-gray-500 px-4 pb-2">
+                "مشاركة للقصة" ستستخدم قائمة المشاركة في جهازك. اختر انستغرام للمشاركة مباشرة.
+            </p>
+            <div class="flex justify-center items-center p-4 border-t border-gray-700 gap-3">
+                <a id="modal-download-btn" href="#" download="story.png" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300">تحميل</a>
+                 <button id="story-share-btn" class="bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 hover:opacity-90 text-white font-bold py-2 px-6 rounded-lg transition duration-300">مشاركة للقصة</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8">
+            <img src="logo.png" alt="الشعار" class="w-40 md:w-48 mx-auto mb-2" onerror="this.style.display='none'">
+            <h1 class="text-2xl md:text-4xl font-bold text-white">صانع قصة انستغرام</h1>
+            <p class="text-gray-400 mt-2">صمم قصتك بسهولة وشاركها مع العالم</p>
+        </header>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+
+            <!-- Story Preview Section (Left/Top) -->
+            <div class="flex-shrink-0 w-full lg:w-auto mx-auto lg:mx-0">
+                <div id="story-preview-container" class="rounded-xl overflow-hidden bg-gray-800">
+                    <div id="story-output" class="w-full h-full relative flex flex-col p-6 text-white">
+                        <!-- Background Dimming Overlay -->
+                        <div id="background-overlay" class="absolute inset-0 bg-black transition-opacity duration-300" style="opacity: 0.4;"></div>
+                        
+                        <!-- Main content container -->
+                        <div id="main-content-container" class="relative z-10 flex flex-col items-center justify-center flex-grow text-center h-full overflow-hidden pt-8 pb-20">
+                            <h2 id="title-preview" class="text-2xl font-bold mb-4" style="color: var(--title-color, #FFFFFF);"></h2>
+                            <p id="content-preview" class="text-lg w-full break-words whitespace-pre-wrap" style="color: var(--content-color, #FFFFFF); line-height: 1.8;"></p>
+                            <div class="flex-grow"></div>
+                             <!-- Image container with frame -->
+                            <div id="image-container" class="hidden">
+                                <img id="uploaded-image-preview" src="" crossorigin="anonymous"/>
+                            </div>
+                        </div>
+                        
+                        <!-- Footer with logo -->
+                        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 p-4 z-10">
+                           <img src="logo.png" alt="الشعار" class="w-20 opacity-90" onerror="this.style.display='none'">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls Section (Right/Bottom) -->
+            <div class="flex-grow bg-gray-800 p-6 rounded-xl">
+                <!-- Title & Content Inputs -->
+                <div class="space-y-4 mb-6">
+                    <div>
+                        <label for="title-input" class="block mb-2 font-medium">العنوان (اختياري)</label>
+                        <input type="text" id="title-input" placeholder="اكتب العنوان هنا..." class="control-input w-full p-2 rounded-md">
+                    </div>
+                    <div>
+                        <label for="content-input" class="block mb-2 font-medium">المحتوى</label>
+                        <textarea id="content-input" rows="6" placeholder="اكتب المحتوى هنا... سيتم تلوين بعض الكلمات عشوائياً." class="control-input w-full p-2 rounded-md"></textarea>
+                    </div>
+                </div>
+
+                <!-- Text Formatting -->
+                <div class="mb-6">
+                    <h3 class="font-medium mb-2">تنسيق النص</h3>
+                    <div class="flex items-center gap-2 bg-gray-700 p-1 rounded-lg">
+                        <button class="text-align-btn flex-1 p-2 rounded-md hover:bg-gray-600" data-align="right" title="محاذاة لليمين">
+                            <svg class="w-5 h-5 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10.494 4.016a.75.75 0 01.75.75v10.468a.75.75 0 01-1.5 0V4.766a.75.75 0 01.75-.75zm-3.244 0a.75.75 0 01.75.75v10.468a.75.75 0 01-1.5 0V4.766a.75.75 0 01.75-.75zm-3.99 0a.75.75 0 01.75.75v10.468a.75.75 0 01-1.5 0V4.766a.75.75 0 01.75-.75zm8.484.75a.75.75 0 00-1.5 0v10.468a.75.75 0 001.5 0V4.766z" clip-rule="evenodd" /></svg>
+                        </button>
+                        <button class="text-align-btn flex-1 p-2 rounded-md hover:bg-gray-600 active" data-align="center" title="توسيط">
+                             <svg class="w-5 h-5 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2.646 4.016a.75.75 0 01.75-.75h12.958a.75.75 0 010 1.5H3.396a.75.75 0 01-.75-.75zm0 4.468a.75.75 0 01.75-.75h12.958a.75.75 0 010 1.5H3.396a.75.75 0 01-.75-.75zm0 4.5a.75.75 0 01.75-.75h12.958a.75.75 0 010 1.5H3.396a.75.75 0 01-.75-.75zm0 4.468a.75.75 0 01.75-.75h12.958a.75.75 0 010 1.5H3.396a.75.75 0 01-.75-.75z" clip-rule="evenodd" /></svg>
+                        </button>
+                        <button class="text-align-btn flex-1 p-2 rounded-md hover:bg-gray-600" data-align="left" title="محاذاة لليسار">
+                           <svg class="w-5 h-5 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.756 4.016a.75.75 0 01.75.75v10.468a.75.75 0 01-1.5 0V4.766a.75.75 0 01.75-.75zm3.244 0a.75.75 0 01.75.75v10.468a.75.75 0 01-1.5 0V4.766a.75.75 0 01.75-.75zm3.99 0a.75.75 0 01.75.75v10.468a.75.75 0 01-1.5 0V4.766a.75.75 0 01.75-.75zm-8.484.75a.75.75 0 00-1.5 0v10.468a.75.75 0 001.5 0V4.766z" clip-rule="evenodd" /></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Image Upload & Opacity -->
+                <div class="mb-6">
+                    <h3 class="font-medium mb-2">الصورة والخلفية</h3>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <label for="image-upload" class="flex-1 w-full text-center bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg cursor-pointer transition">
+                            <span>رفع صورة</span>
+                            <input type="file" id="image-upload" class="hidden" accept="image/*">
+                        </label>
+                        <button id="clear-image-btn" class="flex-1 w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition">إزالة الصورة</button>
+                    </div>
+                    <div class="mt-4">
+                        <label for="opacity-slider" class="block mb-2 text-sm">شفافية الخلفية: <span id="opacity-value">40</span>%</label>
+                        <input id="opacity-slider" type="range" min="0" max="100" value="40" class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Background Selection -->
+                <div class="mb-6">
+                    <h3 class="font-medium mb-2">اختر خلفية</h3>
+                    <div id="background-selection" class="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                        <!-- Backgrounds will be injected here by JS -->
+                    </div>
+                </div>
+                
+                <!-- Palette Selection -->
+                 <div class="mb-6">
+                    <h3 class="font-medium mb-2">اختر نمط الألوان</h3>
+                    <div id="palette-selection" class="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                        <!-- Palettes will be injected here by JS -->
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="pt-6 border-t border-gray-700">
+                    <button id="preview-btn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-5 rounded-lg transition duration-300 text-lg">معاينة وتحميل</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // DOM Elements
+        const titleInput = document.getElementById('title-input');
+        const contentInput = document.getElementById('content-input');
+        const titlePreview = document.getElementById('title-preview');
+        const contentPreview = document.getElementById('content-preview');
+        const storyOutput = document.getElementById('story-output');
+        const backgroundOverlay = document.getElementById('background-overlay');
+        const opacitySlider = document.getElementById('opacity-slider');
+        const opacityValue = document.getElementById('opacity-value');
+        const backgroundSelection = document.getElementById('background-selection');
+        const paletteSelection = document.getElementById('palette-selection');
+        const previewBtn = document.getElementById('preview-btn');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const imageUpload = document.getElementById('image-upload');
+        const imageContainer = document.getElementById('image-container');
+        const uploadedImagePreview = document.getElementById('uploaded-image-preview');
+        const clearImageBtn = document.getElementById('clear-image-btn');
+        const textAlignBtns = document.querySelectorAll('.text-align-btn');
+        const mainContentContainer = document.getElementById('main-content-container');
+        
+        // Modal elements
+        const shareModal = document.getElementById('share-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const finalImagePreview = document.getElementById('final-image-preview');
+        const modalDownloadBtn = document.getElementById('modal-download-btn');
+        const storyShareBtn = document.getElementById('story-share-btn');
+        let generatedCanvas = null;
+
+        // Data: Backgrounds & Palettes
+        const backgrounds = [
+            { type: 'gradient', value: 'linear-gradient(145deg, #1f2937, #374151)' },
+            { type: 'gradient', value: 'linear-gradient(145deg, #064e3b, #047857)' },
+            { type: 'gradient', value: 'linear-gradient(145deg, #4c1d95, #7c3aed)' },
+            { type: 'gradient', value: 'linear-gradient(145deg, #9f1239, #be123c)' },
+            { type: 'gradient', value: 'linear-gradient(145deg, #1e3a8a, #3b82f6)' },
+            { type: 'image', value: 'url(https://picsum.photos/405/720)' }, // CORS-friendly image
+        ];
+
+        const palettes = [
+            { name: 'Default', bg: '#1f2937', title: '#FFFFFF', content: '#d1d5db', highlight: '#facc15' },
+            { name: 'Forest', bg: '#064e3b', title: '#a7f3d0', content: '#d1fae5', highlight: '#fef08a' },
+            { name: 'Royal', bg: '#4c1d95', title: '#ddd6fe', content: '#e9d5ff', highlight: '#fde047' },
+            { name: 'Ruby', bg: '#9f1239', title: '#fecdd3', content: '#ffe4e6', highlight: '#fefce8' },
+            { name: 'Ocean', bg: '#1e3a8a', title: '#dbeafe', content: '#eff6ff', highlight: '#e0f2fe' },
+            { name: 'Ink', bg: '#171717', title: '#f5f5f5', content: '#d4d4d4', highlight: '#a3e635' },
+        ];
+        
+        let initialFontSize = 18; // Store initial font size in px (text-lg corresponds to 18px)
+
+        // --- FUNCTIONS ---
+        
+        function adjustContentLayout() {
+            contentPreview.style.fontSize = `${initialFontSize}px`; 
+            requestAnimationFrame(() => {
+                let currentFontSize = initialFontSize;
+                const minFontSize = 10;
+                while (mainContentContainer.scrollHeight > mainContentContainer.clientHeight && currentFontSize > minFontSize) {
+                    currentFontSize -= 0.5;
+                    contentPreview.style.fontSize = `${currentFontSize}px`;
+                }
+            });
+        }
+
+        // Function to update the preview text and apply new keyword coloring
+        function updateText() {
+            const titleText = titleInput.value;
+            const contentText = contentInput.value;
+            
+            titlePreview.textContent = titleText;
+            titlePreview.classList.toggle('hidden', !titleText);
+            
+            const regex = /(".*?")|(\(.*?\))|([a-zA-Z\d]+)|([\u0600-\u06FF]+)|(.)/g;
+            const coloredContent = contentText.replace(regex, (match, quote, paren, english, arabic) => {
+                if (quote || paren || english) {
+                    return `<span class="highlight-word">${match}</span>`;
+                }
+                if (arabic && Math.random() < 0.14) { // Approx 1 in 7 chance
+                    return `<span class="highlight-word">${match}</span>`;
+                }
+                return match;
+            });
+
+            contentPreview.innerHTML = coloredContent;
+            adjustContentLayout();
+        }
+
+        function applyBackground(bg) {
+            storyOutput.style.backgroundImage = bg;
+        }
+
+        function applyPalette(palette) {
+            storyOutput.style.setProperty('--title-color', palette.title);
+            storyOutput.style.setProperty('--content-color', palette.content);
+            storyOutput.style.setProperty('--highlight-color', palette.highlight);
+            titlePreview.style.color = palette.title;
+            contentPreview.style.color = palette.content;
+            updateText(); // Re-apply highlight colors and adjust layout
+        }
+
+        function initializeSelections() {
+            backgrounds.forEach((bg, index) => {
+                const item = document.createElement('div');
+                item.className = 'selection-item h-12 w-full rounded-md';
+                if (index === 0) item.classList.add('active');
+                item.style.backgroundImage = bg.value;
+                item.style.backgroundSize = 'cover';
+                item.addEventListener('click', () => {
+                    document.querySelector('#background-selection .active').classList.remove('active');
+                    item.classList.add('active');
+                    applyBackground(bg.value);
+                });
+                backgroundSelection.appendChild(item);
+            });
+
+            palettes.forEach((palette, index) => {
+                const item = document.createElement('div');
+                item.className = 'selection-item h-12 w-full rounded-md flex items-center justify-center gap-1 p-1';
+                if (index === 0) item.classList.add('active');
+                item.innerHTML = `<div class="h-full w-full rounded" style="background-color: ${palette.content};"></div><div class="h-full w-full rounded" style="background-color: ${palette.highlight};"></div>`;
+                item.addEventListener('click', () => {
+                    document.querySelector('#palette-selection .active').classList.remove('active');
+                    item.classList.add('active');
+                    applyPalette(palette);
+                });
+                paletteSelection.appendChild(item);
+            });
+        }
+        
+        function handleImageUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    uploadedImagePreview.src = event.target.result;
+                    imageContainer.classList.remove('hidden');
+                    adjustContentLayout();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function clearImage() {
+            uploadedImagePreview.src = '';
+            imageContainer.classList.add('hidden');
+            imageUpload.value = '';
+            adjustContentLayout();
+        }
+
+        function handleTextAlign(align) {
+            titlePreview.style.textAlign = align;
+            contentPreview.style.textAlign = align;
+        }
+
+        async function generateAndShowPreview() {
+            loadingOverlay.classList.remove('hidden');
+            loadingOverlay.classList.add('flex');
+            
+            try {
+                generatedCanvas = await html2canvas(storyOutput, {
+                    useCORS: true,
+                    backgroundColor: null,
+                    scale: 2
+                });
+                
+                const imageUrl = generatedCanvas.toDataURL('image/png');
+                finalImagePreview.src = imageUrl;
+                modalDownloadBtn.href = imageUrl;
+                shareModal.style.display = 'flex';
+
+            } catch (err) {
+                console.error('Failed to generate image:', err);
+                alert('عذراً، حدث خطأ أثناء تجهيز الصورة.');
+            } finally {
+                loadingOverlay.classList.add('hidden');
+                loadingOverlay.classList.remove('flex');
+            }
+        }
+
+        // --- EVENT LISTENERS ---
+
+        titleInput.addEventListener('input', updateText);
+        contentInput.addEventListener('input', updateText);
+        imageUpload.addEventListener('change', handleImageUpload);
+        clearImageBtn.addEventListener('click', clearImage);
+        previewBtn.addEventListener('click', generateAndShowPreview);
+        closeModalBtn.addEventListener('click', () => shareModal.style.display = 'none');
+        
+        opacitySlider.addEventListener('input', (e) => {
+            const value = e.target.value;
+            const opacity = value / 100;
+            backgroundOverlay.style.opacity = opacity;
+            opacityValue.textContent = value;
+        });
+
+        textAlignBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                textAlignBtns.forEach(b => b.classList.remove('bg-yellow-500', 'text-white'));
+                btn.classList.add('bg-yellow-500', 'text-white');
+                handleTextAlign(btn.dataset.align);
+            });
+        });
+
+        if (navigator.share) {
+            storyShareBtn.addEventListener('click', async () => {
+                if (!generatedCanvas) return;
+                generatedCanvas.toBlob(async (blob) => {
+                    const file = new File([blob], 'story.png', { type: 'image/png' });
+                     try {
+                        await navigator.share({
+                            files: [file],
+                            title: 'قصتي',
+                            text: 'تم إنشاؤها بواسطة صانع القصص',
+                        });
+                    } catch (error) {
+                        console.error('Error sharing:', error);
+                    }
+                }, 'image/png');
+            });
+        } else {
+             storyShareBtn.style.display = 'none';
+        }
+
+        // --- INITIALIZATION ---
+        initializeSelections();
+        updateText();
+        applyBackground(backgrounds[0].value);
+        applyPalette(palettes[0]);
+        document.querySelector('.text-align-btn[data-align="center"]').classList.add('bg-yellow-500', 'text-white');
+        handleTextAlign('center');
+    });
+    </script>
+</body>
+</html>
+
