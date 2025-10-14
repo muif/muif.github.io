@@ -144,19 +144,21 @@
     <!-- Share/Preview Modal -->
     <div id="share-modal" class="fixed inset-0 bg-black bg-opacity-80 z-[110] hidden flex items-center justify-center p-4">
         <div class="modal-content bg-gray-800 w-full max-w-md rounded-lg shadow-xl flex flex-col max-h-[90vh]">
-            <div class="flex justify-between items-center p-4 border-b border-gray-700">
+            <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0">
                 <h2 class="text-xl font-bold text-white">معاينة القصة</h2>
                 <button id="close-modal-btn" class="p-2 rounded-full hover:bg-red-500"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
-            <div class="p-4 flex-grow flex items-center justify-center">
+            <div class="p-4 flex-grow flex items-center justify-center overflow-y-auto">
                 <img id="final-image-preview" src="" alt="معاينة القصة" class="max-w-full max-h-full object-contain rounded-md">
             </div>
-            <p class="text-xs text-center text-gray-500 px-4 pb-2">
-                "مشاركة للقصة" ستستخدم قائمة المشاركة في جهازك. اختر انستغرام للمشاركة مباشرة.
-            </p>
-            <div class="flex justify-center items-center p-4 border-t border-gray-700 gap-3">
-                <a id="modal-download-btn" href="#" download="story.png" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300">تحميل</a>
-                 <button id="story-share-btn" class="bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 hover:opacity-90 text-white font-bold py-2 px-6 rounded-lg transition duration-300">مشاركة للقصة</button>
+            <div class="flex-shrink-0">
+                <p class="text-xs text-center text-gray-500 px-4 pb-2">
+                    "مشاركة للقصة" ستستخدم قائمة المشاركة في جهازك. اختر انستغرام للمشاركة مباشرة.
+                </p>
+                <div class="flex justify-center items-center p-4 border-t border-gray-700 gap-3">
+                    <a id="modal-download-btn" href="#" download="story.png" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300">تحميل</a>
+                     <button id="story-share-btn" class="bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 hover:opacity-90 text-white font-bold py-2 px-6 rounded-lg transition duration-300">مشاركة للقصة</button>
+                </div>
             </div>
         </div>
     </div>
