@@ -1,27 +1,158 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-      
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeraTV Pro | نظام البث المتكامل</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #020203; color: #f8fafc; overflow: hidden; }
+        .glass-panel { background: rgba(10, 10, 15, 0.75); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.03); }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.2); border-radius: 10px; }
+        video::-webkit-media-controls { display: none !important; }
+        .animate-slide { animation: slideUp 0.5s ease-out forwards; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="h-screen flex">
 
-      <!--=============== REMIXICONS ===============-->
-      <link rel="stylesheet" href="./files/remixicon.css" crossorigin="">
+    <div id="overlay" class="fixed inset-0 bg-black/90 z-[100] hidden backdrop-blur-sm"></div>
 
-      <!--=============== CSS ===============-->
-      <link rel="stylesheet" href="./files/stylelive.css">
- <link href="https://muif.github.io/img/favicon.png" rel="icon">
-  <link href="https://muif.github.io/img/apple-touch-icon.png" rel="apple-touch-icon">
+    <aside id="sidebar" class="fixed lg:relative top-0 right-0 h-full w-80 bg-[#08080a] border-l border-white/5 z-[110] flex flex-col translate-x-full lg:translate-x-0 transition-transform duration-500">
+        <div class="p-8 flex items-center gap-4">
+            <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-xl"><i data-lucide="tv" class="text-white"></i></div>
+            <h1 class="font-black text-xl">TERA <span class="text-blue-500">TV</span></h1>
+        </div>
+        <nav id="category-list" class="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-1.5"></nav>
+    </aside>
 
-      <title> البث المباشر - Muntadher Imad</title>
-   </head>
-   <body>
-      <div class="login" style="background-image: url(./files/bac.jpg);" >
-         <iframe class="login__form" src="https://muif.github.io/Tools/View/BeINHD1.html" width="100%" height="100%" frameborder="0" allow="autoplay" allowfullscreen></iframe>
-            <h2 class="form-title" id="signup" style="
-    color: #fff; font-size: 0.9em;
-    text-align: center;
-    "><p>العراق ضد اليمن (SERVER 2)</p>
-           <a href="https://muif.github.io/Tools/Live.html" >Server 1</a> | 
-                     <a href="https://muif.github.io/Tools/Live1.html" >Server 2</a> | 
-           <span></span><p>Muntadher Imad - منتظر عماد</p></h2>
- </div>
-</body></html>
+    <main class="flex-1 flex flex-col min-w-0 bg-[#020203]">
+        <header class="h-24 glass-panel px-6 lg:px-12 flex items-center justify-between border-b border-white/5">
+            <button onclick="toggleSidebar()" class="lg:hidden p-4 bg-white/5 rounded-2xl"><i data-lucide="menu"></i></button>
+            <div class="flex-1 max-w-xl mx-4 relative">
+                <i data-lucide="search" class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                <input type="text" id="search-input" placeholder="بحث سريع..." class="w-full bg-[#0d0d0f] rounded-2xl py-3.5 pr-14 pl-6 text-sm">
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="px-5 py-2 bg-blue-600 rounded-xl text-[11px] font-black">PREMIUM</div>
+            </div>
+        </header>
+
+        <div id="scroll-container" class="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-12">
+            <!-- Player Section -->
+            <div id="player-section" class="hidden mb-16 animate-slide">
+                <div class="relative rounded-[3rem] overflow-hidden border border-white/10 bg-black aspect-video shadow-2xl">
+                    <video id="video-player" class="w-full h-full object-contain"></video>
+                    
+                    <!-- Player Error -->
+                    <div id="p-error" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/90 hidden">
+                        <i data-lucide="alert-circle" class="text-red-500 w-12 h-12 mb-4"></i>
+                        <p class="text-white font-bold mb-4">تعذر تشغيل هذه القناة</p>
+                        <button onclick="retryLast()" class="px-6 py-2 bg-blue-600 rounded-xl font-bold">إعادة محاولة</button>
+                    </div>
+
+                    <!-- Loader -->
+                    <div id="p-loader" class="absolute inset-0 flex items-center justify-center bg-black/80 backdrop-blur-md hidden">
+                        <div class="flex flex-col items-center gap-4">
+                            <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                            <p class="text-blue-500 text-[10px] font-black tracking-widest uppercase">جاري استلام البث...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute inset-0 opacity-0 hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-10 bg-gradient-to-t from-black via-transparent to-transparent">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-4">
+                                <button onclick="togglePlay()" class="p-4 bg-white text-black rounded-full"><i data-lucide="play" id="play-icon"></i></button>
+                                <h2 id="p-title" class="text-white font-bold"></h2>
+                            </div>
+                            <button onclick="closePlayer()" class="p-4 bg-red-600/20 text-red-500 rounded-xl"><i data-lucide="x"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="channels-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-8 gap-6"></div>
+        </div>
+    </main>
+
+    <script>
+        const CONFIG = { user: "M89754etty", pass: "H76533ettfg", host: "teratv.info", api: "https://teratv.info/player_api.php" };
+        let state = { channels: [], currentId: null, hls: null };
+
+        async function init() {
+            try {
+                const [sRes, cRes] = await Promise.all([
+                    fetch(`${CONFIG.api}?username=${CONFIG.user}&password=${CONFIG.pass}&action=get_live_streams`),
+                    fetch(`${CONFIG.api}?username=${CONFIG.user}&password=${CONFIG.pass}&action=get_live_categories`)
+                ]);
+                state.channels = await sRes.json();
+                renderCategories(await cRes.json());
+                renderChannels(state.channels);
+                lucide.createIcons();
+            } catch (err) { alert("فشل الاتصال بالسيرفر"); }
+        }
+
+        function renderCategories(cats) {
+            const list = document.getElementById('category-list');
+            list.innerHTML = `<button onclick="renderChannels(state.channels)" class="w-full p-4 text-right rounded-xl hover:bg-white/5 font-bold">الكل</button>` + 
+                cats.map(c => `<button onclick="filter('${c.category_id}')" class="w-full p-4 text-right rounded-xl hover:bg-white/5 text-sm font-bold text-slate-500">${c.category_name}</button>`).join('');
+        }
+
+        function filter(id) {
+            const filtered = state.channels.filter(c => c.category_id === id);
+            renderChannels(filtered);
+            if(window.innerWidth < 1024) toggleSidebar();
+        }
+
+        function renderChannels(list) {
+            const grid = document.getElementById('channels-grid');
+            grid.innerHTML = list.map(c => `
+                <div onclick="playChannel('${c.stream_id}', '${c.name.replace(/'/g, "")}', '${c.stream_icon}')" class="bg-[#0d0d0f] p-4 rounded-[2rem] border border-white/5 cursor-pointer hover:border-blue-600 transition-all text-center animate-slide">
+                    <img src="${c.stream_icon}" class="w-full aspect-square object-contain mb-4" onerror="this.src='https://ui-avatars.com/api/?name=TV'">
+                    <p class="text-xs font-bold truncate">${c.name}</p>
+                </div>
+            `).join('');
+        }
+
+        function playChannel(id, name, icon, useTs = false) {
+            state.currentId = id;
+            const video = document.getElementById('video-player');
+            const ext = useTs ? 'ts' : 'm3u8';
+            const url = `https://${CONFIG.host}/live/${CONFIG.user}/${CONFIG.pass}/${id}.${ext}`;
+            
+            document.getElementById('player-section').classList.remove('hidden');
+            document.getElementById('p-title').innerText = name;
+            document.getElementById('p-loader').classList.remove('hidden');
+            document.getElementById('p-error').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (!useTs && Hls.isSupported()) {
+                if (state.hls) state.hls.destroy();
+                const hls = new Hls();
+                state.hls = hls;
+                hls.loadSource(url);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => { video.play(); document.getElementById('p-loader').classList.add('hidden'); });
+                hls.on(Hls.Events.ERROR, (e, data) => { 
+                    if(data.fatal) { hls.destroy(); playChannel(id, name, icon, true); }
+                });
+            } else {
+                video.src = url;
+                video.play().then(() => document.getElementById('p-loader').classList.add('hidden'))
+                     .catch(() => { if(!useTs) playChannel(id, name, icon, true); else document.getElementById('p-error').classList.remove('hidden'); });
+            }
+        }
+
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('translate-x-full'); document.getElementById('overlay').classList.toggle('hidden'); }
+        function closePlayer() { document.getElementById('player-section').classList.add('hidden'); document.getElementById('video-player').pause(); if(state.hls) state.hls.destroy(); }
+        function retryLast() { if(state.currentId) playChannel(state.currentId, "إعادة محاولة...", ""); }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
+
