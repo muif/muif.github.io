@@ -1,158 +1,164 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TeraTV Pro | نظام البث المتكامل</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #020203; color: #f8fafc; overflow: hidden; }
-        .glass-panel { background: rgba(10, 10, 15, 0.75); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.03); }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.2); border-radius: 10px; }
-        video::-webkit-media-controls { display: none !important; }
-        .animate-slide { animation: slideUp 0.5s ease-out forwards; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
-</head>
-<body class="h-screen flex">
 
-    <div id="overlay" class="fixed inset-0 bg-black/90 z-[100] hidden backdrop-blur-sm"></div>
+<!DOCTYPE html><html prefix="og: https://ogp.me/ns/website#" lang="ar_MA"><head><meta charSet="utf-8"/><meta name="data-spm" content="a2g0n"/><meta http-equiv="content-language" content="ar_MA"/><title>.com - تسوق على الانترنت للالكترونيات ، الموضة ، المنزل والحديقة ، الألعاب والرياضات ، السيارات والمزيد.
 
-    <aside id="sidebar" class="fixed lg:relative top-0 right-0 h-full w-80 bg-[#08080a] border-l border-white/5 z-[110] flex flex-col translate-x-full lg:translate-x-0 transition-transform duration-500">
-        <div class="p-8 flex items-center gap-4">
-            <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-xl"><i data-lucide="tv" class="text-white"></i></div>
-            <h1 class="font-black text-xl">TERA <span class="text-blue-500">TV</span></h1>
-        </div>
-        <nav id="category-list" class="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-1.5"></nav>
-    </aside>
+</title><meta name="description" content="التسوق عبر الإنترنت لأحدث الأجهزة الإلكترونية ، والأزياء ، وملحقات الهاتف ، والإلكترونيات الكمبيوتر ، ولعب الأطفال ، المنزل والحديقة ، والأجهزة المنزلية ، وأدوات ، وتحسين المنزل وأكثر من ذلك."/><meta name="data-js-version" content="0.0.117"/><meta name="keywords" content="aliexpress ، التسوق عبر الإنترنت ، السيارات ، الهواتف ، اكسسوارات ، أجهزة الكمبيوتر ، الالكترونيات ، الموضة ، الجمال ، الصحة ، المنزل ، حديقة ، لعب ، الرياضة ، حفلات الزفاف
+"/><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/><meta name="aplus-waiting" content="MAN"/><meta name="format-detection" content="telephone=no"/><meta name="robots" content="follow,index"/><meta property="og:title" content=".com - تسوق على الانترنت للالكترونيات ، الموضة ، المنزل والحديقة ، الألعاب والرياضات ، السيارات والمزيد.
 
-    <main class="flex-1 flex flex-col min-w-0 bg-[#020203]">
-        <header class="h-24 glass-panel px-6 lg:px-12 flex items-center justify-between border-b border-white/5">
-            <button onclick="toggleSidebar()" class="lg:hidden p-4 bg-white/5 rounded-2xl"><i data-lucide="menu"></i></button>
-            <div class="flex-1 max-w-xl mx-4 relative">
-                <i data-lucide="search" class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500"></i>
-                <input type="text" id="search-input" placeholder="بحث سريع..." class="w-full bg-[#0d0d0f] rounded-2xl py-3.5 pr-14 pl-6 text-sm">
-            </div>
-            <div class="flex items-center gap-4">
-                <div class="px-5 py-2 bg-blue-600 rounded-xl text-[11px] font-black">PREMIUM</div>
-            </div>
-        </header>
+"/><meta property="og:type" content="website"/><meta property="og:url" content="https://mbest.aliexpress.com"/><meta property="og:image" content="https://ae-pic-a1.aliexpress-media.com/kf/Sa0202ec8a96a4085962acfc27e9ffd04F/1080x1080.jpg"/><meta property="og:site_name" content=".com - تسوق على الانترنت للالكترونيات ، الموضة ، المنزل والحديقة ، الألعاب والرياضات ، السيارات والمزيد.
 
-        <div id="scroll-container" class="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-12">
-            <!-- Player Section -->
-            <div id="player-section" class="hidden mb-16 animate-slide">
-                <div class="relative rounded-[3rem] overflow-hidden border border-white/10 bg-black aspect-video shadow-2xl">
-                    <video id="video-player" class="w-full h-full object-contain"></video>
-                    
-                    <!-- Player Error -->
-                    <div id="p-error" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/90 hidden">
-                        <i data-lucide="alert-circle" class="text-red-500 w-12 h-12 mb-4"></i>
-                        <p class="text-white font-bold mb-4">تعذر تشغيل هذه القناة</p>
-                        <button onclick="retryLast()" class="px-6 py-2 bg-blue-600 rounded-xl font-bold">إعادة محاولة</button>
-                    </div>
+"/><meta property="fb:admins" content="100001353684210,644984273"/><meta property="fb:page_id" content="335963307560"/><meta property="fb:app_id" content="176044105761845"/><meta property="al:android:package" content="com.alibaba.aliexpresshd"/><meta property="al:android:app_name" content="AliExpress"/><meta property="al:iphone:app_store_id" content="436672029"/><meta property="al:iphone:app_name" content="AliExpress"/><link rel="canonical" href="https://mbest.aliexpress.com"/><link rel="preconnect dns-prefetch" href="//g.alicdn.com" />
+<link rel="preconnect dns-prefetch" href="//assets.alicdn.com" />
+<link rel="preconnect dns-prefetch" href="//o.alicdn.com" />
+<link rel="preconnect dns-prefetch" href="//is.alicdn.com" />
+<link rel="preconnect dns-prefetch" href="//aeis.alicdn.com" />
+<link rel="preconnect dns-prefetch" href="//ae01.alicdn.com" />
+<link rel="preconnect dns-prefetch" href="//ae04.alicdn.com" />
+<link rel="preconnect dns-prefetch" href="//ae-pic-a1.aliexpress-media.com" />
+<link rel="preconnect dns-prefetch" href="//acs.aliexpress.com" />
+<link rel="preconnect dns-prefetch" href="//acs.aliexpress.us" />
+<link rel="preconnect dns-prefetch" href="//ae.mmstat.com" />
+<link rel="preconnect dns-prefetch" href="//time-ae.akamaized.net" />
+<link rel="preconnect dns-prefetch" href="//video.aliexpress-media.com" />
+<link rel="icon" href="//ae-pic-a1.aliexpress-media.com/images/eng/wholesale/icon/aliexpress.ico"/><link rel="search" type="application/opensearchdescription+xml" href="//www.aliexpress.com/plugins/opensearch/opensearch.xml" title=".com - تسوق على الانترنت للالكترونيات ، الموضة ، المنزل والحديقة ، الألعاب والرياضات ، السيارات والمزيد.
 
-                    <!-- Loader -->
-                    <div id="p-loader" class="absolute inset-0 flex items-center justify-center bg-black/80 backdrop-blur-md hidden">
-                        <div class="flex flex-col items-center gap-4">
-                            <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                            <p class="text-blue-500 text-[10px] font-black tracking-widest uppercase">جاري استلام البث...</p>
-                        </div>
-                    </div>
-                    
-                    <div class="absolute inset-0 opacity-0 hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-10 bg-gradient-to-t from-black via-transparent to-transparent">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-4">
-                                <button onclick="togglePlay()" class="p-4 bg-white text-black rounded-full"><i data-lucide="play" id="play-icon"></i></button>
-                                <h2 id="p-title" class="text-white font-bold"></h2>
-                            </div>
-                            <button onclick="closePlayer()" class="p-4 bg-red-600/20 text-red-500 rounded-xl"><i data-lucide="x"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+"/><link href="android-app:https://com.alibaba.aliexpresshd/aliexpress/deeplink/home/www/en" hrefLang="en" rel="alternate"/><script>(function(){var e,t;let a="iframe";if(window.parent!==window){const e=window.innerWidth||document.documentElement.clientWidth,t=window.innerHeight||document.documentElement.clientHeight;(e<100||t<100)&&(a="abnormal-iframe")}else a="direct";window.AES_CONFIG={dim8:window._oss_dida_bottom_page_hit_?"fail-over":null!==(t=null===(e=document.querySelector('meta[name="data-js-version"]'))||void 0===e?void 0:e.getAttribute("content"))&&void 0!==t?t:"",dim10:a},window._msite_header_config_={diaplays:["LargeLogo","ShipTo"],actions:[]},window.SMART_BANNER_CONFIG={ready:!0},document.dispatchEvent(new Event("smartBannerReady"))})();</script><script>window._dida_config_ = {"pageVersion":"774da1de04d76e6be91c6635bf1b493b","pageName":"home-msite","passQuery":["mockCurrentTime","mockModuleId","gopExtParam"]};/*!-->init-data-start--*/
+window._dida_config_._init_data_= { data: {"hierarchy":{"root":"root","structure":{"root":["gop-floor_3473","pop-container_3659","gdpr_3660"]}},"data":{"root":{"id":0,"type":"root","fields":{"pageId":"cabeefbb19b43ce568a40cfcfa4158a7b32d193f68"}},"gop-floor_3473":{"id":3473,"type":"gop-floor","fields":{"extendAttributes":{},"mocked":false,"protocol":"ultron3","data":{"container":{"data":[{"containerType":"native","id":"5854048","type":["native$download-bar"]},{"containerType":"native","id":"6258309","type":["native$more-to-love"]}]},"endpoint":{"mode":"msite","osVersion":"msite","protocolVersion":"3.0","ultronage":"true"},"reload":true,"data":{"more-to-love_6258309":{"spmc":"moretolove","tag":"more-to-love","id":"6258309","position":"more-to-love","type":"more-to-love","fields":{"downgradeWithFetch":true,"gop_biz_code":["bestMoreToLove"],"downgradeUrl":"300001995/y2HWEdFSTP","title":"المزيد مما يعجبك","degrade":"false"},"events":{"onAppear":[{"type":"ut_exposure","fields":{"spm":"a2g0n.best.moretolove"}}]}},"download-bar_5854048":{"spmc":"download_bar","tag":"download-bar","id":"5854048","position":"download-bar","type":"download-bar","fields":{"items":[{"itemId":121779,"activityId":"90664","positionId":"smartBanner-alias-index","templateCode":"trigger_smart_banner_configurable","priority":8,"class":"com.aliexpress.usertouch.houyi.dto.ResourcePosition","content":{"onClick":"","btnText":"فتح","expInfo":"{\"isUL\":false,\"hasApp\":\"U\",\"reportClickUrl\":\"https://aliexpress.onelink.me/AsEC?pid=ae_smartbanner\",\"globalBkt\":\"BSL\",\"downloadUrl\":\"https://s.click.aliexpress.com/i/_DlKspEL\",\"forceDownload\":false}","hasApp":"U","method":"href","isAutoCall":true,"showTime":0,"title":"حمّل التطبيق ووفر","callType":"scheme","isSEO":false,"logoUrl":"https://ae-pic-a1.aliexpress-media.com/kf/Sd20ac080aa934d5a8043d1d3c45b33d1Z.png","platform":"android","isShow":true,"spm":"a2g0n.best.smartBanner.90664_121779","houyiTrack":"{\"activityId\":90664,\"clientType\":\"android\",\"itemId\":121779,\"materialId\":447728,\"positionId\":\"1078\",\"source\":\"houyi\",\"sourceType\":\"smartBanner\",\"templateId\":2068,\"traceId\":\"210156fc17663691546421670e9d2c\"}","hasFatigue":false,"subTitle":"تمتع بخصومات حصرية على التطبيق","showType":"time","fatigueTimes":2,"hasAlgolApp":true,"track":"{\"activityId\":90664,\"clientType\":\"android\",\"itemId\":121779,\"materialId\":447728,\"positionId\":\"1078\",\"source\":\"houyi\",\"sourceType\":\"smartBanner\",\"templateId\":2068,\"traceId\":\"210156fc17663691546421670e9d2c\"}","clickType":"open_layer","callAppScheme":"","bgUrl":"https://ae-pic-a1.aliexpress-media.com/kf/S9e9c6a1256f14dfbab49944e1866d4516.png"}}],"degrade":"false"},"events":{"onAppear":[{"type":"ut_exposure","fields":{"spm":"a2g0n.best.download_bar"}}]}}},"hierarchy":{"root":"root_5854047","structure":{"root_5854047":["download-bar_5854048","more-to-love_6258309"]}},"global":{},"linkage":{},"class":"com.alibaba.gop.sdk.builder.GopModel4Ultron","version":"2.0"},"success":true,"currency":"IQD","source":"5854047","degraded":false,"class":"com.alibaba.gop.sdk.service.GopResult","target":"5854047","isAffiliate":true,"pageId":"cabeefbb19b43ce568a40cfcfa4158a7b32d193f68"}},"pop-container_3659":{"id":3659,"type":"pop-container","fields":{}},"gdpr_3660":{"id":3660,"type":"gdpr","fields":{"ip":"37.238.163.13"}}},"global":{"screenPagination":{"hasNext":false,"current":1,"total":1},"eagleeye_tracer_id":"210156fc17663691546421670e9d2c"}} }/*!-->init-data-end--*/</script><script>
+window.runParams = window.runParams || {};
+window.runParams._disable_campaign_url_build_ = true; 
+</script>
+<meta content="#FFFFFF" name="theme-color" />
+<!-- <link href="/static/manifest.json" rel="manifest" /> -->
+<link href="//ae01.alicdn.com/kf/HTB12v64d8Cw3KVjSZFl763JkFXao.png" rel="apple-touch-icon" />
+<meta name="aplus-toUT" content="2" />
+<script>
+!function(){"use strict";window.gep_queue=window.gep_queue||[];function n(e,n){return window.gep_queue.push({action:e,arguments:n})}try{var e,r=(null===(e=document.querySelector('meta[name="aplus-exinfo"]'))||void 0===e?void 0:e.getAttribute("content"))||"";(null==r?void 0:r.split("&")).forEach(function(e){e=e.split("=");"pid"===e[0]&&(window.goldlog_queue||(window.goldlog_queue=[])).push({action:"goldlog.setMetaInfo",arguments:["aplus-cpvdata",{pid:e[1]}]})})}catch(e){}window.addEventListener("error",function(e){n("handleError",[e])},!0),window.addEventListener("unhandledrejection",function(e){n("unhandledrejection",[e])},!0),window.performance&&window.performance.mark&&window.performance.measure&&(window.performance.mark("mark-startRender"),window.performance.measure("startRender","fetchStart","mark-startRender"))}();
+(function(){if(window.dmtrack_pageid)return;try{var cna="001";if(new RegExp("(?:; )?cna=([^;]*);?").test(document.cookie)){var str=decodeURIComponent(RegExp["$1"]);if(str&&str.replace(/(^s*)|(s*$)/g,"").length>0){cna=str}}var page_id=cna.toLowerCase().replace(/[^a-zd]/g,"").substring(0,16);var randend=[page_id,(new Date).getTime().toString(16)].join("");while(randend.length<42){randend+=parseInt(Math.round(Math.random()*1e10),10).toString(16)}window.dmtrack_pageid=randend.substr(0,42)}catch(e){window.dmtrack_pageid="--"}})();
+!function(){"use strict";var e,t=function(e){var t=Object.create(null);return(e=e.trim().replace(/^(\?|#|&)/,""))?(e.split("&").forEach((function(e){var o=e.replace(/\+/g," ").split("="),n=o.shift(),i=o.length>0?o.join("="):void 0;i=void 0===i?null:decodeURIComponent(i),t[n]=i})),t):t};if(window._dida_config_&&!window._dida_config_._init_data_&&(null===(e=window._page_config_)||void 0===e||!e.prefetch)){var o=window._dida_config_,n=o.pageName,i=o.pageVersion,a=o.headers,r=void 0===a?{}:a,s=o.needLogin,c=void 0!==s&&s,l=o.data,u=void 0===l?{}:l,d=o.passQuery;if(n){var p="/fn/".concat(n,"/index");u.pageVersion=i,c&&(u.needLogin=!0),window._page_config_=window._page_config_||{},window._page_config_.prefetch={url:p,data:u,headers:r,withCredentials:!0,passQuery:d}}}!function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},o=arguments.length>1?arguments[1]:void 0,n=e.enable,i=void 0===n||n,a=e.url,r=e.data,s=void 0===r?{}:r,c=e.headers,l=void 0===c?{}:c,u=e.withCredentials,d=e.passQuery,p=e._init_data_;if(i&&a){var f=o(),_=f.resolve,g=f.reject;if(p)_(p);else{var m,h=function(){return performance&&performance.now?performance.now():(new Date).getTime()},w=h(),v=new XMLHttpRequest,x=a;if(d){var b=t(location.search);"boolean"==typeof d?Object.assign(s,b):Array.isArray(d)&&Object.keys(b).forEach((function(e){-1!==d.indexOf(e)&&(s[e]=b[e])}))}var y=Object.keys(s).map((function(e){return"".concat(e,"=").concat(encodeURIComponent(s[e]))})).join("&");y&&(x+=-1===x.indexOf("?")?"?":"&",x+=y),v.open("GET",x,!0),v.onreadystatechange=function(){if(4===this.readyState){var e,t,o;if(window.clearTimeout(m),"function"==typeof v.getResponseHeader)try{e=v.getResponseHeader("eagleeye-traceid"),t=v.getResponseHeader("x-req-t"),o=v.getResponseHeader("x-req-id")}catch(e){}var n=t||Math.floor(h()-w),i=!!t;if(200===this.status){var a={};try{a=JSON.parse(this.responseText),Object.assign(a,{costTime:n,fromSW:i,traceId:e}),o&&(a.pageId=o),_(a)}catch(t){g({costTime:n,response:this.response,msg:"JSON.parse error!",traceId:e,fromSW:i})}}else g({costTime:n,response:this.response,msg:this.status,traceId:e,fromSW:i})}},"setRequestHeader"in v&&Object.keys(l).forEach((function(e){v.setRequestHeader(e,l[e])})),u&&(v.withCredentials=!0),v.send(),m=window.setTimeout((function(){window.clearTimeout(m),g({costTime:1e4,response:null,msg:"response timeout 10S"}),v.abort()}),1e4)}}}((window._page_config_||{}).prefetch,(function(){var e=null,t=null,o=[],n=[];return window.__INIT_DATA_CALLBACK__=function(i,a){e?i(e):t?a(t):(o.push(i),n.push(a))},{resolve:function(t){e=t,o.forEach((function(e){return e(t)}))},reject:function(e){t=e,n.forEach((function(t){return t(e)}))}}})),(window._page_config_||{}).needLogin&&-1===document.cookie.indexOf("sign=y")&&(location.href="//login.aliexpress.com?return_url=".concat(encodeURIComponent(location.href))),function(e){if(e){var t=document.createElement("meta");t.setAttribute("name","aplus-waiting"),t.setAttribute("contenxt","MAN"),document.head.appendChild(t),document.addEventListener("DOMContentLoaded",(function(){Promise.resolve(e()).then((function(e){Array.isArray(e)||(e=[e]);var t=e.filter(Boolean).join(","),o=window.goldlog_queue||(window.goldlog_queue=[]);o.push({action:"goldlog.appendMetaInfo",arguments:["aplus-exdata",{UTABTest:t}]}),o.push({action:"goldlog.appendMetaInfo",arguments:["aplus-cpvdata",{UTABTest:t}]}),!o.some((function(e){return"goldlog.sendPV"===e.action}))&&o.push({action:"goldlog.sendPV",arguments:[{is_auto:!1}]})}))}))}}((window._page_config_||{}).getAbTest);var f={"":{site:"glo",locale:"en_US"},ru:{site:"rus",locale:"ru_RU"},pt:{site:"bra",locale:"pt_BR"},es:{site:"esp",locale:"es_ES"},fr:{site:"fra",locale:"fr_FR"},id:{site:"idn",locale:"in_ID"},it:{site:"ita",locale:"it_IT"},ja:{site:"jpn",locale:"ja_JP"},ko:{site:"kor",locale:"ko_KR"},de:{site:"deu",locale:"de_DE"},ar:{site:"ara",locale:"ar_MA"},nl:{site:"nld",locale:"nl_NL"},th:{site:"tha",locale:"th_TH"},tr:{site:"tur",locale:"tr_TR"},vi:{site:"vnm",locale:"vi_VN"},he:{site:"isr",locale:"iw_IL"},pl:{site:"pol",locale:"pl_PL"}};function _(e,t){e+="=";for(var o=document.cookie.split(";"),n=0;n<o.length;n++){var i=o[n].trim();if(0==i.indexOf(e)){var a=i.substring(e.length,i.length);if(t){var r=new RegExp("(.*&?"+t+"=)(.*?)(&.*|$)");return a.match(r),RegExp.$2}return a}}return""}function g(e,t,o){var n=_(t);n=new RegExp("(.*&?"+o+"=)(.*?)(&.*|$)").test(n)?RegExp.$1+e+RegExp.$3:(n?n+"&":"")+o+"="+e,document.cookie="".concat(t,"=").concat(n,"; Domain=").concat(location.host.split(".").slice(-2).join("."),"; Expires=Sat, 18-Sep-2088 00:00:00 GMT; Path=/;")}(window._page_config_||{}).syncCookie&&function(){if(-1==["mbest.aliexpress.com","mbest.aliexpress.ru","best.aliexpress.com","best.aliexpress.ru"].indexOf(window.location.host)){var e=function(){var e,t=window.location.host;switch(t){case"m.aliexpress.com":case"www.aliexpress.com":return f[""];case"m.aliexpress.ru":case"www.aliexpress.ru":return f.ru;default:var o=null===(e=t.match(/^(?:m\.)?(ru|pt|es|fr|id|it|ja|ko|de|ar|nl|th|tr|vi|he|pl)?\.aliexpress\.com/))||void 0===e?void 0:e[1];if(o)return f[o]||f[""]}}();if(e){var t=window.location.host,o=_("aep_usuc_f","site");o=function(e){return-1!==Object.keys(f).map((function(e){return f[e].site})).indexOf(e)}(o)?o:"";var n=_("aep_usuc_f","b_locale");if(!o||"m.aliexpress.com"!==t&&"www.aliexpress.com"!==t&&e.locale!==n)return g(e.site,"aep_usuc_f","site"),void g(e.locale,"aep_usuc_f","b_locale");if("glo"!==o){var i=function(e){for(var t="",o=Object.keys(f),n=0;n<o.length;n++)if(f[o[n]].site===e){t=o[n];break}return t}(o);"m.aliexpress.com"===t?location.href=location.href.replace(/^https:\/\/m\.aliexpress\.com/,"ru"===i?"https://m.aliexpress.ru":"https://m.".concat(i,".aliexpress.com")):"www.aliexpress.com"===t&&(location.href=location.href.replace(/^https:\/\/www\.aliexpress\.com/,"ru"===i?"https://aliexpress.ru":"https://".concat(i,".aliexpress.com")))}}}}()}();
+</script>
+<script>
+!function(){"use strict";!function(){try{if(window.performance&&window.MutationObserver){var e=Date.now(),t=document.body||document.documentElement,r=new MutationObserver((function(t){if(Date.now()-e>1e4)r.disconnect();else if(function(){if(document.querySelector("[data-TTICheck]"))return!0;var e,t;switch(document.querySelector("body")&&(e=document.querySelector("body").getAttribute("data-spm")),e){case"detail":t=document.querySelector("[data-pl=product-title]")||document.querySelector(".title--line-one--nU9Qtto");break;case"cart":case"shopcart":t=document.querySelector("div.cart-body");break;case"home":t=document.querySelector("div.home--new-home--UXKZmgj")||document.querySelector("div#root-child");break;case"productlist":t=document.querySelector("div.manhattan--outWrapper--27DvdWd")||document.querySelector("#card-list");break;case"best":t=document.querySelector("div.new-affiliate")||document.querySelector("div#root-child");break;case"placeorder":case"createOrder":t=document.querySelector(".pl-place-order-container")}return!!t}()){performance.mark("self-tti"),performance.measure("tti","fetchStart","self-tti");var o=performance.getEntriesByName("tti")[0];window.GepTrackerPerfQueue=window.GepTrackerPerfQueue||[],window.GepTrackerPerfQueue.push(["TTI",Math.round(o.duration)]),r.disconnect()}}));r.observe(t,{childList:!0,subtree:!0})}}catch(e){console.error(e)}}()}();
+</script>
+<meta name="aplus-plugin-aefront-ignore-force-set-meta" content="true" />
+<script>
+!function(){"use strict";var s,o;s=window.goldlog_queue||(window.goldlog_queue=[]),o="aplus.aliexpress.com",/aliexpress.us$/.test(window.location.host)&&(o="aplus.aliexpress.us"),s.push({action:"goldlog.setMetaInfo",arguments:["aplus-rhost-v",o+"/g.gif"]}),s.push({action:"goldlog.setMetaInfo",arguments:["aplus-rhost-g",o]})}();
+</script><link rel="stylesheet" type="text/css" href="//assets.aliexpress-media.com/g/ae-dida/home-msite/0.0.117/index.css" crossorigin="anonymous"/></head><body data-spm="best" style="direction:rtl"><script>(function(){window.AES_CONFIG.dim8=window._oss_dida_bottom_page_hit_?"fail-over":window.AES_CONFIG.dim8})();</script><div id="root"><main id="root-child" data-version="0226" data-tticheck="main"><div id="shipto-bar" data-type="shipto-bar" class="a_b"></div><div id="download-bar-5854048" data-type="download-bar" class="a_b"></div><div id="more-to-love-6258309" data-type="more-to-love" class="a_b"><div><div class="ch_ci">المزيد مما يعجبك</div><div class="kg_kh kg_kl undefined" style="padding:0 6px;gap:4px"><div class="kg_kj undefined" style="width:0;flex-basis:50%;flex-grow:0;flex-shrink:1"></div><div class="kg_kj undefined" style="width:0;flex-basis:50%;flex-grow:0;flex-shrink:1"></div></div><div style="display:flex;justify-content:center"><img style="margin-top:1.0666666666666667vw;margin-bottom:6.4vw;height:6.4vw" src="//ae-pic-a1.aliexpress-media.com/kf/He6d0c154d38c41f8a1054f48bf404c52H.gif" alt=""/></div></div></div></main></div><script id="__LOADABLE_REQUIRED_CHUNKS__" type="application/json">[]</script><script id="__LOADABLE_REQUIRED_CHUNKS___ext" type="application/json">{"namedChunks":[]}</script><div class="footer-active-home"><style>
+    #footer-bar * {box-sizing: border-box;}
+    #footer-bar {display: -webkit-box;display: -webkit-flex;display: flex;-webkit-box-align: center;-webkit-align-items: center;align-items: center;position: fixed;left: 0;bottom: 0;width: 100%;height: 54px;padding: 0 3px;background-color: #FFF;z-index: 999;border-top: 1px solid #EBEBEB;justify-content: space-between;}
+    .footer-icon {padding: 4px;width: 38px;height: 38px;display: block;}
+    .footer-icon-active {stroke: #fc494d;}
+    .footer-item {overflow: hidden;width: 19.2vw;}
+    .footer-item>a {display: -webkit-box;display: -webkit-flex;display: flex;flex-direction: column;-webkit-box-orient: vertical;-webkit-box-direction: normal;-webkit-box-pack: center;-webkit-justify-content: center;justify-content: center;-webkit-box-align: center;-webkit-align-items: center;align-items: center;text-decoration: none;color: #3a3e4a;}
+    .footer-text {flex: 1;-webkit-flex: 1;width: 100%;line-height: 12px;font-size: 10px;text-align: center;white-space: nowrap;text-overflow: ellipsis;overflow: hidden;}
+    .footer-active {color: #fc494d;}
+    .footer-active-home .footer-home-tag .footer-text{ color: #fc494d; font-weight: bold;}
+    .footer-active-category .footer-category-tag .footer-text{ color: #fc494d; font-weight: bold;}
+    .footer-active-cart .footer-cart-tag .footer-text{ color: #fc494d; font-weight: bold;}
+    .footer-active-account .footer-account-tag .footer-text{ color: #fc494d; font-weight: bold;}
+    .footer-home-tag .footer-icon{background:url(https://ae-pic-a1.aliexpress-media.com/kf/S41e04d94de524a1aaee770b5888315b7n.png); }
+    .footer-category-tag .footer-icon{background:url(https://ae-pic-a1.aliexpress-media.com/kf/Sadf6f2773cd9465a8ad1cdf4f9d6478aU.png); background-size: contain;}
+    .footer-cart-tag .footer-icon{background:url(https://ae-pic-a1.aliexpress-media.com/kf/Sd05927f9e8c94a419fc538dd19ae02820.png); background-size: contain;}
+    .footer-account-tag .footer-icon{background:url(https://ae-pic-a1.aliexpress-media.com/kf/S94974fa5391d4ae5b1f8d277e6209247l.png); background-size: contain;}
+    .footer-active-home .footer-home-tag .footer-icon{ background:url(https://ae-pic-a1.aliexpress-media.com/kf/S6363b6a543554e2f97a44462c26362ddc.png); }
+    .footer-active-category .footer-category-tag .footer-icon{ background:url(https://ae-pic-a1.aliexpress-media.com/kf/Sd008a724c77d4c2fbe653340e14b2b0fD.png); }
+    .footer-active-cart .footer-cart-tag .footer-icon{ background:url(https://ae-pic-a1.aliexpress-media.com/kf/Se22226b1711d4377b0b8b65579613bd9j.png); }
+    .footer-active-account .footer-account-tag .footer-icon{ background:url(https://ae-pic-a1.aliexpress-media.com/kf/Sf2bf5f67d62642d2a867cbec633bf756l.png); }
+    #footer-bar .footer-icon{background-size: contain;}
+</style>
+<div data-spm="footer" id="footer-bar">
+    <div class="footer-item footer-home-tag">
+        <a id="footer-home" href="https://www.aliexpress.com" data-spm="d_home">
+            <span class="footer-icon"></span>
+            <span class="footer-text">رئيسية</span>
+        </a>
+    </div>
+    <div class="footer-item footer-category-tag">
+        <a id="footer-category" href="https://www.aliexpress.com/p/calp-plus/index.html" data-spm="d_category">
+            <span class="footer-icon"></span>
+            <span class="footer-text">الفئة</span>
+        </a>
+    </div>
+    <div class="footer-item footer-cart-tag">
+        <a id="footer-cart" href="https://m.aliexpress.com/p/shoppingcart/index.html" data-spm="d_shopcart">     
+            <span class="footer-icon"></span>
+            <span class="footer-text">العربة</span>
+        </a>
+    </div>
+    <div class="footer-item footer-account-tag">
+        <a id="footer-account" href="https://m.aliexpress.com/account/index.html">
+            <span class="footer-icon"></span>
+            <span class="footer-text">الحساب</span>
+        </a>
+    </div>
+</div></div>
+<style type="text/css">html body {padding-top:51px;}</style>
+<script>
+  window._is_close_global_abtest = true;
+  var spmb =  document.body.getAttribute('data-spm') || '';
+  if(spmb==='home'||spmb==='category'){
+      var style = document.createElement('style');
+      style.textContent = '#footer-bar{display:none}';
+      document.body.appendChild(style);
+  }
+  window._rcmd_site_list_ = window._rcmd_site_list_ || [ "idn", "tha", "pol", "jpn", "kor", "ara", "nld", "deu", "ita", "esp", "bra", "tur", "vnm", "fra", "glo", "usa"];
+  window._ae_pic_a1_on_ = true;
 
-            <div id="channels-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-8 gap-6"></div>
-        </div>
-    </main>
+(function(){
+  if(window._disable_sec_js_){
+    return;
+  }
+  var ele = document.createElement('script');
+  ele.setAttribute('src', 'https://assets.alicdn.com/g/lzd_sec/LWSC-G/index.js');
+  var headerEle = document.querySelector('head');
+  headerEle && headerEle.appendChild(ele);
+})();
+</script>
+<div id="header"></div>
+<link rel="stylesheet" href="https://assets.aliexpress-media.com/g/ae-fe/cosmos/0.0.407/msite/index.css">
+<script src="https://assets.aliexpress-media.com/g/ae-fe/global/0.0.3/index.js" crossorigin></script>
+<script src="https://assets.aliexpress-media.com/g/ae-fe/cosmos/0.0.407/msite/index.js" crossorigin></script>
+<div style="display:none" id="cross_page_common"></div><script src="//assets.aliexpress-media.com/g/ae-dida/home-msite/0.0.117/index.js" crossorigin="anonymous"></script><!-- 预发布引入示意 -->
 
-    <script>
-        const CONFIG = { user: "M89754etty", pass: "H76533ettfg", host: "teratv.info", api: "https://teratv.info/player_api.php" };
-        let state = { channels: [], currentId: null, hls: null };
+<script src="https://assets.aliexpress-media.com/g/code/npm/@alife/nano-cross-page-loader/0.0.42/_cross_page_loader_.js" crossorigin></script>
 
-        async function init() {
-            try {
-                const [sRes, cRes] = await Promise.all([
-                    fetch(`${CONFIG.api}?username=${CONFIG.user}&password=${CONFIG.pass}&action=get_live_streams`),
-                    fetch(`${CONFIG.api}?username=${CONFIG.user}&password=${CONFIG.pass}&action=get_live_categories`)
-                ]);
-                state.channels = await sRes.json();
-                renderCategories(await cRes.json());
-                renderChannels(state.channels);
-                lucide.createIcons();
-            } catch (err) { alert("فشل الاتصال بالسيرفر"); }
-        }
 
-        function renderCategories(cats) {
-            const list = document.getElementById('category-list');
-            list.innerHTML = `<button onclick="renderChannels(state.channels)" class="w-full p-4 text-right rounded-xl hover:bg-white/5 font-bold">الكل</button>` + 
-                cats.map(c => `<button onclick="filter('${c.category_id}')" class="w-full p-4 text-right rounded-xl hover:bg-white/5 text-sm font-bold text-slate-500">${c.category_name}</button>`).join('');
-        }
 
-        function filter(id) {
-            const filtered = state.channels.filter(c => c.category_id === id);
-            renderChannels(filtered);
-            if(window.innerWidth < 1024) toggleSidebar();
-        }
-
-        function renderChannels(list) {
-            const grid = document.getElementById('channels-grid');
-            grid.innerHTML = list.map(c => `
-                <div onclick="playChannel('${c.stream_id}', '${c.name.replace(/'/g, "")}', '${c.stream_icon}')" class="bg-[#0d0d0f] p-4 rounded-[2rem] border border-white/5 cursor-pointer hover:border-blue-600 transition-all text-center animate-slide">
-                    <img src="${c.stream_icon}" class="w-full aspect-square object-contain mb-4" onerror="this.src='https://ui-avatars.com/api/?name=TV'">
-                    <p class="text-xs font-bold truncate">${c.name}</p>
-                </div>
-            `).join('');
-        }
-
-        function playChannel(id, name, icon, useTs = false) {
-            state.currentId = id;
-            const video = document.getElementById('video-player');
-            const ext = useTs ? 'ts' : 'm3u8';
-            const url = `https://${CONFIG.host}/live/${CONFIG.user}/${CONFIG.pass}/${id}.${ext}`;
-            
-            document.getElementById('player-section').classList.remove('hidden');
-            document.getElementById('p-title').innerText = name;
-            document.getElementById('p-loader').classList.remove('hidden');
-            document.getElementById('p-error').classList.add('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-
-            if (!useTs && Hls.isSupported()) {
-                if (state.hls) state.hls.destroy();
-                const hls = new Hls();
-                state.hls = hls;
-                hls.loadSource(url);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => { video.play(); document.getElementById('p-loader').classList.add('hidden'); });
-                hls.on(Hls.Events.ERROR, (e, data) => { 
-                    if(data.fatal) { hls.destroy(); playChannel(id, name, icon, true); }
-                });
-            } else {
-                video.src = url;
-                video.play().then(() => document.getElementById('p-loader').classList.add('hidden'))
-                     .catch(() => { if(!useTs) playChannel(id, name, icon, true); else document.getElementById('p-error').classList.remove('hidden'); });
-            }
-        }
-
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('translate-x-full'); document.getElementById('overlay').classList.toggle('hidden'); }
-        function closePlayer() { document.getElementById('player-section').classList.add('hidden'); document.getElementById('video-player').pause(); if(state.hls) state.hls.destroy(); }
-        function retryLast() { if(state.currentId) playChannel(state.currentId, "إعادة محاولة...", ""); }
-
-        window.onload = init;
-    </script>
-</body>
-</html>
-
+<!-- PC MSite Serviceworker register start -->
+<script type="text/javascript">
+(function () {
+  if (/AliApp\(AE/.test(navigator.userAgent)) { return; }
+  if ('serviceWorker' in navigator) {
+    var MOBILE_UA_REG = /(phone|pad|pod|iPhone|iPod|iPad|ios|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i;
+    if (/(www|es|pt|fr|pl|ko|nl|it|de|tr|he|ja|ar|th|vi|id)\.aliexpress\.com/.test(window.location.host) || /www\.aliexpress\.us/.test(window.location.host)) {
+      var version = '0.0.85/js';
+      if(MOBILE_UA_REG.test(navigator.userAgent)){
+        if(/(www|es|pt|fr|pl|ko|nl|it|de|tr|he|ja|ar|th|vi|id)\.aliexpress\.com/.test(window.location.host) || /www\.aliexpress\.us/.test(window.location.host)){version = '0.0.85/js';}
+      }
+      if(/xiaomi/i.test(navigator.userAgent)){return;}
+      navigator.serviceWorker
+        .register('/sw.js?version='+version, {scope: '/'})
+        .then((registration) => {
+          function getCookie(name) {
+              name = name + '=';
+              var cookies = document.cookie.split(';');
+              for (let i = 0; i < cookies.length; i++) {
+                  var cookie = cookies[i].trim();
+                  if (cookie.indexOf(name) == 0) {
+                      return cookie.substring(name.length, cookie.length) || '';
+                  }
+              }
+              return '';
+          }
+          registration && registration.active && registration.active.postMessage && registration.active.postMessage({
+            type: 'sw_cookie_sync',
+            data: ['aep_usuc_f','xman_us_f','xman_us_t','cna'].reduce((obj, key) => {
+              obj[key] = getCookie(key) || '';
+              return obj;
+            }, {}),
+          });
+        })
+        .catch(function(err){console.error(err);});
+    }
+  }
+})();
+</script>
+<!-- PC MSite Serviceworker register end --></body></html>
