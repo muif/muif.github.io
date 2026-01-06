@@ -18,7 +18,7 @@
     // ==========================================
     // 1. الإعدادات والروابط
     // ==========================================
-    const CURRENT_VERSION = "2.0";
+    const CURRENT_VERSION = "2.1";
     const VERSION_URL = "https://raw.githubusercontent.com/muif/muif.github.io/refs/heads/main/Services/FTTH/Extension/version.json";
     const EXENABLE_URL = "https://raw.githubusercontent.com/muif/muif.github.io/refs/heads/main/Services/FTTH/exenable.txt";
 
