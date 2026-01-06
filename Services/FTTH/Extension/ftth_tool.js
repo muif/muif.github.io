@@ -2,33 +2,32 @@
 // @name         FTTH Customer Info Tool - Ultimate Pro
 // @namespace    http://tampermonkey.net/
 // @version      1.7
-// @description  نظام نسخ المعلومات
+// @description  نظام نسخ متطور مع تحديث إجباري وفحص أونلاين وحفظ إعدادات منفصلة
 // @author       Gemini
 // @match        https://admin.ftth.iq/customer-details/*/details/view*
 // @grant        GM_setClipboard
 // @grant        GM_xmlhttpRequest
+// @updateURL    https://raw.githubusercontent.com/muif/muif.github.io/refs/heads/main/Services/FTTH/Extension/ftth_tool.js
+// @downloadURL  https://raw.githubusercontent.com/muif/muif.github.io/refs/heads/main/Services/FTTH/Extension/ftth_tool.js
 // ==/UserScript==
 
 (function() {
     'use strict';
 
     // ==========================================
-    // 1. الإعدادات والروابط (قم بتغييرها لروابطك)
+    // 1. الإعدادات والروابط المباشرة
     // ==========================================
     const CURRENT_VERSION = "1.7";
-   // const GITHUB_USERNAME = "YOUR_USERNAME"; // ضع اسمك هنا
-    // const REPO_NAME = "FTTH-Project";      // اسم المستودع
-    
-    const VERSION_URL = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${REPO_NAME}/main/version.json`;
+    const VERSION_URL = "https://raw.githubusercontent.com/muif/muif.github.io/refs/heads/main/Services/FTTH/Extension/version.json";
     const EXENABLE_URL = "https://raw.githubusercontent.com/muif/muif.github.io/refs/heads/main/Services/FTTH/exenable.txt";
 
     // ==========================================
     // 2. متغيرات الحالة (State)
     // ==========================================
-    let isScriptEnabled = true;     // صلاحية الاستخدام العامة
-    let isUpdateRequired = false;    // هل النسخة قديمة؟
-    let updateUrl = "";             // رابط تحميل النسخة الجديدة
-    let latestVersionStr = "";      // رقم الإصدار الجديد
+    let isScriptEnabled = true;     
+    let isUpdateRequired = false;    
+    let updateUrl = "";             
+    let latestVersionStr = "";      
 
     // ==========================================
     // 3. قاعدة البيانات IndexedDB
@@ -64,7 +63,7 @@
     }
 
     // ==========================================
-    // 4. منطق التحديث والفحص (مرة واحدة عند التحميل)
+    // 4. منطق التحديث والفحص (عند التحميل)
     // ==========================================
     async function performStartupChecks() {
         // فحص الصلاحية العامة
@@ -76,7 +75,7 @@
 
         // فحص إصدار السكربت
         try {
-            const resVer = await fetch(VERSION_URL + "?t=" + Date.now()); // منع الكاش
+            const resVer = await fetch(VERSION_URL + "?t=" + Date.now()); 
             const dataVer = await resVer.json();
             if (dataVer.version !== CURRENT_VERSION) {
                 isUpdateRequired = true;
@@ -147,14 +146,9 @@
         };
     }
 
-    // ==========================================
-    // 6. منطق النسخ والتحقق النهائي
-    // ==========================================
     async function collect(type) {
-        // فحص التعطيل العام
         if (!isScriptEnabled) { alert("⚠️ الإضافة معطلة حالياً."); return; }
 
-        // فحص التحديث (إجباري عند الضغط)
         if (isUpdateRequired) {
             if (confirm(`⚠️ نسخة قديمة (${CURRENT_VERSION})!\nيتوفر إصدار جديد (${latestVersionStr}).\n\nهل تريد التحديث الآن؟`)) {
                 window.open(updateUrl, '_blank');
@@ -167,7 +161,6 @@
         const prompts = type === 'maintenance' ? settings.maintenancePrompts : settings.deliveryPrompts;
         const getT = (s) => { let e = document.querySelector(s); return e ? e.innerText.trim() : null; };
 
-        // جلب البيانات الأساسية
         if (fields.name) data.name = getT('#customer-details-nav-cst-name-header');
         if (fields.phone) { let l = Array.from(document.querySelectorAll('.label.value.ng-star-inserted')); data.phone = l.find(e => /\d{10,}/.test(e.innerText))?.innerText.trim() || null; }
         if (fields.contract_id) data.contract_id = getT('[data-test-id="sub-list-item-contract-id-0"]');
@@ -183,12 +176,10 @@
         if (fields.sub_type) data.sub_type = getT('[data-test-id="sub-list-item-services-0_0"]');
         if (fields.sub_period) data.sub_period = getT('[data-test-id="sub-list-item-commitment-period-0"]');
 
-        // مدخلات يدوية
         if (prompts.altPhone) { let a = prompt("رقم الهاتف البديل؟"); if (a) data.altPhone = a; }
         if (type === 'maintenance' && prompts.problemDesc) { let d = prompt("مشكلة اليوزر؟"); if (d) data.problemDesc = d; }
         if (type === 'delivery' && prompts.note) { let n = prompt("ملاحظة الدلفري؟"); if (n) data.note = n; }
 
-        // بيانات النافذة المنبثقة
         if (fields.password || fields.power) {
             showT('جاري جلب البيانات الفنية...');
             document.querySelector('[data-test-id="sub-list-item-btn-technical-details-0"]')?.click();
@@ -207,7 +198,6 @@
             document.querySelector('.cdk-overlay-container')?.classList.remove('hide-pop');
         }
 
-        // تنسيق الرسالة
         let head = type === 'maintenance' ? '🛠️ صيانة' : '🚚 دلفري';
         let msg = `📋 ${head}\n----------------------------\n`;
         if (data.name) msg += `👤 الاسم: ${data.name}\n`;
@@ -235,11 +225,8 @@
         showT('✅ تم النسخ');
     }
 
-    // ==========================================
-    // 7. التشغيل الابتدائي
-    // ==========================================
     window.addEventListener('load', async () => {
-        performStartupChecks(); // فحص صامت في الخلفية
+        performStartupChecks(); 
         settings = await loadSettings();
         document.body.append(maintBtn, delivBtn, setBtn, panel);
         setBtn.onclick = (e) => { e.stopPropagation(); panel.style.display = panel.style.display === 'block' ? 'none' : 'block'; if (panel.style.display === 'block') drawSettings(); };
