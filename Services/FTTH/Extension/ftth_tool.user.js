@@ -1,23 +1,23 @@
 // ==UserScript==
-// @name         FTTH Customer Info Tool - Ultimate Pro
+// @name         نسخ معلومات المشتركين V1.9
 // @namespace    http://tampermonkey.net/
-// @version      1.8
-// @description  نظام نسخ متطور مع تحديث إجباري وفحص أونلاين وحفظ إعدادات منفصلة
-// @author       Gemini
+// @version      1.9
+// @description  نظام نسخ متطور بواسطة منتظر عماد
+// @author       Muntadher Imad ✅
 // @match        https://admin.ftth.iq/customer-details/*/details/view*
 // @grant        GM_setClipboard
 // @grant        GM_xmlhttpRequest
-// @updateURL    https://raw.githubusercontent.com/muif/muif.github.io/refs/heads/main/Services/FTTH/Extension/ftth_tool.js
-// @downloadURL  https://raw.githubusercontent.com/muif/muif.github.io/refs/heads/main/Services/FTTH/Extension/ftth_tool.js
+// @updateURL    https://raw.githubusercontent.com/muif/muif.github.io/refs/heads/main/Services/FTTH/Extension/ftth_tool.user.js
+// @downloadURL  https://raw.githubusercontent.com/muif/muif.github.io/refs/heads/main/Services/FTTH/Extension/ftth_tool.user.js
 // ==/UserScript==
 
 (function() {
     'use strict';
 
     // ==========================================
-    // 1. الإعدادات والروابط المباشرة
+    // 1. الإعدادات والروابط المباشرة (تمت إضافة .user.js)
     // ==========================================
-    const CURRENT_VERSION = "1.7";
+    const CURRENT_VERSION = "1.8";
     const VERSION_URL = "https://raw.githubusercontent.com/muif/muif.github.io/refs/heads/main/Services/FTTH/Extension/version.json";
     const EXENABLE_URL = "https://raw.githubusercontent.com/muif/muif.github.io/refs/heads/main/Services/FTTH/exenable.txt";
 
@@ -66,14 +66,12 @@
     // 4. منطق التحديث والفحص (عند التحميل)
     // ==========================================
     async function performStartupChecks() {
-        // فحص الصلاحية العامة
         try {
             const resEnable = await fetch(EXENABLE_URL);
             const textEnable = await resEnable.text();
             if (textEnable.trim() !== '1') isScriptEnabled = false;
         } catch (e) { console.error("Exenable check failed"); }
 
-        // فحص إصدار السكربت
         try {
             const resVer = await fetch(VERSION_URL + "?t=" + Date.now()); 
             const dataVer = await resVer.json();
