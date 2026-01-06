@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         FTTH Customer Info Tool - Ultimate Pro
 // @namespace    http://tampermonkey.net/
-// @version      1.7
+// @version      1.8
 // @description  نظام نسخ متطور مع تحديث إجباري وفحص أونلاين وحفظ إعدادات منفصلة
 // @author       Gemini
 // @match        https://admin.ftth.iq/customer-details/*/details/view*
