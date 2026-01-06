@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         نسخ معلومات المشتركين V1.9
+// @name         نسخ معلومات المشتركين V2
 // @namespace    http://tampermonkey.net/
-// @version      1.9
+// @version      2
 // @description  نظام نسخ متطور بواسطة منتظر عماد
 // @author       Muntadher Imad ✅
 // @match        https://admin.ftth.iq/customer-details/*/details/view*
@@ -11,28 +11,26 @@
 // @downloadURL  https://raw.githubusercontent.com/muif/muif.github.io/refs/heads/main/Services/FTTH/Extension/ftth_tool.user.js
 // ==/UserScript==
 
+
 (function() {
     'use strict';
 
     // ==========================================
-    // 1. الإعدادات والروابط المباشرة (تمت إضافة .user.js)
+    // 1. الإعدادات والروابط
     // ==========================================
-    const CURRENT_VERSION = "1.8";
+    const CURRENT_VERSION = "2";
     const VERSION_URL = "https://raw.githubusercontent.com/muif/muif.github.io/refs/heads/main/Services/FTTH/Extension/version.json";
     const EXENABLE_URL = "https://raw.githubusercontent.com/muif/muif.github.io/refs/heads/main/Services/FTTH/exenable.txt";
 
-    // ==========================================
-    // 2. متغيرات الحالة (State)
-    // ==========================================
     let isScriptEnabled = true;     
     let isUpdateRequired = false;    
     let updateUrl = "";             
     let latestVersionStr = "";      
 
     // ==========================================
-    // 3. قاعدة البيانات IndexedDB
+    // 2. قاعدة البيانات IndexedDB
     // ==========================================
-    const DB_NAME = 'FTTHToolDB_Final';
+    const DB_NAME = 'FTTHToolDB_Final_V2';
     const STORE_NAME = 'UserPreferences';
 
     function initDB() {
@@ -63,7 +61,7 @@
     }
 
     // ==========================================
-    // 4. منطق التحديث والفحص (عند التحميل)
+    // 3. منطق التحديث والفحص
     // ==========================================
     async function performStartupChecks() {
         try {
@@ -84,31 +82,40 @@
     }
 
     // ==========================================
-    // 5. واجهة المستخدم (CSS والأزرار)
+    // 4. واجهة المستخدم (CSS والأزرار)
     // ==========================================
     const defaultSettings = {
         maintenanceFields: { name: true, phone: true, contract_id: true, username: true, serial: true, zone: true, fat: true, status: true, ip: true, session_start: true, expiry: true, sub_status: true, sub_type: true, sub_period: true, password: true, power: true },
         deliveryFields: { name: true, phone: true, contract_id: true, username: true, serial: true, zone: true, fat: true, status: true, ip: true, session_start: true, expiry: true, sub_status: true, sub_type: true, sub_period: true, password: true, power: true },
         maintenancePrompts: { altPhone: true, problemDesc: true },
-        deliveryPrompts: { altPhone: true, note: true }
+        deliveryPrompts: { altPhone: true, note: true },
+        positions: { 
+            maint: { bottom: 20, right: 85 }, 
+            deliv: { bottom: 20, right: 20 } 
+        }
     };
     let settings = defaultSettings;
 
     const style = document.createElement('style');
-    style.innerHTML = `
-        .ftth-btn { position: fixed; bottom: 20px; z-index: 9999; color: white; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 24px; transition: transform 0.2s; }
-        #ftth-maint-btn { right: 85px; background: #2196F3; }
-        #ftth-deliv-btn { right: 20px; background: #FF9800; }
-        .ftth-btn:hover { transform: scale(1.1); }
-        #ftth-settings-btn { position: fixed; top: 10px; right: 10px; z-index: 9999; background: rgba(0,0,0,0.2); color: white; border: none; width: 22px; height: 22px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-        #ftth-panel { position: fixed; top: 40px; right: 10px; z-index: 10000; background: white; border: 1px solid #ccc; padding: 15px; border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); display: none; max-height: 85vh; overflow-y: auto; width: 280px; direction: rtl; font-family: sans-serif; }
-        .section-title { font-weight: bold; color: #2196F3; margin: 10px 0; border-bottom: 2px solid #eee; font-size: 14px; }
-        .s-item { margin-bottom: 5px; font-size: 12px; display: flex; align-items: center; }
-        .s-item input { margin-left: 8px; }
-        .toast-info { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 10px 20px; border-radius: 5px; z-index: 10001; display: none; }
-        .hide-pop { opacity: 0 !important; pointer-events: none !important; visibility: hidden !important; }
-    `;
+    style.id = 'ftth-dynamic-style';
     document.head.appendChild(style);
+
+    function updateBtnStyles() {
+        style.innerHTML = `
+            .ftth-btn { position: fixed; z-index: 9999; color: white; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 24px; transition: transform 0.2s; }
+            #ftth-maint-btn { bottom: ${settings.positions.maint.bottom}px; right: ${settings.positions.maint.right}px; background: #2196F3; }
+            #ftth-deliv-btn { bottom: ${settings.positions.deliv.bottom}px; right: ${settings.positions.deliv.right}px; background: #FF9800; }
+            .ftth-btn:hover { transform: scale(1.1); }
+            #ftth-settings-btn { position: fixed; top: 10px; right: 10px; z-index: 9999; background: rgba(0,0,0,0.2); color: white; border: none; width: 22px; height: 22px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+            #ftth-panel { position: fixed; top: 40px; right: 10px; z-index: 10000; background: white; border: 1px solid #ccc; padding: 15px; border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); display: none; max-height: 85vh; overflow-y: auto; width: 300px; direction: rtl; font-family: sans-serif; }
+            .section-title { font-weight: bold; color: #2196F3; margin: 10px 0; border-bottom: 2px solid #eee; font-size: 14px; }
+            .s-item { margin-bottom: 5px; font-size: 12px; display: flex; align-items: center; }
+            .s-item input { margin-left: 8px; }
+            .pos-input { width: 50px; padding: 2px; margin: 0 5px; border: 1px solid #ccc; border-radius: 3px; }
+            .toast-info { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 10px 20px; border-radius: 5px; z-index: 10001; display: none; }
+            .hide-pop { opacity: 0 !important; pointer-events: none !important; visibility: hidden !important; }
+        `;
+    }
 
     const maintBtn = document.createElement('button'); maintBtn.id = 'ftth-maint-btn'; maintBtn.className = 'ftth-btn'; maintBtn.innerHTML = '🛠️';
     const delivBtn = document.createElement('button'); delivBtn.id = 'ftth-deliv-btn'; delivBtn.className = 'ftth-btn'; delivBtn.innerHTML = '🚚';
@@ -122,31 +129,52 @@
     const labels = { name: "الاسم", phone: "الهاتف", contract_id: "بطاقة التعريف", username: "اليوزر", serial: "السيريال", zone: "الزون", fat: "الفات", status: "الجلسة", ip: "الأيبي", session_start: "البداية", expiry: "الانتهاء", sub_status: "الحالة", sub_type: "النوع", sub_period: "المدة", password: "الباسورد", power: "الباور" };
 
     function drawSettings() {
-        let h = '<div style="text-align:center;font-weight:bold;margin-bottom:10px;">الإعدادات</div>';
+        let h = '<div style="text-align:center;font-weight:bold;margin-bottom:10px;">⚙️ الإعدادات المتقدمة</div>';
+        
+        // أماكن الأزرار
+        h += '<div class="section-title">📍 أماكن الأزرار:</div>';
+        h += `<div class="s-item">🛠️ صيانة: أسفل <input type="number" class="pos-input" id="pos_m_b" value="${settings.positions.maint.bottom}"> يمين <input type="number" class="pos-input" id="pos_m_r" value="${settings.positions.maint.right}"></div>`;
+        h += `<div class="s-item">🚚 دلفري: أسفل <input type="number" class="pos-input" id="pos_d_b" value="${settings.positions.deliv.bottom}"> يمين <input type="number" class="pos-input" id="pos_d_r" value="${settings.positions.deliv.right}"></div>`;
+
         h += '<div class="section-title">🛠️ الصيانة:</div>';
         for (const k in settings.maintenanceFields) h += `<div class="s-item"><input type="checkbox" id="m_${k}" ${settings.maintenanceFields[k] ? 'checked' : ''}> ${labels[k]}</div>`;
         h += `<div class="s-item" style="background:#f0f7ff;"><input type="checkbox" id="m_p_alt" ${settings.maintenancePrompts.altPhone ? 'checked' : ''}> هاتف بديل</div>`;
         h += `<div class="s-item" style="background:#f0f7ff;"><input type="checkbox" id="m_p_prob" ${settings.maintenancePrompts.problemDesc ? 'checked' : ''}> وصف مشكلة</div>`;
-        h += '<div class="section-title">🚚 الدلفري:</div>';
+        
+        h += '<div class="section-title" style="color:#FF9800;">🚚 الدلفري:</div>';
         for (const k in settings.deliveryFields) h += `<div class="s-item"><input type="checkbox" id="d_${k}" ${settings.deliveryFields[k] ? 'checked' : ''}> ${labels[k]}</div>`;
         h += `<div class="s-item" style="background:#fff8f0;"><input type="checkbox" id="d_p_alt" ${settings.deliveryPrompts.altPhone ? 'checked' : ''}> هاتف بديل</div>`;
         h += `<div class="s-item" style="background:#fff8f0;"><input type="checkbox" id="d_p_note" ${settings.deliveryPrompts.note ? 'checked' : ''}> ملاحظة</div>`;
-        h += '<br><button id="btn-save" style="width:100%;padding:8px;background:#4CAF50;color:white;border:none;border-radius:4px;cursor:pointer;">حفظ</button>';
+        
+        h += '<br><button id="btn-save" style="width:100%;padding:10px;background:#4CAF50;color:white;border:none;border-radius:4px;cursor:pointer;font-weight:bold;">حفظ الإعدادات</button>';
         panel.innerHTML = h;
         document.getElementById('btn-save').onclick = async () => {
+            // حفظ الحقول
             for (const k in settings.maintenanceFields) settings.maintenanceFields[k] = document.getElementById(`m_${k}`).checked;
             settings.maintenancePrompts.altPhone = document.getElementById('m_p_alt').checked;
             settings.maintenancePrompts.problemDesc = document.getElementById('m_p_prob').checked;
             for (const k in settings.deliveryFields) settings.deliveryFields[k] = document.getElementById(`d_${k}`).checked;
             settings.deliveryPrompts.altPhone = document.getElementById('d_p_alt').checked;
             settings.deliveryPrompts.note = document.getElementById('d_p_note').checked;
-            await saveSettings(settings); panel.style.display = 'none'; showT('تم الحفظ');
+            
+            // حفظ الإحداثيات
+            settings.positions.maint.bottom = parseInt(document.getElementById('pos_m_b').value);
+            settings.positions.maint.right = parseInt(document.getElementById('pos_m_r').value);
+            settings.positions.deliv.bottom = parseInt(document.getElementById('pos_d_b').value);
+            settings.positions.deliv.right = parseInt(document.getElementById('pos_d_r').value);
+
+            await saveSettings(settings); 
+            updateBtnStyles(); 
+            panel.style.display = 'none'; 
+            showT('✅ تم الحفظ وتحديث الأماكن');
         };
     }
 
+    // ==========================================
+    // 5. منطق النسخ والتحقق
+    // ==========================================
     async function collect(type) {
         if (!isScriptEnabled) { alert("⚠️ الإضافة معطلة حالياً."); return; }
-
         if (isUpdateRequired) {
             if (confirm(`⚠️ نسخة قديمة (${CURRENT_VERSION})!\nيتوفر إصدار جديد (${latestVersionStr}).\n\nهل تريد التحديث الآن؟`)) {
                 window.open(updateUrl, '_blank');
@@ -174,9 +202,9 @@
         if (fields.sub_type) data.sub_type = getT('[data-test-id="sub-list-item-services-0_0"]');
         if (fields.sub_period) data.sub_period = getT('[data-test-id="sub-list-item-commitment-period-0"]');
 
-        if (prompts.altPhone) { let a = prompt("رقم الهاتف البديل؟"); if (a) data.altPhone = a; }
-        if (type === 'maintenance' && prompts.problemDesc) { let d = prompt("مشكلة اليوزر؟"); if (d) data.problemDesc = d; }
-        if (type === 'delivery' && prompts.note) { let n = prompt("ملاحظة الدلفري؟"); if (n) data.note = n; }
+        if (prompts.altPhone) { let a = prompt("رقم الهاتف البديل؟"); data.altPhone = a ? a : "لا يوجد"; }
+        if (type === 'maintenance' && prompts.problemDesc) { let d = prompt("مشكلة اليوزر؟"); data.problemDesc = d ? d : "لا يوجد"; }
+        if (type === 'delivery' && prompts.note) { let n = prompt("ملاحظة الدلفري؟"); data.note = n ? n : "لا توجد"; }
 
         if (fields.password || fields.power) {
             showT('جاري جلب البيانات الفنية...');
@@ -196,9 +224,9 @@
             document.querySelector('.cdk-overlay-container')?.classList.remove('hide-pop');
         }
 
-        let head = type === 'maintenance' ? '🛠️ صيانة' : '🚚 دلفري';
-        let msg = `📋 ${head}\n----------------------------\n`;
-        if (data.name) msg += `👤 الاسم: ${data.name}\n`;
+        // --- تنسيق الرسالة المطلوب (الاسم في البداية وعريض) ---
+        const headIcon = type === 'maintenance' ? '🛠️' : '🚚';
+        let msg = `${headIcon} *${data.name}*\n----------------------------\n`;
         if (data.phone) msg += `📞 الهاتف: ${data.phone}\n`;
         if (data.altPhone) msg += `📱 البديل: ${data.altPhone}\n`;
         if (data.contract_id) msg += `💳 بطاقة التعريف: ${data.contract_id}\n`;
@@ -215,17 +243,24 @@
         if (data.sub_status) msg += `✅ الحالة: ${data.sub_status}\n`;
         if (data.sub_type) msg += `📦 النوع: ${data.sub_type}\n`;
         if (data.sub_period) msg += `🗓️ المدة: ${data.sub_period}\n`;
-        if (data.problemDesc) msg += `📝 المشكلة: ${data.problemDesc}\n`;
-        if (data.note) msg += `📝 ملاحظة: ${data.note}\n`;
-        msg += `----------------------------`;
+        
+        if (type === 'maintenance' && data.problemDesc) msg += `📝 المشكلة: *${data.problemDesc}*\n`;
+        if (type === 'delivery' && data.note) msg += `📝 ملاحظة: *${data.note}*\n`;
+        
+        msg += `----------------------------\n`;
+        msg += `📋 ${headIcon} *${type === 'maintenance' ? 'صيانة' : 'دلفري'}*`;
 
         GM_setClipboard(msg.split('\n').filter(l => !l.includes(': null')).join('\n'));
-        showT('✅ تم النسخ');
+        showT('✅ تم النسخ بالتنسيق الجديد');
     }
 
+    // ==========================================
+    // 6. التشغيل الابتدائي
+    // ==========================================
     window.addEventListener('load', async () => {
         performStartupChecks(); 
         settings = await loadSettings();
+        updateBtnStyles(); 
         document.body.append(maintBtn, delivBtn, setBtn, panel);
         setBtn.onclick = (e) => { e.stopPropagation(); panel.style.display = panel.style.display === 'block' ? 'none' : 'block'; if (panel.style.display === 'block') drawSettings(); };
         maintBtn.onclick = () => collect('maintenance');
