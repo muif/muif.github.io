@@ -1,1 +1,4 @@
-{"version": "1.8","downloadUrl": "https://raw.githubusercontent.com/muif/muif.github.io/refs/heads/main/Services/FTTH/Extension/ftth_tool.js"}
+{
+  "version": "1.9",
+  "downloadUrl": "https://raw.githubusercontent.com/muif/muif.github.io/refs/heads/main/Services/FTTH/Extension/ftth_tool.user.js"
+}
