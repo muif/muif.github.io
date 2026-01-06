@@ -11,7 +11,6 @@
 // @downloadURL  https://raw.githubusercontent.com/muif/muif.github.io/refs/heads/main/Services/FTTH/Extension/ftth_tool.user.js
 // ==/UserScript==
 
-
 (function() {
     'use strict';
 
@@ -25,12 +24,13 @@
     let isScriptEnabled = true;     
     let isUpdateRequired = false;    
     let updateUrl = "";             
-    let latestVersionStr = "";      
+    let latestVersionStr = "";
+    let editMode = false; // وضع التحرير (داخلي)
 
     // ==========================================
     // 2. قاعدة البيانات IndexedDB
     // ==========================================
-    const DB_NAME = 'FTTHToolDB_Final_V3';
+    const DB_NAME = 'FTTHToolDB_Final_V4';
     const STORE_NAME = 'UserPreferences';
 
     function initDB() {
@@ -93,9 +93,9 @@
             maint: { bottom: 20, right: 85 }, 
             deliv: { bottom: 20, right: 20 } 
         },
-        sizes: {
-            maint: 55,
-            deliv: 55
+        appearance: {
+            maint: { size: 55, color: '#2196F3', emoji: '🛠️' },
+            deliv: { size: 55, color: '#FF9800', emoji: '🚚' }
         }
     };
     let settings = defaultSettings;
@@ -105,45 +105,75 @@
     document.head.appendChild(style);
 
     function updateBtnStyles() {
+        maintBtn.innerHTML = settings.appearance.maint.emoji;
+        delivBtn.innerHTML = settings.appearance.deliv.emoji;
+
         style.innerHTML = `
-            .ftth-btn { position: fixed; z-index: 9999; color: white; border: none; border-radius: 50%; cursor: grab; box-shadow: 0 6px 15px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; transition: transform 0.2s, box-shadow 0.2s; user-select: none; touch-action: none; }
-            .ftth-btn:active { cursor: grabbing; transform: scale(0.95); }
-            #ftth-maint-btn { bottom: ${settings.positions.maint.bottom}px; right: ${settings.positions.maint.right}px; width: ${settings.sizes.maint}px; height: ${settings.sizes.maint}px; background: linear-gradient(135deg, #2196F3, #1976D2); font-size: ${settings.sizes.maint * 0.45}px; }
-            #ftth-deliv-btn { bottom: ${settings.positions.deliv.bottom}px; right: ${settings.positions.deliv.right}px; width: ${settings.sizes.deliv}px; height: ${settings.sizes.deliv}px; background: linear-gradient(135deg, #FF9800, #F57C00); font-size: ${settings.sizes.deliv * 0.45}px; }
+            .ftth-btn { position: fixed; z-index: 9999; color: white; border: none; border-radius: 50%; cursor: ${editMode ? 'grab' : 'pointer'}; box-shadow: 0 6px 15px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; transition: transform 0.2s, box-shadow 0.2s; user-select: none; touch-action: none; }
+            .ftth-btn:active { cursor: ${editMode ? 'grabbing' : 'pointer'}; transform: scale(0.95); }
+            
+            #ftth-maint-btn { 
+                bottom: ${settings.positions.maint.bottom}px; 
+                right: ${settings.positions.maint.right}px; 
+                width: ${settings.appearance.maint.size}px; 
+                height: ${settings.appearance.maint.size}px; 
+                background: ${settings.appearance.maint.color}; 
+                font-size: ${settings.appearance.maint.size * 0.45}px;
+                border: ${editMode ? '2px dashed #fff' : 'none'};
+            }
+            
+            #ftth-deliv-btn { 
+                bottom: ${settings.positions.deliv.bottom}px; 
+                right: ${settings.positions.deliv.right}px; 
+                width: ${settings.appearance.deliv.size}px; 
+                height: ${settings.appearance.deliv.size}px; 
+                background: ${settings.appearance.deliv.color}; 
+                font-size: ${settings.appearance.deliv.size * 0.45}px;
+                border: ${editMode ? '2px dashed #fff' : 'none'};
+            }
+            
             .ftth-btn:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
             
-            #ftth-settings-btn { position: fixed; top: 10px; right: 10px; z-index: 9999; background: rgba(0,0,0,0.2); color: white; border: none; width: 24px; height: 24px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; backdrop-filter: blur(4px); transition: background 0.3s; }
-            #ftth-settings-btn:hover { background: rgba(0,0,0,0.5); }
+            #ftth-settings-btn { position: fixed; top: 10px; right: 10px; z-index: 9999; background: rgba(0,0,0,0.2); color: white; border: none; width: 28px; height: 28px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; backdrop-filter: blur(4px); transition: all 0.3s; }
+            #ftth-settings-btn:hover { background: rgba(0,0,0,0.6); transform: rotate(45deg); }
             
-            #ftth-panel { position: fixed; top: 45px; right: 10px; z-index: 10000; background: #ffffff; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: none; flex-direction: column; width: 320px; direction: rtl; font-family: 'Segoe UI', Tahoma, sans-serif; overflow: hidden; border: 1px solid #eee; }
+            #ftth-panel { position: fixed; top: 48px; right: 10px; z-index: 10000; background: #ffffff; border-radius: 16px; box-shadow: 0 15px 40px rgba(0,0,0,0.2); display: none; flex-direction: column; width: 340px; direction: rtl; font-family: 'Segoe UI', Tahoma, sans-serif; overflow: hidden; border: 1px solid #f0f0f0; animation: fadeIn 0.3s ease; }
+            @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+            .tabs-header { display: flex; background: #fcfcfc; border-bottom: 1px solid #f0f0f0; }
+            .tab-link { flex: 1; padding: 14px; text-align: center; cursor: pointer; font-size: 13px; font-weight: 700; color: #888; transition: all 0.3s; border-bottom: 2px solid transparent; }
+            .tab-link.active { color: #2196F3; border-bottom-color: #2196F3; background: #fff; }
             
-            .tabs-header { display: flex; background: #f8f9fa; border-bottom: 1px solid #eee; }
-            .tab-link { flex: 1; padding: 12px; text-align: center; cursor: pointer; font-size: 13px; font-weight: 600; color: #666; transition: all 0.3s; }
-            .tab-link.active { color: #2196F3; border-bottom: 3px solid #2196F3; background: #fff; }
-            
-            .tabs-content { padding: 15px; max-height: 450px; overflow-y: auto; }
+            .tabs-content { padding: 20px; max-height: 480px; overflow-y: auto; background: #fff; }
             .tab-pane { display: none; }
             .tab-pane.active { display: block; }
             
-            .section-title { font-weight: 700; color: #333; margin: 15px 0 10px 0; font-size: 14px; display: flex; align-items: center; gap: 8px; }
-            .s-item { margin-bottom: 8px; font-size: 13px; display: flex; align-items: center; color: #444; }
-            .s-item input[type="checkbox"] { width: 16px; height: 16px; margin-left: 10px; cursor: pointer; }
+            .section-title { font-weight: 800; color: #222; margin: 18px 0 12px 0; font-size: 14px; display: flex; align-items: center; gap: 8px; border-right: 3px solid #2196F3; padding-right: 8px; }
+            .s-item { margin-bottom: 10px; font-size: 13px; display: flex; align-items: center; color: #444; justify-content: space-between; }
+            .s-item label { cursor: pointer; flex-grow: 1; margin-right: 5px; }
+            .s-item input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: #2196F3; }
             
-            .range-container { margin: 15px 0; }
-            .range-label { font-size: 12px; color: #666; margin-bottom: 5px; display: block; }
-            input[type="range"] { width: 100%; cursor: pointer; }
+            .input-group { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+            .input-group label { font-size: 12px; font-weight: 600; color: #666; width: 80px; }
+            .input-group input[type="color"] { border: none; width: 35px; height: 35px; cursor: pointer; background: none; }
+            .input-group input[type="text"] { border: 1px solid #ddd; padding: 6px; border-radius: 6px; width: 50px; text-align: center; }
             
-            .btn-save-container { padding: 12px; background: #fff; border-top: 1px solid #eee; }
-            #btn-save { width: 100%; padding: 10px; background: #2196F3; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 14px; transition: background 0.3s; }
-            #btn-save:hover { background: #1976D2; }
+            .range-label { font-size: 12px; color: #555; margin-bottom: 5px; display: block; font-weight: 600; }
+            input[type="range"] { width: 100%; height: 6px; background: #eee; border-radius: 5px; outline: none; accent-color: #2196F3; }
             
-            .toast-info { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 12px 24px; border-radius: 30px; z-index: 10001; display: none; font-size: 14px; backdrop-filter: blur(5px); }
+            .edit-mode-toggle { background: #f9f9f9; padding: 12px; border-radius: 10px; margin-bottom: 15px; border: 1px dashed #2196F3; }
+
+            .btn-save-container { padding: 15px; background: #fcfcfc; border-top: 1px solid #f0f0f0; }
+            #btn-save { width: 100%; padding: 12px; background: #2196F3; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 800; font-size: 14px; transition: all 0.3s; box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3); }
+            #btn-save:hover { background: #1976D2; box-shadow: 0 6px 16px rgba(33, 150, 243, 0.4); }
+            
+            .toast-info { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 28px; border-radius: 50px; z-index: 10001; display: none; font-size: 14px; font-weight: 600; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
             .hide-pop { opacity: 0 !important; pointer-events: none !important; visibility: hidden !important; }
         `;
     }
 
-    const maintBtn = document.createElement('button'); maintBtn.id = 'ftth-maint-btn'; maintBtn.className = 'ftth-btn'; maintBtn.innerHTML = '🛠️';
-    const delivBtn = document.createElement('button'); delivBtn.id = 'ftth-deliv-btn'; delivBtn.className = 'ftth-btn'; delivBtn.innerHTML = '🚚';
+    const maintBtn = document.createElement('button'); maintBtn.id = 'ftth-maint-btn'; maintBtn.className = 'ftth-btn';
+    const delivBtn = document.createElement('button'); delivBtn.id = 'ftth-deliv-btn'; delivBtn.className = 'ftth-btn';
     const setBtn = document.createElement('button'); setBtn.id = 'ftth-settings-btn'; setBtn.innerHTML = '⚙️';
     const panel = document.createElement('div'); panel.id = 'ftth-panel';
     const toast = document.createElement('div'); toast.className = 'toast-info';
@@ -162,47 +192,69 @@
             </div>
             <div class="tabs-content">
                 <div class="tab-pane active" id="maint-tab">
-                    <div class="section-title">🛠️ حقول الصيانة المنسوخة</div>
+                    <div class="section-title">🎨 مظهر الأيقونة</div>
+                    <div class="input-group">
+                        <label>اللون:</label>
+                        <input type="color" id="maint_color" value="${settings.appearance.maint.color}">
+                        <label>الإيموجي:</label>
+                        <input type="text" id="maint_emoji" value="${settings.appearance.maint.emoji}">
+                    </div>
+                    <div class="range-container">
+                        <label class="range-label">الحجم: <span id="val_m_size">${settings.appearance.maint.size}</span>px</label>
+                        <input type="range" id="range_m_size" min="30" max="120" value="${settings.appearance.maint.size}">
+                    </div>
+
+                    <div class="section-title">📋 الحقول المنسوخة</div>
                     ${Object.keys(settings.maintenanceFields).map(k => `
-                        <div class="s-item"><input type="checkbox" id="m_${k}" ${settings.maintenanceFields[k] ? 'checked' : ''}> ${labels[k]}</div>
+                        <div class="s-item"><label for="m_${k}">${labels[k]}</label><input type="checkbox" id="m_${k}" ${settings.maintenanceFields[k] ? 'checked' : ''}></div>
                     `).join('')}
-                    <div class="section-title">⚙️ خيارات السؤال</div>
-                    <div class="s-item"><input type="checkbox" id="m_p_alt" ${settings.maintenancePrompts.altPhone ? 'checked' : ''}> طلب هاتف بديل</div>
-                    <div class="s-item"><input type="checkbox" id="m_p_prob" ${settings.maintenancePrompts.problemDesc ? 'checked' : ''}> طلب وصف مشكلة</div>
+                    <div class="section-title">⚙️ التنبيهات</div>
+                    <div class="s-item"><label for="m_p_alt">طلب هاتف بديل</label><input type="checkbox" id="m_p_alt" ${settings.maintenancePrompts.altPhone ? 'checked' : ''}></div>
+                    <div class="s-item"><label for="m_p_prob">طلب وصف مشكلة</label><input type="checkbox" id="m_p_prob" ${settings.maintenancePrompts.problemDesc ? 'checked' : ''}></div>
                 </div>
                 
                 <div class="tab-pane" id="deliv-tab">
-                    <div class="section-title" style="color:#FF9800;">🚚 حقول الدلفري المنسوخة</div>
+                    <div class="section-title" style="border-right-color:#FF9800;">🎨 مظهر الأيقونة</div>
+                    <div class="input-group">
+                        <label>اللون:</label>
+                        <input type="color" id="deliv_color" value="${settings.appearance.deliv.color}">
+                        <label>الإيموجي:</label>
+                        <input type="text" id="deliv_emoji" value="${settings.appearance.deliv.emoji}">
+                    </div>
+                    <div class="range-container">
+                        <label class="range-label">الحجم: <span id="val_d_size">${settings.appearance.deliv.size}</span>px</label>
+                        <input type="range" id="range_d_size" min="30" max="120" value="${settings.appearance.deliv.size}">
+                    </div>
+
+                    <div class="section-title" style="border-right-color:#FF9800;">📋 الحقول المنسوخة</div>
                     ${Object.keys(settings.deliveryFields).map(k => `
-                        <div class="s-item"><input type="checkbox" id="d_${k}" ${settings.deliveryFields[k] ? 'checked' : ''}> ${labels[k]}</div>
+                        <div class="s-item"><label for="d_${k}">${labels[k]}</label><input type="checkbox" id="d_${k}" ${settings.deliveryFields[k] ? 'checked' : ''}></div>
                     `).join('')}
-                    <div class="section-title">⚙️ خيارات السؤال</div>
-                    <div class="s-item"><input type="checkbox" id="d_p_alt" ${settings.deliveryPrompts.altPhone ? 'checked' : ''}> طلب هاتف بديل</div>
-                    <div class="s-item"><input type="checkbox" id="d_p_note" ${settings.deliveryPrompts.note ? 'checked' : ''}> طلب ملاحظة</div>
+                    <div class="section-title" style="border-right-color:#FF9800;">⚙️ التنبيهات</div>
+                    <div class="s-item"><label for="d_p_alt">طلب هاتف بديل</label><input type="checkbox" id="d_p_alt" ${settings.deliveryPrompts.altPhone ? 'checked' : ''}></div>
+                    <div class="s-item"><label for="d_p_note">طلب ملاحظة</label><input type="checkbox" id="d_p_note" ${settings.deliveryPrompts.note ? 'checked' : ''}></div>
                 </div>
                 
                 <div class="tab-pane" id="general-tab">
-                    <div class="section-title">📏 أحجام الأيقونات</div>
-                    <div class="range-container">
-                        <label class="range-label">حجم أيقونة الصيانة: <span id="val_m_size">${settings.sizes.maint}</span>px</label>
-                        <input type="range" id="range_m_size" min="30" max="100" value="${settings.sizes.maint}">
+                    <div class="section-title">📍 تخصيص المواقع</div>
+                    <div class="edit-mode-toggle s-item">
+                        <label style="font-weight:700;">وضع تحريك الأزرار</label>
+                        <input type="checkbox" id="toggle_edit_mode" ${editMode ? 'checked' : ''}>
                     </div>
-                    <div class="range-container">
-                        <label class="range-label">حجم أيقونة الدلفري: <span id="val_d_size">${settings.sizes.deliv}</span>px</label>
-                        <input type="range" id="range_d_size" min="30" max="100" value="${settings.sizes.deliv}">
-                    </div>
-                    <p style="font-size:11px; color:#888; margin-top:10px;">* ملاحظة: يمكنك سحب الأيقونات بالماوس لتغيير مكانها في أي وقت.</p>
+                    <p style="font-size:12px; color:#666; line-height:1.5;">* عند تفعيل "وضع تحريك الأزرار"، يمكنك سحب الإيموجيات في الصفحة لوضعها في المكان المناسب لك. تذكر إطفاء الوضع بعد الانتهاء لتثبيتها.</p>
+                    
+                    <div class="section-title">ℹ️ معلومات</div>
+                    <div class="s-item"><span>إصدار السكربت:</span> <span>${CURRENT_VERSION}</span></div>
+                    <div class="s-item"><span>حالة الاتصال:</span> <span style="color:green;">متصل</span></div>
                 </div>
             </div>
             <div class="btn-save-container">
-                <button id="btn-save">حفظ جميع الإعدادات</button>
+                <button id="btn-save">حفظ وتطبيق</button>
             </div>
         `;
         panel.innerHTML = h;
 
-        // منطق التبويبات
-        const tabLinks = panel.querySelectorAll('.tab-link');
-        tabLinks.forEach(link => {
+        panel.querySelectorAll('.tab-link').forEach(link => {
             link.onclick = () => {
                 panel.querySelectorAll('.tab-link, .tab-pane').forEach(el => el.classList.remove('active'));
                 link.classList.add('active');
@@ -210,12 +262,15 @@
             };
         });
 
-        // تحديث أرقام الأحجام مباشرة
         panel.querySelector('#range_m_size').oninput = (e) => panel.querySelector('#val_m_size').innerText = e.target.value;
         panel.querySelector('#range_d_size').oninput = (e) => panel.querySelector('#val_d_size').innerText = e.target.value;
 
+        panel.querySelector('#toggle_edit_mode').onchange = (e) => {
+            editMode = e.target.checked;
+            updateBtnStyles();
+        };
+
         document.getElementById('btn-save').onclick = async () => {
-            // حفظ الحقول
             for (const k in settings.maintenanceFields) settings.maintenanceFields[k] = document.getElementById(`m_${k}`).checked;
             settings.maintenancePrompts.altPhone = document.getElementById('m_p_alt').checked;
             settings.maintenancePrompts.problemDesc = document.getElementById('m_p_prob').checked;
@@ -224,9 +279,13 @@
             settings.deliveryPrompts.altPhone = document.getElementById('d_p_alt').checked;
             settings.deliveryPrompts.note = document.getElementById('d_p_note').checked;
             
-            // حفظ الأحجام
-            settings.sizes.maint = parseInt(document.getElementById('range_m_size').value);
-            settings.sizes.deliv = parseInt(document.getElementById('range_d_size').value);
+            settings.appearance.maint.size = parseInt(document.getElementById('range_m_size').value);
+            settings.appearance.maint.color = document.getElementById('maint_color').value;
+            settings.appearance.maint.emoji = document.getElementById('maint_emoji').value;
+            
+            settings.appearance.deliv.size = parseInt(document.getElementById('range_d_size').value);
+            settings.appearance.deliv.color = document.getElementById('deliv_color').value;
+            settings.appearance.deliv.emoji = document.getElementById('deliv_emoji').value;
 
             await saveSettings(settings); 
             updateBtnStyles(); 
@@ -236,17 +295,19 @@
     }
 
     // ==========================================
-    // 5. منطق السحب والإفلات (Drag and Drop)
+    // 5. منطق السحب والإفلات (فقط في وضع التحرير)
     // ==========================================
     function makeDraggable(el, type) {
         let isDragging = false;
         let startX, startY, initialRight, initialBottom;
-        let moveThreshold = 5; // بكسل لتمييز السحب عن النقرة
+        let moveThreshold = 5;
 
         el.addEventListener('mousedown', startDrag);
         el.addEventListener('touchstart', startDrag, { passive: false });
 
         function startDrag(e) {
+            if (!editMode) return; // منع السحب إذا لم يكن وضع التحرير مفعل
+            
             isDragging = false;
             let event = e.type === 'touchstart' ? e.touches[0] : e;
             startX = event.clientX;
@@ -280,14 +341,11 @@
             document.removeEventListener('mouseup', stopDrag);
             document.removeEventListener('touchend', stopDrag);
             
-            if (isDragging) {
-                saveSettings(settings);
-            }
+            if (isDragging) saveSettings(settings);
         }
 
-        // منع النقرة إذا كان هناك سحب
         el.addEventListener('click', (e) => {
-            if (isDragging) {
+            if (isDragging || editMode) {
                 e.stopImmediatePropagation();
                 e.preventDefault();
             }
@@ -348,7 +406,7 @@
             document.querySelector('.cdk-overlay-container')?.classList.remove('hide-pop');
         }
 
-        const headIcon = type === 'maintenance' ? '🛠️' : '🚚';
+        const headIcon = type === 'maintenance' ? settings.appearance.maint.emoji : settings.appearance.deliv.emoji;
         let msg = `${headIcon} *${data.name}*\n----------------------------\n`;
         if (data.phone) msg += `📞 الهاتف: ${data.phone}\n`;
         if (data.altPhone) msg += `📱 البديل: ${data.altPhone}\n`;
@@ -374,7 +432,7 @@
         msg += `📋 ${headIcon} *${type === 'maintenance' ? 'صيانة' : 'دلفري'}*`;
 
         GM_setClipboard(msg.split('\n').filter(l => !l.includes(': null') && !l.endsWith(': undefined')).join('\n'));
-        showT('✅ تم النسخ بالتنسيق الجديد');
+        showT('✅ تم النسخ بنجاح');
     }
 
     // ==========================================
@@ -392,8 +450,8 @@
 
         setBtn.onclick = (e) => { e.stopPropagation(); panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex'; if (panel.style.display === 'flex') drawSettings(); };
         
-        maintBtn.onclick = () => collect('maintenance');
-        delivBtn.onclick = () => collect('delivery');
+        maintBtn.onclick = () => { if(!editMode) collect('maintenance'); };
+        delivBtn.onclick = () => { if(!editMode) collect('delivery'); };
         
         document.addEventListener('click', (e) => { if (!panel.contains(e.target) && e.target !== setBtn) panel.style.display = 'none'; });
     });
