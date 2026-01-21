@@ -116,7 +116,7 @@
             width: 100%; 
             padding: 1.1rem 1.3rem; 
             border-radius: 1.3rem; 
-            border: 1px solid #e2e8f0; 
+            border: 1.5px solid #e2e8f0; 
             margin-top: 0.6rem; 
             font-size: 0.98rem; 
             transition: all 0.35s ease; 
@@ -153,7 +153,7 @@
             to { opacity: 1; transform: translateY(0) scale(1); } 
         }
         
-        .sync-loading { animation: spin 1.5s linear infinite; }
+        .sync-loading { animation: spin 0.8s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         /* تخصيص شريط التمرير */
@@ -182,13 +182,13 @@
     <!-- Header -->
     <header class="bg-white/80 backdrop-blur-xl sticky top-0 z-40 border-b border-slate-100 p-4 flex justify-between items-center shadow-sm">
         <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-200 ring-2 ring-white">
+            <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-200 ring-2 ring-white transition-transform active:scale-90">
                 <i data-lucide="wifi"></i>
             </div>
             <div>
                 <h1 class="font-black text-slate-800 tracking-tight text-xl leading-none">إدارة ISP برو</h1>
                 <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1.5 flex items-center gap-1">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> نظام إدارة الشبكات v5.6
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> نظام إدارة الشبكات v5.7
                 </p>
             </div>
         </div>
@@ -197,12 +197,12 @@
         </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- Main Content Area -->
     <main id="content" class="p-4 space-y-6">
         <!-- يتم ملؤه عبر JavaScript -->
     </main>
 
-    <!-- Bottom Nav -->
+    <!-- Bottom Navigation Bar -->
     <nav class="bottom-nav">
         <div onclick="router('home')" class="nav-item active" id="nav-home"><i data-lucide="layout-grid"></i><span>الرئيسية</span></div>
         <div onclick="router('subs')" class="nav-item" id="nav-subs"><i data-lucide="users"></i><span>المشتركين</span></div>
@@ -211,11 +211,12 @@
         <div onclick="router('settings')" class="nav-item" id="nav-settings"><i data-lucide="settings"></i><span>الإعدادات</span></div>
     </nav>
 
+    <!-- الزر العائم للإضافة -->
     <button id="fab" onclick="openAddSubModal()" class="fixed bottom-28 left-6 w-16 h-16 bg-indigo-600 text-white rounded-3xl shadow-2xl hidden items-center justify-center z-40 hover:bg-indigo-700 transition-all hover:-translate-y-2 active:scale-90 shadow-indigo-300">
         <i data-lucide="user-plus" class="w-8 h-8"></i>
     </button>
 
-    <!-- Modal: Add Subscriber -->
+    <!-- Modal: إضافة مشترك -->
     <div id="modal-sub" class="modal">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-8 border-b pb-5">
@@ -249,7 +250,7 @@
         </div>
     </div>
 
-    <!-- Modal: Financial Details -->
+    <!-- Modal: تفاصيل السجل المالي -->
     <div id="modal-details" class="modal">
         <div class="modal-content !max-w-2xl !rounded-[3rem]">
             <div class="flex justify-between items-center mb-8 border-b pb-5">
@@ -257,12 +258,12 @@
                 <button onclick="closeModals()" class="text-slate-400 p-3 rounded-2xl hover:bg-slate-50 transition-all"><i data-lucide="x"></i></button>
             </div>
             <div id="sub-details-content" class="space-y-8">
-                <!-- Content will be injected -->
+                <!-- يتم التحميل عبر JS -->
             </div>
         </div>
     </div>
 
-    <!-- Modal: Renew Subscription -->
+    <!-- Modal: تجديد الاشتراك -->
     <div id="modal-renew" class="modal">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-8 border-b pb-5">
@@ -299,7 +300,7 @@
         </div>
     </div>
 
-    <!-- Modal: Sell to Agent -->
+    <!-- Modal: بيع لوكيل -->
     <div id="modal-agent-sale" class="modal">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-6 border-b pb-4">
@@ -328,6 +329,7 @@
     </div>
 
     <script>
+        // إعداد قاعدة البيانات المحلية Dexie
         const db = new Dexie("ISP_DB");
         db.version(11).stores({
             subscribers: '++id, name, phone, serial',
@@ -369,6 +371,7 @@
             renderTab(tab);
         };
 
+        // دالة حساب صافي الديون
         function calculateDebt(sub) {
             if (!sub) return 0;
             let debt = 0;
@@ -597,7 +600,7 @@
                                     </button>
                                 </div>
                                 ${isInit && i.usedBy ? `<div class="text-[10px] text-indigo-500 font-bold mt-2 uppercase flex items-center gap-1 font-black"><i data-lucide="user" class="w-3 h-3"></i> ${i.usedBy}</div>` : ''}
-                                ${!isInit && i.notes ? `<div class="text-[9px] text-slate-400 mt-1 uppercase font-bold">${i.notes}</div>` : ''}
+                                ${!isInit && i.notes ? `<div class="text-[9px] text-slate-400 mt-1 uppercase font-bold">${i.notes} ${i.paidAmount ? `| المبلغ: ${i.paidAmount}` : ''}</div>` : ''}
                             </div>
                             <div class="flex gap-2 items-center">
                                 ${(!isInit && i.status === 'غير مستخدم') ? `
@@ -759,10 +762,27 @@
             try {
                 const dur = document.getElementById('renew-duration');
                 const finalPrice = document.getElementById('renew-price-input').value;
-                const data = [Date.now(), document.getElementById('renew-date').value, name, document.getElementById('renew-emp').value, code, dur.options[dur.selectedIndex].text, finalPrice, document.getElementById('renew-paid').value, new Date().toLocaleDateString()];
+                const paidAmount = document.getElementById('renew-paid').value;
+                
+                // التعديل: لا يتم إدراج تاريخ في العمود I (الفهرس 8) إلا في حال التسديد
+                const paymentDate = (paidAmount && parseFloat(paidAmount) > 0) ? new Date().toLocaleDateString() : "";
+                
+                const data = [
+                    Date.now(), 
+                    document.getElementById('renew-date').value, 
+                    name, 
+                    document.getElementById('renew-emp').value, 
+                    code, 
+                    dur.options[dur.selectedIndex].text, 
+                    finalPrice, 
+                    paidAmount, 
+                    paymentDate
+                ];
+
                 await db.renewalCodes.where('code').equals(code).modify({ status: 'مستخدم' });
                 await db.syncQueue.add({ sheetName: "جدول التفعيل", action: "add", data: data });
                 await db.syncQueue.add({ sheetName: "جدول كودات التجديد", action: "update_code", code: code, notes: String(document.getElementById('renew-notes').value || "") });
+                
                 closeModals();
                 await loadLocal();
                 syncNow();
