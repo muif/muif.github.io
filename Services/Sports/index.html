@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ISP Manager Pro</title>
+    <title>ISP Manager Pro - Professional Edition</title>
     <!-- استيراد المكتبات الأساسية لضمان عمل كافة الوظائف المحاسبية والتقنية -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -27,7 +27,7 @@
             padding-bottom: 115px; 
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
-            user-select: none; 
+            user-select: none; /* منع تحديد النصوص العشوائي في واجهات اللمس */
         }
 
         /* تصميم الكروت بنمط Glassmorphism المتقدم لسهولة القراءة والجمالية */
@@ -40,7 +40,7 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* تنسيق شريط التنقل السفلي الاحترافي */
+        /* تنسيق شريط التنقل السفلي الاحترافي - مصمم لسهولة الاستخدام باليد الواحدة */
         .bottom-nav { 
             position: fixed; 
             bottom: 0; 
@@ -81,7 +81,7 @@
             filter: drop-shadow(0 0 8px rgba(79, 70, 229, 0.4)); 
         }
         
-        /* تصميم النوافذ المنبثقة التفاعلية */
+        /* تصميم النوافذ المنبثقة التفاعلية Responsive Modals ملائمة لكل الشاشات */
         .modal { 
             display: none; 
             position: fixed; 
@@ -111,7 +111,7 @@
             position: relative;
         }
         
-        /* حقول الإدخال العصرية */
+        /* حقول الإدخال العصرية لتحسين تجربة المستخدم وسرعة الإدخال */
         .modern-input { 
             width: 100%; 
             padding: 1.1rem 1.3rem; 
@@ -131,7 +131,7 @@
             outline: none; 
         }
         
-        /* الأزرار الاحترافية */
+        /* الأزرار الاحترافية بنمط التدرج اللوني */
         .btn-primary { 
             background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
             color: white; 
@@ -156,11 +156,11 @@
         .sync-loading { animation: spin 0.8s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* تخصيص شريط التمرير */
+        /* تخصيص شريط التمرير للنوافذ ليكون أقل بروزاً */
         .modal-content::-webkit-scrollbar { width: 4px; }
         .modal-content::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
 
-        /* توست (Toast) بسيط */
+        /* توست (Toast) بسيط للتنبيهات */
         #toast {
             position: fixed; top: 100px; left: 50%; transform: translateX(-50%);
             background: #1e293b; color: white; padding: 10px 20px; border-radius: 12px;
@@ -188,21 +188,21 @@
             <div>
                 <h1 class="font-black text-slate-800 tracking-tight text-xl leading-none">إدارة ISP برو</h1>
                 <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1.5 flex items-center gap-1">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> نظام إدارة الشبكات v5.7
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> الإصدار الاحترافي v5.9
                 </p>
             </div>
         </div>
-        <div id="sync-status" class="flex items-center gap-2 text-[10px] font-black px-4 py-2.5 rounded-full bg-slate-50 text-slate-500 border border-slate-200">
+        <div id="sync-status" class="flex items-center gap-2 text-[10px] font-black px-4 py-2.5 rounded-full bg-slate-50 text-slate-500 border border-slate-200 transition-all">
             <i id="sync-icon" data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> <span id="sync-text">مستقر</span>
         </div>
     </header>
 
-    <!-- Main Content Area -->
+    <!-- منطقة المحتوى الديناميكي الرئيسي -->
     <main id="content" class="p-4 space-y-6">
-        <!-- يتم ملؤه عبر JavaScript -->
+        <!-- يتم ملؤه عبر JavaScript بناءً على الصفحة المختارة -->
     </main>
 
-    <!-- Bottom Navigation Bar -->
+    <!-- شريط التنقل السفلي (Tabs) -->
     <nav class="bottom-nav">
         <div onclick="router('home')" class="nav-item active" id="nav-home"><i data-lucide="layout-grid"></i><span>الرئيسية</span></div>
         <div onclick="router('subs')" class="nav-item" id="nav-subs"><i data-lucide="users"></i><span>المشتركين</span></div>
@@ -211,12 +211,12 @@
         <div onclick="router('settings')" class="nav-item" id="nav-settings"><i data-lucide="settings"></i><span>الإعدادات</span></div>
     </nav>
 
-    <!-- الزر العائم للإضافة -->
+    <!-- الزر العائم للإضافة السريعة لمشترك جديد -->
     <button id="fab" onclick="openAddSubModal()" class="fixed bottom-28 left-6 w-16 h-16 bg-indigo-600 text-white rounded-3xl shadow-2xl hidden items-center justify-center z-40 hover:bg-indigo-700 transition-all hover:-translate-y-2 active:scale-90 shadow-indigo-300">
         <i data-lucide="user-plus" class="w-8 h-8"></i>
     </button>
 
-    <!-- Modal: إضافة مشترك -->
+    <!-- نافذة إضافة مشترك جديد (تفعيل أول مرة) -->
     <div id="modal-sub" class="modal">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-8 border-b pb-5">
@@ -250,7 +250,7 @@
         </div>
     </div>
 
-    <!-- Modal: تفاصيل السجل المالي -->
+    <!-- نافذة تفاصيل المشترك والسجل التاريخي للنشاط المالي -->
     <div id="modal-details" class="modal">
         <div class="modal-content !max-w-2xl !rounded-[3rem]">
             <div class="flex justify-between items-center mb-8 border-b pb-5">
@@ -263,7 +263,7 @@
         </div>
     </div>
 
-    <!-- Modal: تجديد الاشتراك -->
+    <!-- نافذة تجديد الاشتراك للمشتركين القدامى -->
     <div id="modal-renew" class="modal">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-8 border-b pb-5">
@@ -275,7 +275,7 @@
             </div>
             <div class="space-y-6">
                 <div><label class="text-xs font-black text-slate-500 mr-1 uppercase">تاريخ التفعيل الجديد</label><input type="date" id="renew-date" class="modern-input"></div>
-                <div><label class="text-xs font-black text-slate-500 mr-1 uppercase">الموظف المسؤول</label><input type="text" id="renew-emp" class="modern-input" placeholder="اسمك الشخصي"></div>
+                <div><label class="text-xs font-black text-slate-500 mr-1 uppercase">الموظف المسؤول</label><input type="text" id="renew-emp" class="modern-input" placeholder="من قام بالتفعيل؟"></div>
                 <div><label class="text-xs font-black text-slate-500 mr-1 uppercase">كود التجديد</label>
                     <select id="renew-code-select" class="modern-input font-bold text-indigo-700 bg-indigo-50/20"></select>
                 </div>
@@ -300,7 +300,28 @@
         </div>
     </div>
 
-    <!-- Modal: بيع لوكيل -->
+    <!-- نافذة طلب مبلغ التسديد (Payment Prompt) -->
+    <div id="modal-pay" class="modal">
+        <div class="modal-content !max-w-md">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <h3 class="font-black text-xl text-slate-800">تسديد مبلغ مستحق</h3>
+                <button onclick="closeModals()" class="text-slate-400 p-2"><i data-lucide="x"></i></button>
+            </div>
+            <div class="space-y-5">
+                <div class="bg-indigo-50 p-4 rounded-2xl border border-indigo-100 text-center">
+                    <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest">المستحق المطلوب</p>
+                    <p id="pay-debt-amount" class="text-2xl font-black text-indigo-700 font-mono"></p>
+                </div>
+                <div>
+                    <label class="text-xs font-black text-slate-500 mr-1 uppercase">المبلغ المدفوع فعلاً (د.ع)</label>
+                    <input type="number" id="pay-input-amount" class="modern-input font-black text-green-600 text-center" placeholder="0">
+                </div>
+                <button id="btn-confirm-pay" class="btn-primary mt-2">تأكيد عملية التسديد وحفظها</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة بيع كود لوكيل (عملية بيع خارجية) -->
     <div id="modal-agent-sale" class="modal">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-6 border-b pb-4">
@@ -329,17 +350,23 @@
     </div>
 
     <script>
-        // إعداد قاعدة البيانات المحلية Dexie
+        /**
+         * نظام إدارة المشتركين الاحترافي - الإصدار الخامس (المطور 5.9)
+         * إدارة قاعدة بيانات محلية (IndexedDB) مع مزامنة سحابية ذكية لـ Google Sheets
+         */
+        
+        // إعداد هيكل قاعدة البيانات المحلية باستخدام Dexie لضمان سرعة استجابة التطبيق
         const db = new Dexie("ISP_DB");
-        db.version(11).stores({
-            subscribers: '++id, name, phone, serial',
-            activations: '++id, subName, code, date',
+        db.version(13).stores({
+            subscribers: '++id, t, name, phone, serial',
+            activations: '++id, t, subName, code, date',
             initialCodes: '++id, primary, status',
             renewalCodes: '++id, code, status',
             settings: '++id',
             syncQueue: '++id'
         });
 
+        // المتغيرات العامة لإدارة حالة التطبيق
         let isSyncing = false;
         let currentTab = 'home';
         let searchQuery = "";
@@ -351,45 +378,64 @@
             scriptURL: localStorage.getItem('gas_url') || ""
         };
 
+        // تهيئة قاعدة البيانات عند فتح التطبيق
         async function initDB() {
             try { 
                 await db.open(); 
             } catch (err) { 
-                console.error("Database mismatch. Resetting...");
+                console.error("Database conflict. Resetting local cache...");
                 await db.delete(); 
                 location.reload(); 
             }
         }
 
+        // محرك التنقل الرئيسي (Router) وتحديث الأزرار والأيقونات
         const router = (tab) => {
             currentTab = tab;
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             const navBtn = document.getElementById(`nav-${tab}`);
             if (navBtn) navBtn.classList.add('active');
+            
+            // زر الإضافة يظهر فقط في صفحة المشتركين
             const fab = document.getElementById('fab');
             if (fab) fab.style.display = (tab === 'subs') ? 'flex' : 'none';
+            
             renderTab(tab);
         };
 
-        // دالة حساب صافي الديون
+        /**
+         * دالة حساب صافي الديون بدقة متناهية
+         * تربط بين سعر الشهر الأول في الإعدادات وبين مبالغ كافة التجديدات اللاحقة
+         */
         function calculateDebt(sub) {
             if (!sub) return 0;
             let debt = 0;
             const settings = APP_STATE.data.settings || {};
             const firstMonthPrice = parseFloat(settings.firstMonthPrice || 0);
             const paidInitial = parseFloat(sub.payment || 0);
-            if (isNaN(paidInitial) || paidInitial === 0) { debt += firstMonthPrice; }
+            
+            // إضافة دين العقد الأول إذا لم يتم التسديد
+            if (isNaN(paidInitial) || paidInitial === 0) { 
+                debt += firstMonthPrice; 
+            }
+
+            // حساب فروقات كافة التجديدات اللاحقة
             const activations = APP_STATE.data.activations || [];
             const subName = String(sub.name || "").trim();
             const subActivations = activations.filter(a => a && String(a.subName || "").trim() === subName);
+            
             subActivations.forEach(act => {
                 const price = parseFloat(act.price || 0);
                 const paid = parseFloat(act.paid || 0);
-                if (!isNaN(price) && !isNaN(paid)) { debt += (price - paid); }
+                if (!isNaN(price) && !isNaN(paid)) { 
+                    debt += (price - paid); 
+                }
             });
+
             return isNaN(debt) ? 0 : debt;
         }
 
+        // تحميل البيانات من المتصفح (Offline-First)
         async function loadLocal() {
             try {
                 if (!db.isOpen()) await initDB();
@@ -400,15 +446,19 @@
                 const sett = await db.settings.toCollection().first();
                 APP_STATE.data.settings = sett || {};
                 renderTab(currentTab);
-            } catch (err) { console.error("Load failure", err); }
+            } catch (err) { 
+                console.error("Local data load error:", err); 
+            }
         }
 
+        // جلب البيانات الخام من ملف Google Sheets عبر رابط السكربت
         async function fetchFromSheet() {
             if (!navigator.onLine || !APP_STATE.scriptURL) return;
             updateSyncUI("جاري الجلب...", "loading");
             try {
                 const res = await fetch(APP_STATE.scriptURL, { method: 'GET', redirect: 'follow' });
                 const json = await res.json();
+                
                 await db.subscribers.clear();
                 if (json.subscribers && json.subscribers.length > 1) {
                     await db.subscribers.bulkAdd(json.subscribers.slice(1).map(r => ({
@@ -416,31 +466,42 @@
                         m1: String(r[5] || ""), address: String(r[6] || "").trim(), payment: r[7], actDate: r[8], notes: String(r[9] || "")
                     })));
                 }
+
                 await db.activations.clear();
                 if (json.activations && json.activations.length > 1) {
                     await db.activations.bulkAdd(json.activations.slice(1).map(r => ({
                         t: r[0], date: r[1], subName: String(r[2] || "").trim(), emp: String(r[3] || "").trim(), code: String(r[4] || "").trim(), duration: r[5], price: r[6], paid: r[7]
                     })));
                 }
+
                 await db.initialCodes.clear();
                 if (json.initialCodes && json.initialCodes.length > 1) {
                     await db.initialCodes.bulkAdd(json.initialCodes.slice(1).map(r => ({
                         t: r[0], primary: String(r[1] || "").trim(), code: String(r[2] || "").trim(), nid: r[3], status: String(r[4] || "").trim(), usedBy: String(r[5] || "").trim()
                     })));
                 }
+
                 await db.renewalCodes.clear();
                 if (json.renewalCodes && json.renewalCodes.length > 1) {
                     await db.renewalCodes.bulkAdd(json.renewalCodes.slice(1).map(r => ({
                         t: r[0], code: String(r[1] || "").trim(), status: String(r[4] || "").trim(), notes: String(r[5] || "").trim(), paidAmount: r[6]
                     })));
                 }
+
                 await db.settings.clear();
-                await db.settings.add({ monthlyPrice: json.settings?.[1]?.[0] || 0, firstMonthPrice: json.settings?.[1]?.[1] || 0 });
+                await db.settings.add({ 
+                    monthlyPrice: json.settings?.[1]?.[0] || 0,
+                    firstMonthPrice: json.settings?.[1]?.[1] || 0 
+                });
+
                 await loadLocal();
                 updateSyncUI("محدث", "success");
-            } catch (e) { updateSyncUI("خطأ اتصال", "error"); }
+            } catch (e) { 
+                updateSyncUI("خطأ اتصال", "error"); 
+            }
         }
 
+        // إرسال العمليات المعلقة في طابور المزامنة فور توفر الإنترنت
         async function syncNow() {
             if (isSyncing) return;
             const queue = await db.syncQueue.toArray();
@@ -454,11 +515,16 @@
                     headers: {'Content-Type': 'text/plain'},
                     body: JSON.stringify({ updates: queue }) 
                 });
+                
                 await db.syncQueue.clear();
                 updateSyncUI("تم الرفع", "success");
+                // التحديث التلقائي بعد الرفع بـ 2.5 ثانية لضمان ظهور التغييرات
                 setTimeout(fetchFromSheet, 2500); 
-            } catch (e) { updateSyncUI("فشل الرفع", "error"); }
-            finally { isSyncing = false; }
+            } catch (e) { 
+                updateSyncUI("فشل الرفع", "error"); 
+            } finally { 
+                isSyncing = false; 
+            }
         }
 
         function updateSyncUI(text, type) {
@@ -468,11 +534,16 @@
             if (!statusBox || !statusText || !statusIcon) return;
             statusText.innerText = text;
             statusIcon.classList.remove('sync-loading', 'text-green-500', 'text-red-500', 'text-amber-500');
-            if (type === "loading") statusIcon.classList.add('sync-loading', 'text-amber-500');
-            else if (type === "success") statusIcon.classList.add('text-green-500');
-            else if (type === "error") statusIcon.classList.add('text-red-500');
+            if (type === "loading") {
+                statusIcon.classList.add('sync-loading', 'text-amber-500');
+            } else if (type === "success") {
+                statusIcon.classList.add('text-green-500');
+            } else if (type === "error") {
+                statusIcon.classList.add('text-red-500');
+            }
         }
 
+        // الوظيفة المسؤولة عن رسم واجهة كل تبويب
         function renderTab(tab) {
             const c = document.getElementById('content');
             if (!c) return;
@@ -485,6 +556,7 @@
             lucide.createIcons();
         }
 
+        // واجهة الصفحة الرئيسية (Dashboard)
         function renderHomeView(c) {
             const subs = APP_STATE.data.subscribers || [];
             const unusedRenewal = (APP_STATE.data.renewalCodes || []).filter(c => c && c.status === "غير مستخدم").length;
@@ -505,7 +577,7 @@
                         <h2 class="text-2xl font-black text-indigo-600 mt-1">${unusedRenewal}</h2>
                     </div>
                 </div>
-                <div class="glass-card p-6 bg-white border border-slate-100 mt-2 flex justify-between items-center shadow-lg shadow-slate-100 active:scale-95 transition-all">
+                <div class="glass-card p-6 bg-white border border-slate-100 mt-2 flex justify-between items-center shadow-lg shadow-slate-100 transition-transform active:scale-95">
                     <div class="flex items-center gap-5">
                         <div class="w-14 h-14 bg-amber-50 text-amber-500 rounded-2xl flex items-center justify-center border border-amber-100"><i data-lucide="cloud-off" class="w-7 h-7"></i></div>
                         <div><p class="text-[11px] font-black text-slate-400 uppercase tracking-wider">عمليات معلقة</p><p class="text-2xl font-black text-slate-800 leading-none mt-1" id="queue-count">0</p></div>
@@ -516,6 +588,7 @@
             db.syncQueue.count().then(count => { if(document.getElementById('queue-count')) document.getElementById('queue-count').innerText = count; });
         }
 
+        // واجهة قائمة المشتركين مع البحث السلس
         function renderSubsView(c) {
             c.innerHTML = `
                 <div class="glass-card p-4 bg-white border border-slate-100 mb-6 flex items-center gap-4 shadow-sm focus-within:ring-4 focus-within:ring-indigo-100 transition-all border-b-4 border-b-indigo-500">
@@ -535,9 +608,13 @@
             const q = searchQuery.toLowerCase().trim();
             const filteredSubs = subs.filter(s => {
                 if (!s) return false;
-                return (s.name || "").toLowerCase().includes(q) || (s.phone || "").toLowerCase().includes(q) || (s.serial || "").toLowerCase().includes(q);
+                const name = (s.name || "").toLowerCase();
+                const phone = (s.phone || "").toLowerCase();
+                const serial = (s.serial || "").toLowerCase();
+                return name.includes(q) || phone.includes(q) || serial.includes(q);
             });
-            listContainer.innerHTML = filteredSubs.length === 0 ? '<div class="text-center py-20 opacity-20 font-black">لا توجد نتائج</div>' :
+            
+            listContainer.innerHTML = filteredSubs.length === 0 ? '<div class="text-center py-20 opacity-20 font-black"><i data-lucide="user-x" class="w-12 h-12 mx-auto mb-2"></i> لا توجد نتائج مطابقة</div>' :
                 filteredSubs.map(s => {
                     const debt = calculateDebt(s);
                     const safeName = String(s.name || "بدون اسم").replace(/'/g, "\\'");
@@ -554,7 +631,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <button onclick="event.stopPropagation(); openRenewModal('${safeName}')" class="w-14 h-14 bg-indigo-600 text-white rounded-[1.25rem] flex items-center justify-center shadow-xl shadow-indigo-100 active:rotate-12 transition-all">
+                            <button onclick="event.stopPropagation(); openRenewModal('${safeName}')" class="w-14 h-14 bg-indigo-600 text-white rounded-[1.25rem] flex items-center justify-center shadow-xl shadow-indigo-100 active:rotate-12 transition-all hover:bg-indigo-700">
                                 <i data-lucide="zap" class="w-7 h-7"></i>
                             </button>
                         </div>
@@ -581,7 +658,7 @@
                     <h3 class="font-black text-base text-slate-800 flex items-center gap-3">
                         <i data-lucide="plus-circle" class="w-6 h-6 text-indigo-600"></i> إضافة مخزون كودات ${isInit ? 'تفعيل (أول شهر)' : 'تجديد'}
                     </h3>
-                    <textarea id="multi-codes" class="modern-input h-32 leading-relaxed font-mono text-sm border-2 border-indigo-50" placeholder="ألصق مجموعة كودات هنا (كل كود في سطر)..."></textarea>
+                    <textarea id="multi-codes" class="modern-input h-32 leading-relaxed font-mono text-sm border-2 border-indigo-50" placeholder="ألصق مجموعة كودات هنا (كل كود في سطر منفرد)..."></textarea>
                     <button onclick="saveMultiCodes('${type}')" class="btn-primary">حفظ الكودات في المخزن</button>
                 </div>
                 <div class="flex gap-3 mb-5 p-2 bg-slate-200/50 rounded-2xl shadow-inner">
@@ -599,12 +676,12 @@
                                         <i data-lucide="copy" class="w-4 h-4"></i>
                                     </button>
                                 </div>
-                                ${isInit && i.usedBy ? `<div class="text-[10px] text-indigo-500 font-bold mt-2 uppercase flex items-center gap-1 font-black"><i data-lucide="user" class="w-3 h-3"></i> ${i.usedBy}</div>` : ''}
-                                ${!isInit && i.notes ? `<div class="text-[9px] text-slate-400 mt-1 uppercase font-bold">${i.notes} ${i.paidAmount ? `| المبلغ: ${i.paidAmount}` : ''}</div>` : ''}
+                                ${isInit && i.usedBy ? `<div class="text-[10px] text-indigo-500 font-black mt-2 uppercase flex items-center gap-1 font-black border-t pt-1 border-indigo-50"><i data-lucide="user" class="w-3 h-3"></i> المستفيد: ${i.usedBy}</div>` : ''}
+                                ${!isInit && i.notes ? `<div class="text-[9px] text-slate-400 mt-1 uppercase font-bold tracking-tighter">${i.notes} ${i.paidAmount ? `| قبض: ${i.paidAmount}` : ''}</div>` : ''}
                             </div>
                             <div class="flex gap-2 items-center">
                                 ${(!isInit && i.status === 'غير مستخدم') ? `
-                                    <button onclick="openAgentSaleModal('${codeVal}')" class="w-9 h-9 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-all">
+                                    <button onclick="openAgentSaleModal('${codeVal}')" class="w-9 h-9 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-all shadow-sm">
                                         <i data-lucide="shopping-cart" class="w-4 h-4"></i>
                                     </button>
                                 ` : ''}
@@ -631,7 +708,7 @@
                         <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mr-2 mb-2 block">رابط محرك البيانات (GAS URL)</label>
                         <input type="text" id="gas-url" class="modern-input font-mono text-[11px] tracking-tighter shadow-sm" value="${APP_STATE.scriptURL}" placeholder="https://script.google.com/macros/s/...">
                     </div>
-                    <button onclick="saveGasUrl()" class="btn-primary flex items-center justify-center gap-2 transition-transform active:scale-95"><i data-lucide="save" class="w-5 h-5"></i> حفظ إعدادات الاتصال</button>
+                    <button onclick="saveGasUrl()" class="btn-primary flex items-center justify-center gap-2 transition-transform active:scale-95 shadow-indigo-200"><i data-lucide="save" class="w-5 h-5"></i> حفظ إعدادات الاتصال</button>
                     <div class="pt-8 border-t border-slate-50 space-y-4">
                          <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2"><i data-lucide="database" class="w-4 h-4"></i> صيانة قاعدة البيانات</h4>
                          <button onclick="fetchFromSheet()" class="w-full bg-slate-50 text-slate-800 py-4 rounded-2xl font-black text-xs border border-slate-200 hover:bg-white hover:border-indigo-200 transition-all flex items-center justify-center gap-2"><i data-lucide="refresh-cw" class="w-5 h-5"></i> تحديث شامل وفوري من السحابة</button>
@@ -642,17 +719,16 @@
             lucide.createIcons();
         }
 
-        function searchSubs(q) { searchQuery = q; renderSubsList(); }
-        function toggleCodes(v) { showUsedCodes = v; renderTab(currentTab); }
-
         async function openSubDetails(name) {
             const sub = APP_STATE.data.subscribers.find(s => s && String(s.name || "").trim() === String(name).trim());
             if(!sub) return;
             const acts = (APP_STATE.data.activations || []).filter(a => a && String(a.subName || "").trim() === String(name).trim());
             const firstPrice = parseFloat(APP_STATE.data.settings?.firstMonthPrice || 0);
             const content = document.getElementById('sub-details-content');
+            const isInitialPaid = parseFloat(sub.payment) > 0;
+
             content.innerHTML = `
-                <div class="bg-indigo-600 p-8 rounded-[2.5rem] text-white shadow-2xl shadow-indigo-100 flex justify-between items-center overflow-hidden relative">
+                <div class="bg-indigo-600 p-8 rounded-[2.5rem] text-white shadow-2xl flex justify-between items-center relative overflow-hidden">
                     <div class="absolute -right-4 -top-4 w-28 h-28 bg-white/10 rounded-full blur-2xl"></div>
                     <div class="relative z-10">
                         <span class="text-[10px] font-black opacity-70 uppercase tracking-[0.2em]">صافي المبالغ المستحقة</span>
@@ -661,15 +737,36 @@
                     <i data-lucide="file-text" class="w-14 h-14 opacity-20"></i>
                 </div>
                 <div class="space-y-5">
-                    <h4 class="font-black text-xs text-slate-400 uppercase tracking-[0.2em] flex items-center gap-3"><span class="w-10 h-[2px] bg-indigo-200"></span> السجل التاريخي للعمليات</h4>
-                    <div class="p-6 border border-slate-100 rounded-[2rem] flex justify-between items-center bg-white shadow-sm hover:shadow-md transition-all">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center shadow-inner"><i data-lucide="award" class="w-6 h-6"></i></div>
-                            <div><p class="font-black text-slate-800 text-base">عقد البيع الأول</p><p class="text-[10px] text-slate-400 font-black">${sub.date || '-'}</p></div>
+                    <h4 class="font-black text-xs text-slate-400 uppercase tracking-[0.2em] flex items-center gap-3"><span class="w-10 h-[2px] bg-indigo-200"></span> سجل النشاط المالي</h4>
+                    
+                    <!-- عقد البيع الأول -->
+                    <div class="p-6 border border-slate-100 rounded-[2rem] flex flex-col gap-3 bg-white shadow-sm hover:shadow-md transition-all">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center shadow-inner"><i data-lucide="award" class="w-6 h-6"></i></div>
+                                <div><p class="font-black text-slate-800 text-base">عقد البيع الأول</p><p class="text-[10px] text-slate-400 font-black">${sub.date || '-'}</p></div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-base font-black text-slate-700">${firstPrice.toLocaleString()} د.ع</p>
+                                <p class="text-[10px] ${isInitialPaid ? 'text-green-500' : 'text-red-500'} font-black tracking-widest uppercase mt-1 border border-current px-2 rounded-lg">${isInitialPaid ? 'واصل' : 'مطلوب'}</p>
+                            </div>
                         </div>
-                        <div class="text-right"><p class="text-base font-black text-slate-700">${firstPrice.toLocaleString()} د.ع</p><p class="text-[10px] ${parseFloat(sub.payment)>0?'text-green-500':'text-red-500'} font-black tracking-widest uppercase mt-1 border px-2 py-0.5 rounded-lg border-current inline-block">${parseFloat(sub.payment)>0?'واصل':'مطلوب'}</p></div>
+                        <!-- ملاحظات العمود J من جدول المشتركين -->
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex flex-col gap-1.5 shadow-inner">
+                            <p class="text-[10px] font-black text-indigo-500 uppercase tracking-wider flex items-center gap-1.5"><i data-lucide="message-square" class="w-3 h-3"></i> ملاحظات العقد الأول (J):</p>
+                            <p class="text-xs text-slate-600 font-bold leading-relaxed">${sub.notes || 'لا توجد ملاحظات مسجلة لهذا المشترك'}</p>
+                        </div>
+                        ${!isInitialPaid ? `
+                            <button onclick="openPaymentPrompt('initial', '${sub.t}', ${firstPrice}, '${sub.name}')" class="w-full bg-green-50 text-green-600 py-3 rounded-2xl font-black text-xs hover:bg-green-600 hover:text-white transition-all border border-green-100 flex items-center justify-center gap-2 shadow-sm">
+                                <i data-lucide="check-circle" class="w-4 h-4"></i> تسديد العقد الآن
+                            </button>
+                        ` : ''}
                     </div>
-                    ${acts.map(a => `<div class="p-6 border border-slate-100 rounded-[2rem] flex flex-col gap-4 bg-white shadow-sm hover:shadow-md transition-all">
+
+                    <!-- سجل عمليات التجديد -->
+                    ${acts.map(a => {
+                        const isPaid = parseFloat(a.paid) >= parseFloat(a.price);
+                        return `<div class="p-6 border border-slate-100 rounded-[2rem] flex flex-col gap-4 bg-white shadow-sm hover:shadow-md transition-all">
                         <div class="flex justify-between items-center">
                             <div class="flex items-center gap-4">
                                 <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center shadow-inner"><i data-lucide="repeat" class="w-6 h-6"></i></div>
@@ -680,16 +777,139 @@
                             </div>
                             <div class="text-right">
                                 <p class="text-base font-black text-slate-700">${parseFloat(a.price || 0).toLocaleString()} د.ع</p>
-                                <p class="text-[10px] ${parseFloat(a.paid)>=parseFloat(a.price)?'text-green-500':'text-amber-500'} font-black tracking-widest uppercase mt-1 border px-2 py-0.5 rounded-lg border-current inline-block">${parseFloat(a.paid)>=parseFloat(a.price)?'كامل التسديد':`واصل: ${parseFloat(a.paid).toLocaleString()}`}</p>
+                                <p class="text-[10px] ${isPaid ? 'text-green-500' : 'text-amber-500'} font-black tracking-widest uppercase mt-1 border px-2 py-0.5 rounded-lg border-current inline-block">${isPaid ? 'كامل التسديد' : `واصل: ${parseFloat(a.paid).toLocaleString()}`}</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-2 text-[9px] font-black text-slate-400 uppercase tracking-wider border-t border-slate-50 pt-2">
-                            <i data-lucide="user-check" class="w-3 h-3 text-indigo-400"></i> الموظف: <span class="text-indigo-500">${a.emp || 'غير مسجل'}</span>
+                        <div class="flex items-center justify-between border-t border-slate-50 pt-4">
+                            <div class="flex items-center gap-2 text-[9px] font-black text-slate-400 uppercase tracking-wider">
+                                <i data-lucide="user-check" class="w-3.5 h-3.5 text-indigo-400"></i> الموظف (D): <span class="text-indigo-500 font-black">${a.emp || 'غير مسجل'}</span>
+                            </div>
+                            ${!isPaid ? `
+                                <button onclick="openPaymentPrompt('renewal', '${a.t}', ${a.price}, '${sub.name}', '${a.code}')" class="bg-green-600 text-white px-6 py-2 rounded-xl font-black text-[10px] shadow-lg shadow-green-100 active:scale-95 transition-all">
+                                    تسديد المبلغ
+                                </button>
+                            ` : ''}
                         </div>
-                    </div>`).join('')}
+                    </div>`}).join('')}
                 </div>`;
             document.getElementById('modal-details').classList.add('active');
             lucide.createIcons();
+        }
+
+        // دالة عرض نافذة إدخال مبلغ التسديد
+        function openPaymentPrompt(type, id, debt, name, code = null) {
+            document.getElementById('pay-debt-amount').innerText = debt.toLocaleString() + " د.ع";
+            document.getElementById('pay-input-amount').value = debt;
+            document.getElementById('modal-pay').classList.add('active');
+            
+            document.getElementById('btn-confirm-pay').onclick = () => {
+                const amount = document.getElementById('pay-input-amount').value;
+                if(!amount || amount <= 0) return alert("يرجى إدخال مبلغ تسديد صحيح");
+                if(type === 'initial') executeInitialPay(id, amount, name);
+                else executeRenewalPay(id, amount, name, code);
+                closeModals();
+            };
+        }
+
+        async function executeInitialPay(id, amount, name) {
+            const today = new Date().toLocaleDateString();
+            await db.subscribers.where('t').equals(parseFloat(id)).modify({ payment: amount, actDate: today });
+            await db.syncQueue.add({ sheetName: "جدول معلومات المشتركين", action: "pay_initial", id: id, amount: amount, date: today });
+            await loadLocal();
+            openSubDetails(name); // إعادة تحميل التفاصيل لتحديث العرض
+            syncNow();
+        }
+
+        async function executeRenewalPay(id, amount, name, code) {
+            const today = new Date().toLocaleDateString();
+            await db.activations.where('t').equals(parseFloat(id)).modify({ paid: amount });
+            await db.syncQueue.add({ sheetName: "جدول التفعيل", action: "pay_renewal", id: id, name: name, code: code, amount: amount, date: today });
+            await loadLocal();
+            openSubDetails(name); // إعادة تحميل التفاصيل لتحديث العرض
+            syncNow();
+        }
+
+        function calculatePrice() {
+            const dur = parseInt(document.getElementById('renew-duration').value);
+            const monthly = parseFloat(APP_STATE.data.settings?.monthlyPrice || 0);
+            const input = document.getElementById('renew-price-input');
+            if(input) input.value = dur * monthly;
+        }
+
+        async function saveNewSubscriber() {
+            const btn = document.getElementById('btn-save-sub');
+            const name = document.getElementById('new-name').value.trim();
+            const initCodeRaw = document.getElementById('new-month1-code').value;
+            const initCode = String(initCodeRaw).trim();
+            if(!name) return alert("يرجى إدخال اسم المشترك");
+            if(!initCode || initCode === "") return alert("يرجى اختيار كود تفعيل");
+            btn.disabled = true;
+            try {
+                const ts = Date.now();
+                const subData = [ts, document.getElementById('new-sale-date').value, name, document.getElementById('new-phone').value, document.getElementById('new-serial').value, "مفعل", document.getElementById('new-address').value, document.getElementById('new-payment').value, document.getElementById('new-act-date').value, document.getElementById('new-notes').value];
+                await db.subscribers.add({ t: subData[0], date: subData[1], name: subData[2], phone: subData[3], serial: subData[4], m1: subData[5], address: subData[6], payment: subData[7], actDate: subData[8], notes: subData[9] });
+                await db.initialCodes.where('primary').equals(initCode).modify({ status: 'مستخدم', usedBy: name });
+                await db.syncQueue.add({ sheetName: "جدول معلومات المشتركين", action: "add", data: subData });
+                await db.syncQueue.add({ sheetName: "جدول كودات التفعيل", action: "update_initial_code", code: initCode, usedBy: name });
+                closeModals(); await loadLocal(); syncNow();
+            } catch(e) { console.error("Save failure", e); } 
+            finally { btn.disabled = false; }
+        }
+
+        async function saveRenewal() {
+            const btn = document.getElementById('btn-save-renew');
+            const name = document.getElementById('renew-sub-name').innerText;
+            const code = String(document.getElementById('renew-code-select').value).trim();
+            if(!code || code === "") return alert("يرجى اختيار كود");
+            btn.disabled = true;
+            try {
+                const dur = document.getElementById('renew-duration');
+                const finalPrice = document.getElementById('renew-price-input').value;
+                const paidAmount = document.getElementById('renew-paid').value;
+                const paymentDate = (paidAmount && parseFloat(paidAmount) > 0) ? new Date().toLocaleDateString() : "";
+                const ts = Date.now();
+                const data = [ts, document.getElementById('renew-date').value, name, document.getElementById('renew-emp').value, code, dur.options[dur.selectedIndex].text, finalPrice, paidAmount, paymentDate];
+                await db.renewalCodes.where('code').equals(code).modify({ status: 'مستخدم' });
+                await db.syncQueue.add({ sheetName: "جدول التفعيل", action: "add", data: data });
+                await db.syncQueue.add({ sheetName: "جدول كودات التجديد", action: "update_code", code: code, notes: String(document.getElementById('renew-notes').value || "") });
+                closeModals(); await loadLocal(); syncNow();
+            } catch(e) { console.error(e); } finally { btn.disabled = false; }
+        }
+
+        async function saveAgentSale() {
+            if(!currentAgentCode) return;
+            const paid = document.getElementById('agent-sale-paid').value;
+            const notes = document.getElementById('agent-sale-notes').value.trim();
+            await db.renewalCodes.where('code').equals(currentAgentCode).modify({ status: 'مستخدم', notes: notes, paidAmount: paid });
+            await db.syncQueue.add({ sheetName: "جدول كودات التجديد", action: "update_agent_sale", code: currentAgentCode, notes: notes, paid: paid });
+            closeModals(); await loadLocal(); syncNow();
+        }
+
+        async function saveMultiCodes(type) {
+            const txtArea = document.getElementById('multi-codes');
+            const codes = txtArea.value.trim().split(/[\n, ]+/).filter(c => c.length > 0);
+            if(codes.length === 0) return;
+            let ts = Date.now();
+            const sheetName = type === 'initialCodes' ? "جدول كودات التفعيل" : "جدول كودات التجديد";
+            for (const code of codes) {
+                const cleanCode = String(code).trim();
+                if (type === 'initialCodes') {
+                    await db.initialCodes.add({ primary: cleanCode, code: cleanCode, nid: "1244", status: "غير مستخدم", usedBy: "" });
+                    await db.syncQueue.add({ sheetName, action: "add", data: [ts++, cleanCode, cleanCode, "1244", "غير مستخدم", ""] });
+                } else {
+                    await db.renewalCodes.add({ code: cleanCode, status: "غير مستخدم", notes: "", paidAmount: 0 });
+                    await db.syncQueue.add({ sheetName, action: "add", data: [ts++, cleanCode, "", "", "غير مستخدم", "", ""] });
+                }
+            }
+            txtArea.value = ""; alert("تمت إضافة الأكواد بنجاح"); await loadLocal(); syncNow();
+        }
+
+        function copyTxt(t) { 
+            if(!t || t === '-' || t === 'undefined') return;
+            const textArea = document.createElement("textarea");
+            textArea.value = t; document.body.appendChild(textArea); textArea.select();
+            try { document.execCommand('copy'); const toast = document.getElementById('toast'); toast.innerText = 'تم نسخ: ' + t; toast.style.display = 'block'; setTimeout(() => toast.style.display = 'none', 2000); } catch (err) {}
+            document.body.removeChild(textArea);
         }
 
         function openAddSubModal() {
@@ -710,161 +930,20 @@
             if(dateEl) dateEl.value = new Date().toISOString().split('T')[0];
             const codes = (APP_STATE.data.renewalCodes || []).filter(c => c && c.status === "غير مستخدم");
             const select = document.getElementById('renew-code-select');
-            if(select) select.innerHTML = codes.length > 0 ? codes.map(c => `<option value="${String(c.code).trim()}">${String(c.code).trim()}</option>`).join('') : '<option value="">لا يوجد كودات تجديد متوفرة</option>';
+            if(select) select.innerHTML = codes.length > 0 ? codes.map(c => `<option value="${String(c.code).trim()}">${String(c.code).trim()}</option>`).join('') : '<option value="">لا يوجد كودات تجديد</option>';
             calculatePrice();
             document.getElementById('modal-renew').classList.add('active');
             lucide.createIcons();
         }
 
-        function openAgentSaleModal(code) {
-            currentAgentCode = code;
-            document.getElementById('agent-sale-code').innerText = code;
-            document.getElementById('agent-sale-paid').value = "0";
-            document.getElementById('agent-sale-notes').value = "";
-            document.getElementById('modal-agent-sale').classList.add('active');
-            lucide.createIcons();
-        }
-
-        function calculatePrice() {
-            const dur = parseInt(document.getElementById('renew-duration').value);
-            const monthly = parseFloat(APP_STATE.data.settings?.monthlyPrice || 0);
-            const input = document.getElementById('renew-price-input');
-            if(input) input.value = dur * monthly;
-        }
-
-        async function saveNewSubscriber() {
-            const btn = document.getElementById('btn-save-sub');
-            const name = document.getElementById('new-name').value.trim();
-            const initCodeRaw = document.getElementById('new-month1-code').value;
-            const initCode = String(initCodeRaw).trim();
-            if(!name) return alert("يرجى إدخال اسم المشترك الكامل");
-            if(!initCode || initCode === "") return alert("يرجى اختيار كود تفعيل");
-            btn.disabled = true;
-            try {
-                const subData = [Date.now(), document.getElementById('new-sale-date').value, name, document.getElementById('new-phone').value, document.getElementById('new-serial').value, "مفعل", document.getElementById('new-address').value, document.getElementById('new-payment').value, document.getElementById('new-act-date').value, document.getElementById('new-notes').value];
-                await db.subscribers.add({ date: subData[1], name: subData[2], phone: subData[3], serial: subData[4], m1: subData[5], address: subData[6], payment: subData[7], actDate: subData[8], notes: subData[9] });
-                await db.initialCodes.where('primary').equals(initCode).modify({ status: 'مستخدم', usedBy: name });
-                await db.syncQueue.add({ sheetName: "جدول معلومات المشتركين", action: "add", data: subData });
-                await db.syncQueue.add({ sheetName: "جدول كودات التفعيل", action: "update_initial_code", code: initCode, usedBy: name });
-                closeModals();
-                await loadLocal();
-                syncNow();
-            } catch(e) { console.error("Save failure", e); } 
-            finally { btn.disabled = false; }
-        }
-
-        async function saveRenewal() {
-            const btn = document.getElementById('btn-save-renew');
-            const name = document.getElementById('renew-sub-name').innerText;
-            const code = String(document.getElementById('renew-code-select').value).trim();
-            if(!code || code === "") return alert("يرجى اختيار كود");
-            btn.disabled = true;
-            try {
-                const dur = document.getElementById('renew-duration');
-                const finalPrice = document.getElementById('renew-price-input').value;
-                const paidAmount = document.getElementById('renew-paid').value;
-                
-                // التعديل: لا يتم إدراج تاريخ في العمود I (الفهرس 8) إلا في حال التسديد
-                const paymentDate = (paidAmount && parseFloat(paidAmount) > 0) ? new Date().toLocaleDateString() : "";
-                
-                const data = [
-                    Date.now(), 
-                    document.getElementById('renew-date').value, 
-                    name, 
-                    document.getElementById('renew-emp').value, 
-                    code, 
-                    dur.options[dur.selectedIndex].text, 
-                    finalPrice, 
-                    paidAmount, 
-                    paymentDate
-                ];
-
-                await db.renewalCodes.where('code').equals(code).modify({ status: 'مستخدم' });
-                await db.syncQueue.add({ sheetName: "جدول التفعيل", action: "add", data: data });
-                await db.syncQueue.add({ sheetName: "جدول كودات التجديد", action: "update_code", code: code, notes: String(document.getElementById('renew-notes').value || "") });
-                
-                closeModals();
-                await loadLocal();
-                syncNow();
-            } catch(e) { console.error(e); } finally { btn.disabled = false; }
-        }
-
-        async function saveAgentSale() {
-            if(!currentAgentCode) return;
-            const paid = document.getElementById('agent-sale-paid').value;
-            const notes = document.getElementById('agent-sale-notes').value.trim();
-            
-            await db.renewalCodes.where('code').equals(currentAgentCode).modify({ 
-                status: 'مستخدم', 
-                notes: notes,
-                paidAmount: paid 
-            });
-
-            await db.syncQueue.add({ 
-                sheetName: "جدول كودات التجديد", 
-                action: "update_agent_sale", 
-                code: currentAgentCode, 
-                notes: notes,
-                paid: paid
-            });
-
-            closeModals();
-            await loadLocal();
-            syncNow();
-        }
-
-        async function saveMultiCodes(type) {
-            const txtArea = document.getElementById('multi-codes');
-            const codes = txtArea.value.trim().split(/[\n, ]+/).filter(c => c.length > 0);
-            if(codes.length === 0) return;
-            let ts = Date.now();
-            const sheetName = type === 'initialCodes' ? "جدول كودات التفعيل" : "جدول كودات التجديد";
-            for (const code of codes) {
-                const cleanCode = String(code).trim();
-                if (type === 'initialCodes') {
-                    const data = [ts++, cleanCode, cleanCode, "1244", "غير مستخدم", ""];
-                    await db.initialCodes.add({ primary: cleanCode, code: cleanCode, nid: "1244", status: "غير مستخدم", usedBy: "" });
-                    await db.syncQueue.add({ sheetName, action: "add", data: data });
-                } else {
-                    const data = [ts++, cleanCode, "", "", "غير مستخدم", "", ""];
-                    await db.renewalCodes.add({ code: cleanCode, status: "غير مستخدم", notes: "", paidAmount: 0 });
-                    await db.syncQueue.add({ sheetName, action: "add", data: data });
-                }
-            }
-            txtArea.value = "";
-            alert("تم إيداع " + codes.length + " كود جديد وجدولة رفعها");
-            await loadLocal();
-            syncNow();
-        }
-
-        function copyTxt(t) { 
-            if(!t || t === '-' || t === 'undefined') return;
-            const textArea = document.createElement("textarea");
-            textArea.value = t;
-            document.body.appendChild(textArea);
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                const toast = document.getElementById('toast');
-                toast.innerText = 'تم نسخ: ' + t;
-                toast.style.display = 'block';
-                setTimeout(() => toast.style.display = 'none', 2000);
-            } catch (err) {
-                console.error('Copy failed', err);
-            }
-            document.body.removeChild(textArea);
-        }
-
+        function openAgentSaleModal(code) { currentAgentCode = code; document.getElementById('agent-sale-code').innerText = code; document.getElementById('agent-sale-paid').value = "0"; document.getElementById('agent-sale-notes').value = ""; document.getElementById('modal-agent-sale').classList.add('active'); lucide.createIcons(); }
+        function searchSubs(q) { searchQuery = q; renderSubsList(); }
+        function toggleCodes(v) { showUsedCodes = v; renderTab(currentTab); }
         function closeModals() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('active')); currentAgentCode = null; }
         function saveGasUrl() { localStorage.setItem('gas_url', document.getElementById('gas-url').value); APP_STATE.scriptURL = document.getElementById('gas-url').value; fetchFromSheet(); }
-        async function clearCache() { if(confirm("تحذير: سيتم مسح كافة البيانات المحلية وإعادة تحميل التطبيق، هل تود الاستمرار؟")) { await db.delete(); location.reload(); } }
+        async function clearCache() { if(confirm("تحذير: سيتم مسح كافة البيانات المحلية، هل أنت متأكد؟")) { await db.delete(); location.reload(); } }
 
-        window.onload = async () => {
-            await initDB();
-            await loadLocal();
-            if (APP_STATE.scriptURL) fetchFromSheet();
-            setInterval(syncNow, 60000);
-        };
+        window.onload = async () => { await initDB(); await loadLocal(); if (APP_STATE.scriptURL) fetchFromSheet(); setInterval(syncNow, 60000); };
     </script>
 </body>
 </html>
