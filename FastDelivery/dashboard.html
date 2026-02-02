@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - FastDelivery Admin</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* --- Dashboard Specific Styles --- */
+        
+        /* Tab Navigation Animation */
+        .tab-content { 
+            display: none; 
+            animation: fadeIn 0.4s ease-in-out; 
+        }
+        .tab-content.active { 
+            display: block; 
+        }
+        
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(5px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        /* KPI Cards Color Coding */
+        .kpi-card { border-right: 5px solid var(--primary); }
+        .kpi-card.green { border-right-color: var(--success); }
+        .kpi-card.orange { border-right-color: var(--warning); }
+        .kpi-card.red { border-right-color: var(--accent); }
+
+        /* Filter Bar Layout */
+        .filter-bar { 
+            display: flex; 
+            gap: 15px; 
+            margin-bottom: 1.5rem; 
+            background: rgba(255,255,255,0.5);
+            padding: 10px;
+            border-radius: 12px;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative; 
+            height: 350px; 
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <nav class="sidebar" id="sidebar">
+            <div class="brand">
+                <span>🚀</span> FastDelivery
+            </div>
+            
+            <a class="nav-link active" onclick="switchTab('overview', this)">
+                <span>📊</span> نظرة عامة
+            </a>
+            <a class="nav-link" onclick="switchTab('orders', this)">
+                <span>📦</span> إدارة الطلبات
+            </a>
+            <a class="nav-link" onclick="switchTab('fleet', this)">
+                <span>🛵</span> الأسطول والشركاء
+            </a>
+            <a class="nav-link" onclick="switchTab('finance', this)">
+                <span>💰</span> التقارير المالية
+            </a>
+            <a class="nav-link" onclick="switchTab('settings', this)">
+                <span>⚙️</span> الإعدادات
+            </a>
+            
+            <div style="margin-top: auto;">
+                <hr style="border-color: rgba(0,0,0,0.1); margin: 10px 0;">
+                <a class="nav-link" onclick="Auth.logout()" style="color: var(--accent);">
+                    <span>🚪</span> تسجيل الخروج
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            
+            <header class="topbar">
+                <div>
+                    <h2 id="page-title" style="margin: 0;">نظرة عامة</h2>
+                    <small style="color: #666;">مرحباً بك في لوحة التحكم المركزية</small>
+                </div>
+                
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button class="btn btn-primary btn-sm" onclick="openAddUserModal()">
+                        <span>👤</span> مستخدم جديد
+                    </button>
+                    <button class="btn btn-success btn-sm" onclick="openAddOrderModal()">
+                        <span>➕</span> طلب جديد
+                    </button>
+                    <div id="user-info" class="badge" style="background: #333; color: #fff;">Admin</div>
+                </div>
+            </header>
+
+            <div id="overview" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="card kpi-card stat-card">
+                        <p>إجمالي الطلبات</p>
+                        <h3 id="kpi-total">0</h3>
+                        <small style="color: #888;">منذ بداية النظام</small>
+                    </div>
+                    <div class="card kpi-card green stat-card">
+                        <p>الإيرادات (IQD)</p>
+                        <h3 id="kpi-revenue">0</h3>
+                        <small style="color: #888;">رسوم التوصيل المحصلة</small>
+                    </div>
+                    <div class="card kpi-card orange stat-card">
+                        <p>طلبات نشطة</p>
+                        <h3 id="kpi-active">0</h3>
+                        <small style="color: #888;">قيد التوصيل الآن</small>
+                    </div>
+                    <div class="card kpi-card red stat-card">
+                        <p>مناديب متاحين</p>
+                        <h3 id="kpi-drivers">0</h3>
+                        <small style="color: #888;">جاهزون لاستلام طلبات</small>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">تحليل حالة الطلبات (Real-time)</div>
+                    <div class="chart-container">
+                        <canvas id="ordersChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div id="orders" class="tab-content">
+                <div class="card">
+                    <div class="card-title">
+                        <span>سجل الطلبات الشامل</span>
+                        <button class="btn btn-sm btn-primary" onclick="exportExcel()">📥 تصدير Excel</button>
+                    </div>
+                    
+                    <div class="filter-bar">
+                        <div style="flex: 2;">
+                            <input type="text" id="searchOrders" class="form-control" placeholder="🔍 بحث برقم الطلب، اسم العميل..." onkeyup="renderOrdersTable()">
+                        </div>
+                        <div style="flex: 1;">
+                            <select id="filterStatus" class="form-control" onchange="renderOrdersTable()">
+                                <option value="All">كافة الحالات</option>
+                                <option value="New">جديد (New)</option>
+                                <option value="Assigned">جاري التوصيل (Assigned)</option>
+                                <option value="PickedUp">تم الاستلام (PickedUp)</option>
+                                <option value="Delivered">مكتمل (Delivered)</option>
+                                <option value="Cancelled">ملغي (Cancelled)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>رقم الطلب</th>
+                                    <th>التاريخ</th>
+                                    <th>بيانات العميل</th>
+                                    <th>المبلغ (IQD)</th>
+                                    <th>الحالة</th>
+                                    <th>المندوب</th>
+                                    <th>المصدر (التاجر)</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body">
+                                <tr><td colspan="8" style="text-align:center">جاري تحميل البيانات...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="fleet" class="tab-content">
+                <div class="card">
+                    <div class="card-title">أداء المناديب (Courier Performance)</div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>اسم المندوب</th>
+                                    <th>رقم الهاتف</th>
+                                    <th>طلبات مكتملة</th>
+                                    <th>في العهدة (Cash on Hand)</th>
+                                    <th>حالة الحساب</th>
+                                </tr>
+                            </thead>
+                            <tbody id="courier-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                 <div class="card" style="margin-top: 20px;">
+                    <div class="card-title">قائمة التجار (Sellers)</div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>اسم التاجر</th>
+                                    <th>رقم الهاتف</th>
+                                    <th>حالة الحساب</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sellers-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="finance" class="tab-content">
+                <div class="card">
+                    <div class="card-title">الملخص المالي للنظام</div>
+                    <p class="text-muted" style="margin-bottom: 20px;">
+                        يتم احتساب هذه الأرقام بناءً على "رسوم التوصيل" المحددة في الإعدادات مقابل إجمالي قيمة الطلبات.
+                    </p>
+                    
+                    <table class="table" style="font-size: 1.1rem;">
+                        <thead>
+                            <tr>
+                                <th>البند المالي</th>
+                                <th>القيمة الحالية</th>
+                            </tr>
+                        </thead>
+                        <tbody id="finance-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="settings" class="tab-content">
+                <div class="card" style="max-width: 600px; margin: 0 auto;">
+                    <div class="card-title">⚙️ إعدادات النظام</div>
+                    <form id="configForm">
+                        <div class="form-group">
+                            <label>سعر التوصيل الافتراضي (IQD)</label>
+                            <small style="color:#666; display:block; margin-bottom:5px;">هذا المبلغ هو ربح الشركة من كل طلب</small>
+                            <input type="number" id="conf_delivery_fee" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>اسم التطبيق (App Name)</label>
+                            <input type="text" id="conf_app_name" class="form-control" required>
+                        </div>
+                        <div style="text-align: left; margin-top: 20px;">
+                            <button type="submit" class="btn btn-success">حفظ التغييرات</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="assignModal">
+        <div class="modal-content">
+            <h3>إسناد طلب لمندوب</h3>
+            <p id="assignOrderIdDisplay" style="margin-bottom: 1.5rem; color: #555; font-weight: bold;"></p>
+            
+            <div class="form-group">
+                <label>اختر المندوب المتاح:</label>
+                <select id="assignCourierSelect" class="form-control">
+                    <option value="">جاري التحميل...</option>
+                </select>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 2rem;">
+                <button class="btn btn-primary" onclick="confirmAssign()" style="flex: 1;">تأكيد الإسناد</button>
+                <button class="btn btn-danger" onclick="UI.closeModal('assignModal')" style="flex: 1;">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="addOrderModal">
+        <div class="modal-content">
+            <h3>📝 إضافة طلب جديد (يدوي)</h3>
+            <form id="addOrderForm">
+                <div class="form-group">
+                    <input type="text" name="customer_name" class="form-control" placeholder="اسم العميل" required>
+                </div>
+                <div class="form-group">
+                    <input type="tel" name="customer_phone" class="form-control" placeholder="رقم الهاتف" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="customer_address" class="form-control" placeholder="العنوان الكامل" required>
+                </div>
+                <div class="form-group">
+                    <input type="number" name="amount" class="form-control" placeholder="المبلغ الكلي (مع التوصيل)" required>
+                </div>
+                <div class="form-group">
+                    <textarea name="order_details" class="form-control" placeholder="تفاصيل الطلب..." rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="notes" class="form-control" placeholder="ملاحظات إضافية (اختياري)">
+                </div>
+                
+                <button type="submit" class="btn btn-success" style="width: 100%;">إضافة الطلب</button>
+                <button type="button" class="btn btn-danger" onclick="UI.closeModal('addOrderModal')" style="width: 100%; margin-top: 10px;">إغلاق</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="addUserModal">
+        <div class="modal-content">
+            <h3>👤 تسجيل مستخدم جديد</h3>
+            <form id="addUserForm">
+                <div class="form-group">
+                    <label>اسم الدخول (Username)</label>
+                    <input type="text" id="new_username" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="new_password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>الاسم الكامل</label>
+                    <input type="text" id="new_fullname" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>رقم الهاتف</label>
+                    <input type="tel" id="new_phone" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>الدور (Role)</label>
+                    <select id="new_role" class="form-control">
+                        <option value="courier">مندوب (Courier)</option>
+                        <option value="seller">تاجر (Seller)</option>
+                        <option value="admin">مدير (Admin)</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">تسجيل المستخدم</button>
+                <button type="button" class="btn btn-danger" onclick="UI.closeModal('addUserModal')" style="width: 100%; margin-top: 10px;">إغلاق</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        /**
+         * ------------------------------------------------------------------
+         * DASHBOARD LOGIC
+         * Handles Data Fetching, Rendering, and Polling
+         * ------------------------------------------------------------------
+         */
+
+        // --- GLOBAL STATE ---
+        let DATA = {
+            orders: [],
+            users: [],
+            config: {}
+        };
+        let chartInstance = null;
+        let selectedOrderId = null;
+
+        // --- INITIALIZATION ---
+        window.addEventListener('DOMContentLoaded', async () => {
+            // Security Check
+            if (!Auth.checkRole('admin')) return;
+
+            // Set Admin Name
+            const user = Auth.getUser();
+            if(user) document.getElementById('user-info').innerText = user.full_name;
+            
+            // 🚀 FIRST LOAD: Show Spinner (Silent = false)
+            // This lets the user know the system is starting up.
+            await loadAllData(false);
+            
+            // 🔄 POLLING: Silent Update (Silent = true)
+            // This updates data every 10s WITHOUT blocking the UI.
+            setInterval(() => {
+                loadAllData(true);
+            }, 10000);
+        });
+
+        // --- DATA LOADING ---
+        /**
+         * Fetches Orders, Users, and Config from GAS.
+         * @param {boolean} isBackground - If true, passes 'true' to Api.post for silent mode.
+         */
+        async function loadAllData(isBackground = false) {
+            try {
+                // Fetch in parallel for optimized performance
+                const [ordersData, usersData, configData] = await Promise.all([
+                    Api.post('getOrders', { role: 'admin', username: Auth.getUser().username }, isBackground),
+                    Api.post('getUsers', { role: 'admin' }, isBackground),
+                    Api.post('getConfig', {}, isBackground)
+                ]);
+
+                // Update State
+                DATA.orders = ordersData || [];
+                DATA.users = usersData || [];
+                DATA.config = configData || {};
+
+                // Render UI
+                refreshUI();
+
+            } catch (err) {
+                console.error("Dashboard Polling Error:", err);
+                // If this was a manual load (not background), the Api class handled the toast.
+            }
+        }
+
+        // Master Render Function
+        function refreshUI() {
+            renderKPI();
+            renderChart();
+            renderOrdersTable();
+            renderFleetTable();
+            renderFinanceTable();
+            fillConfigForm();
+        }
+
+        // --- RENDERERS ---
+
+        function renderKPI() {
+            // 1. Total Orders
+            document.getElementById('kpi-total').innerText = DATA.orders.length;
+            
+            // 2. Revenue (Only Delivered * Delivery Fee)
+            const fee = Number(DATA.config.delivery_fee) || 0;
+            const deliveredCount = DATA.orders.filter(o => o.status === 'Delivered').length;
+            const revenue = deliveredCount * fee;
+            document.getElementById('kpi-revenue').innerText = revenue.toLocaleString();
+
+            // 3. Active Orders
+            const active = DATA.orders.filter(o => ['New', 'Assigned', 'PickedUp'].includes(o.status)).length;
+            document.getElementById('kpi-active').innerText = active;
+
+            // 4. Available Drivers
+            const couriers = DATA.users.filter(u => u.role === 'courier' && u.status === 'Active').length;
+            document.getElementById('kpi-drivers').innerText = couriers;
+        }
+
+        function renderOrdersTable() {
+            const filter = document.getElementById('filterStatus').value;
+            const search = document.getElementById('searchOrders').value.toLowerCase();
+            const tbody = document.getElementById('orders-table-body');
+            
+            tbody.innerHTML = '';
+
+            // Client-side Filtering
+            const filtered = DATA.orders.filter(o => {
+                const matchesStatus = filter === 'All' || o.status === filter;
+                
+                const matchesSearch = 
+                    o.order_id.toLowerCase().includes(search) || 
+                    o.customer_name.toLowerCase().includes(search) ||
+                    (o.customer_phone && o.customer_phone.includes(search));
+                
+                return matchesStatus && matchesSearch;
+            });
+
+            if(filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 2rem; color: #999;">لا توجد طلبات تطابق البحث</td></tr>';
+                return;
+            }
+
+            // Build Rows
+            filtered.forEach(o => {
+                let actionBtn = '';
+                
+                // Logic for Action Buttons
+                if (o.status === 'New') {
+                    actionBtn = `<button class="btn btn-sm btn-primary" onclick="openAssignModal('${o.order_id}')">🚀 إسناد</button>`;
+                } else if (o.status === 'Assigned') {
+                    actionBtn = `<button class="btn btn-sm btn-warning" onclick="openAssignModal('${o.order_id}')">♻️ تغيير المندوب</button>`;
+                } else {
+                    // Just show status text for completed/cancelled
+                    actionBtn = `<span style="font-size:0.8rem; color:#888;">لا يوجد إجراء</span>`;
+                }
+
+                // Status Badge Color Helper
+                const badgeClass = `badge badge-${o.status}`;
+
+                const tr = `
+                    <tr>
+                        <td><b style="color:var(--primary)">${o.order_id}</b></td>
+                        <td>${new Date(o.date_time).toLocaleString('en-GB', { hour12: true })}</td>
+                        <td>
+                            <div>${o.customer_name}</div>
+                            <small style="color:#666">${o.customer_phone}</small>
+                        </td>
+                        <td><b>${Number(o.amount).toLocaleString()}</b></td>
+                        <td><span class="${badgeClass}">${translateStatus(o.status)}</span></td>
+                        <td>${o.courier_username ? '🛵 ' + o.courier_username : '<span style="color:#ccc">--</span>'}</td>
+                        <td>${o.seller_username}</td>
+                        <td>${actionBtn}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += tr;
+            });
+        }
+
+        function renderFleetTable() {
+            // 1. Couriers
+            const couriers = DATA.users.filter(u => u.role === 'courier');
+            const cBody = document.getElementById('courier-table-body');
+            cBody.innerHTML = '';
+
+            if(couriers.length === 0) cBody.innerHTML = '<tr><td colspan="5" style="text-align:center">لا يوجد مناديب مسجلين</td></tr>';
+
+            couriers.forEach(c => {
+                const delivered = DATA.orders.filter(o => o.courier_username === c.username && o.status === 'Delivered').length;
+                const cashOnHand = DATA.orders
+                    .filter(o => o.courier_username === c.username && o.status === 'Delivered')
+                    .reduce((sum, o) => sum + Number(o.amount), 0);
+
+                cBody.innerHTML += `
+                    <tr>
+                        <td><b>${c.full_name}</b> <br> <small>@${c.username}</small></td>
+                        <td>${c.phone}</td>
+                        <td>${delivered} طلب</td>
+                        <td style="color: ${cashOnHand > 0 ? 'var(--accent)' : 'inherit'}">
+                            <b>${cashOnHand.toLocaleString()} IQD</b>
+                        </td>
+                        <td><span class="badge badge-Active">${c.status}</span></td>
+                    </tr>
+                `;
+            });
+
+            // 2. Sellers (Extra feature for completeness)
+            const sellers = DATA.users.filter(u => u.role === 'seller');
+            const sBody = document.getElementById('sellers-table-body');
+            sBody.innerHTML = '';
+             if(sellers.length === 0) sBody.innerHTML = '<tr><td colspan="3" style="text-align:center">لا يوجد تجار مسجلين</td></tr>';
+            
+            sellers.forEach(s => {
+                 sBody.innerHTML += `
+                    <tr>
+                        <td><b>${s.full_name}</b> <br> <small>@${s.username}</small></td>
+                        <td>${s.phone}</td>
+                        <td><span class="badge badge-Active">${s.status}</span></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderFinanceTable() {
+            const totalOrders = DATA.orders.length;
+            const deliveredOrders = DATA.orders.filter(o => o.status === 'Delivered');
+            const totalSalesGMV = deliveredOrders.reduce((sum, o) => sum + Number(o.amount), 0);
+            
+            const deliveryFee = Number(DATA.config.delivery_fee) || 0;
+            const companyRevenue = deliveredOrders.length * deliveryFee;
+            const merchantsDues = totalSalesGMV - companyRevenue;
+
+            const tbody = document.getElementById('finance-table-body');
+            tbody.innerHTML = `
+                <tr>
+                    <td>إجمالي قيمة المبيعات (GMV)</td>
+                    <td><b>${totalSalesGMV.toLocaleString()}</b> IQD</td>
+                </tr>
+                <tr>
+                    <td>إجمالي إيرادات الشركة (Delivery Fees)</td>
+                    <td style="color:var(--success); font-size: 1.2rem;"><b>+${companyRevenue.toLocaleString()}</b> IQD</td>
+                </tr>
+                <tr>
+                    <td>مستحقات التجار (صافي المبيعات)</td>
+                    <td style="color:var(--primary)"><b>${merchantsDues.toLocaleString()}</b> IQD</td>
+                </tr>
+                <tr>
+                    <td>عدد الطلبات المكتملة</td>
+                    <td>${deliveredOrders.length} طلب</td>
+                </tr>
+                 <tr>
+                    <td>متوسط قيمة الطلب</td>
+                    <td>${deliveredOrders.length > 0 ? Math.round(totalSalesGMV / deliveredOrders.length).toLocaleString() : 0} IQD</td>
+                </tr>
+            `;
+        }
+
+        function renderChart() {
+            const ctx = document.getElementById('ordersChart').getContext('2d');
+            
+            // Calculate Stats
+            const stats = { 'New': 0, 'Assigned': 0, 'Delivered': 0, 'Cancelled': 0 };
+            DATA.orders.forEach(o => {
+                // Map 'PickedUp' to 'Assigned' visually for simpler chart, or add it
+                let status = o.status;
+                if(status === 'PickedUp') status = 'Assigned'; 
+                
+                if(stats[status] !== undefined) stats[status]++;
+            });
+
+            const dataValues = [stats.New, stats.Assigned, stats.Delivered, stats.Cancelled];
+
+            if (chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['جديد', 'جاري التوصيل', 'مكتمل', 'ملغي'],
+                    datasets: [{
+                        data: dataValues,
+                        backgroundColor: ['#2196f3', '#ff9800', '#00b09b', '#f44336'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: { 
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { family: 'Cairo' } } }
+                    }
+                }
+            });
+        }
+
+        function fillConfigForm() {
+            // Fill inputs only if they are empty (to avoid overwriting user while typing)
+            const feeInput = document.getElementById('conf_delivery_fee');
+            const nameInput = document.getElementById('conf_app_name');
+            
+            if(document.activeElement !== feeInput) feeInput.value = DATA.config.delivery_fee || 0;
+            if(document.activeElement !== nameInput) nameInput.value = DATA.config.app_name || '';
+        }
+
+        // --- ACTIONS & EVENTS ---
+
+        // 1. SWITCH TABS
+        function switchTab(tabId, navElement) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            // Remove active class from all links
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            
+            // Activate target
+            document.getElementById(tabId).classList.add('active');
+            if(navElement) navElement.classList.add('active');
+            
+            // Update Title
+            if(navElement) document.getElementById('page-title').innerText = navElement.innerText.trim().substring(2); // Remove emoji
+        }
+
+        // 2. OPEN ASSIGN MODAL
+        function openAssignModal(orderId) {
+            selectedOrderId = orderId;
+            const select = document.getElementById('assignCourierSelect');
+            select.innerHTML = '<option value="">-- اختر المندوب --</option>';
+            
+            const couriers = DATA.users.filter(u => u.role === 'courier' && u.status === 'Active');
+            
+            if (couriers.length === 0) {
+                 select.innerHTML += '<option disabled>لا يوجد مناديب متاحين</option>';
+            }
+
+            couriers.forEach(c => {
+                const option = document.createElement('option');
+                option.value = c.username;
+                option.text = `${c.full_name} (${c.phone})`;
+                select.appendChild(option);
+            });
+
+            document.getElementById('assignOrderIdDisplay').innerText = "رقم الطلب: " + orderId;
+            UI.openModal('assignModal');
+        }
+
+        // 3. CONFIRM ASSIGNMENT
+        async function confirmAssign() {
+            const courier = document.getElementById('assignCourierSelect').value;
+            if (!courier) return UI.showToast("يرجى اختيار مندوب من القائمة", "error");
+
+            // User Initiated Action -> Silent = false (Show Loader)
+            await Api.post('updateStatus', {
+                order_id: selectedOrderId,
+                status: 'Assigned',
+                courier_username: courier
+            }, false);
+
+            UI.closeModal('assignModal');
+            UI.showToast("تم إسناد الطلب بنجاح");
+            
+            // Force immediate refresh
+            loadAllData(false);
+        }
+
+        // 4. ADD ORDER (MANUAL)
+        document.getElementById('addOrderForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const payload = Object.fromEntries(formData.entries());
+            
+            // Admin is creating the order
+            payload.seller_username = Auth.getUser().username; 
+            
+            // User Initiated -> Show Loader
+            await Api.post('addOrder', payload, false);
+            
+            UI.closeModal('addOrderModal');
+            UI.showToast("تمت إضافة الطلب بنجاح");
+            e.target.reset();
+            loadAllData(false);
+        });
+
+        // 5. ADD USER
+        document.getElementById('addUserForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                new_username: document.getElementById('new_username').value,
+                new_password: document.getElementById('new_password').value,
+                full_name: document.getElementById('new_fullname').value,
+                phone: document.getElementById('new_phone').value,
+                new_role: document.getElementById('new_role').value
+            };
+
+            await Api.post('registerUser', payload, false);
+            
+            UI.closeModal('addUserModal');
+            UI.showToast("تم تسجيل المستخدم الجديد");
+            document.getElementById('addUserForm').reset();
+            loadAllData(false);
+        });
+
+        // 6. SAVE CONFIG
+        document.getElementById('configForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const updates = {
+                delivery_fee: document.getElementById('conf_delivery_fee').value,
+                app_name: document.getElementById('conf_app_name').value
+            };
+            
+            await Api.post('saveConfig', { updates: updates }, false);
+            UI.showToast("تم حفظ الإعدادات بنجاح");
+        });
+
+        // --- HELPER FUNCTIONS ---
+        function openAddOrderModal() { UI.openModal('addOrderModal'); }
+        function openAddUserModal() { UI.openModal('addUserModal'); }
+        
+        function exportExcel() {
+            // Generate CSV Content
+            let csv = "\uFEFF"; // BOM for Arabic support in Excel
+            csv += "Order ID,Date,Customer Name,Phone,Amount,Status,Courier,Seller\n";
+            
+            DATA.orders.forEach(o => {
+                // Clean data for CSV
+                const cleanName = o.customer_name.replace(/,/g, " ");
+                const cleanPhone = String(o.customer_phone).replace(/,/g, "");
+                csv += `${o.order_id},${o.date_time},${cleanName},${cleanPhone},${o.amount},${o.status},${o.courier_username},${o.seller_username}\n`;
+            });
+            
+            // Create Download Link
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `FastDelivery_Orders_${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+    </script>
+</body>
+</html>

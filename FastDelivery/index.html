@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastDelivery - شريكك اللوجستي الأول</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* --- Landing Page Specific Styles --- */
+        
+        /* Navbar */
+        .landing-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover { color: var(--primary); }
+
+        /* Hero Section */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            z-index: 2;
+            max-width: 800px;
+            animation: slideUp 1s ease-out;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 5rem 5%;
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(10px);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .feature-card:hover { transform: translateY(-10px); }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            background: #f0f2f5;
+            width: 80px;
+            height: 80px;
+            line-height: 80px;
+            border-radius: 50%;
+        }
+
+        /* Animated Background Shapes */
+        .bg-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.6;
+            animation: float 10s infinite alternate;
+        }
+        .shape-1 { background: var(--secondary); width: 300px; height: 300px; top: -50px; left: -50px; }
+        .shape-2 { background: var(--accent); width: 200px; height: 200px; bottom: 10%; right: -50px; animation-delay: 2s; }
+        
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes float { from { transform: translate(0, 0); } to { transform: translate(20px, 40px); } }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.5rem; }
+            .nav-links { display: none; } /* Simple hide for mobile for now */
+            .hero-buttons { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+
+    <nav class="landing-nav">
+        <div class="brand" style="margin: 0; font-size: 1.5rem;">
+            🚀 FastDelivery
+        </div>
+        <ul class="nav-links">
+            <li><a href="#">الرئيسية</a></li>
+            <li><a href="#features">المميزات</a></li>
+            <li><a href="#">تتبع الشحنة</a></li>
+            <li><a href="#">اتصل بنا</a></li>
+        </ul>
+        <a href="login.html" class="btn btn-primary">دخول النظام</a>
+    </nav>
+
+    <section class="hero-section">
+        <div class="hero-content">
+            <span class="badge badge-New" style="font-size: 1rem; margin-bottom: 1rem; display: inline-block;">Enterprise Edition v1.0</span>
+            <h1 class="hero-title">الجيل القادم من<br>إدارة التوصيل الذكي</h1>
+            <p class="hero-subtitle">
+                نظام متكامل يربط بين المتاجر، المناديب، والعملاء في منصة واحدة.
+                <br>سرعة، أمان، وتحكم كامل في عملياتك اللوجستية.
+            </p>
+            <div class="hero-buttons">
+                <a href="login.html" class="btn btn-primary" style="padding: 15px 40px; font-size: 1.1rem;">
+                    ابدأ الآن 🚀
+                </a>
+                <a href="#features" class="btn" style="background: white; border: 1px solid #ddd; padding: 15px 40px; font-size: 1.1rem;">
+                    تعرف علينا
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features-section">
+        <div style="text-align: center; max-width: 600px; margin: 0 auto;">
+            <h2 style="font-size: 2.5rem; color: var(--dark);">لماذا تختار FastDelivery؟</h2>
+            <p style="color: #666;">نوفر لك الأدوات التقنية التي تحتاجها لتنمية أعمالك وتوصيل طلباتك بكفاءة عالية.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>لوحة تحكم شاملة</h3>
+                <p style="color: #777;">راقب جميع الطلبات، الأرباح، وأداء السائقين في مكان واحد مع رسوم بيانية تفاعلية.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>تحديثات لحظية</h3>
+                <p style="color: #777;">نظام ذكي يضمن وصول التنبيهات وتحديثات الحالة للمناديب والتجار في الوقت الفعلي.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>تطبيق مناديب متطور</h3>
+                <p style="color: #777;">واجهة مخصصة للموبايل تسهل على السائقين إدارة مهامهم ومحافظهم المالية.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer style="text-align: center; padding: 2rem; background: white; margin-top: 2rem; border-top: 1px solid #eee;">
+        <p style="color: #888;">&copy; 2026 FastDelivery Company. جميع الحقوق محفوظة.</p>
+    </footer>
+
+</body>
+</html>

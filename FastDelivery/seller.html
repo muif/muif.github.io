@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة التاجر - FastDelivery</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Seller Specific Layout */
+        .seller-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr; /* 1/3 for form, 2/3 for table */
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-layout { grid-template-columns: 1fr; }
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .stat-box.warning {
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="topbar" style="margin: 20px; justify-content: space-between;">
+        <div class="brand" style="margin: 0;">🚀 FastDelivery <span style="font-size: 0.8rem; opacity: 0.7;">| التاجر</span></div>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <span id="sellerName" style="font-weight: bold;">...</span>
+            <button class="btn btn-sm btn-danger" onclick="Auth.logout()">خروج</button>
+        </div>
+    </nav>
+
+    <div class="seller-container">
+        
+        <div class="grid-layout" style="margin-bottom: 0; grid-template-columns: 1fr 1fr; display: flex; gap: 20px;">
+            <div class="stat-box" style="flex: 1;">
+                <div>
+                    <h3>إجمالي المبيعات</h3>
+                    <small>الطلبات المكتملة</small>
+                </div>
+                <h2 id="totalSales">0 IQD</h2>
+            </div>
+            <div class="stat-box warning" style="flex: 1;">
+                <div>
+                    <h3>طلبات قيد التنفيذ</h3>
+                    <small>جديد / جاري التوصيل</small>
+                </div>
+                <h2 id="pendingCount">0</h2>
+            </div>
+        </div>
+
+        <div class="grid-layout" style="margin-top: 20px;">
+            
+            <div class="card" style="height: fit-content;">
+                <div class="card-title">📝 إضافة طلب جديد</div>
+                <form id="createOrderForm">
+                    <div class="form-group">
+                        <label>اسم العميل</label>
+                        <input type="text" name="customer_name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>رقم الهاتف</label>
+                        <input type="tel" name="customer_phone" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>العنوان الكامل</label>
+                        <input type="text" name="customer_address" class="form-control" placeholder="المنطقة - أقرب نقطة دالة" required>
+                    </div>
+                    <div class="form-group">
+                        <label>مبلغ الطلب (مع التوصيل)</label>
+                        <input type="number" name="amount" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>تفاصيل الطلب</label>
+                        <textarea name="order_details" class="form-control" rows="3" placeholder="محتويات الطلب..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>ملاحظات للمندوب</label>
+                        <input type="text" name="notes" class="form-control">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">إرسال الطلب</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    📦 طلباتي الأخيرة
+                    <button class="btn btn-sm btn-primary" onclick="loadSellerData()">🔄 تحديث</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>التاريخ</th>
+                                <th>العميل</th>
+                                <th>المبلغ</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            <tr><td colspan="5" style="text-align:center;">جاري التحميل...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // 1. Security Check & Init
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!Auth.checkRole('seller')) return;
+            
+            const user = Auth.getUser();
+            document.getElementById('sellerName').innerText = user.full_name;
+
+            // Load Data
+            loadSellerData();
+        });
+
+        // 2. Load Data Function
+        async function loadSellerData() {
+            try {
+                const user = Auth.getUser();
+                const orders = await Api.post('getOrders', {
+                    role: 'seller',
+                    username: user.username
+                });
+
+                renderStats(orders);
+                renderTable(orders);
+
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        // 3. Render Stats
+        function renderStats(orders) {
+            // Calculate Total Sales (Only Delivered)
+            const sales = orders
+                .filter(o => o.status === 'Delivered')
+                .reduce((sum, o) => sum + Number(o.amount), 0);
+            
+            document.getElementById('totalSales').innerText = sales.toLocaleString() + " IQD";
+
+            // Calculate Pending (New + Assigned + PickedUp)
+            const pending = orders.filter(o => ['New', 'Assigned', 'PickedUp'].includes(o.status)).length;
+            document.getElementById('pendingCount').innerText = pending;
+        }
+
+        // 4. Render Table
+        function renderTable(orders) {
+            const tbody = document.getElementById('ordersTableBody');
+            tbody.innerHTML = '';
+
+            if (orders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">لا توجد طلبات حتى الآن</td></tr>';
+                return;
+            }
+
+            // Show only last 20 orders to keep it clean
+            orders.slice(0, 20).forEach(o => {
+                const tr = `
+                    <tr>
+                        <td><b>${o.order_id.split('-')[1]}</b></td>
+                        <td>${new Date(o.date_time).toLocaleDateString()}</td>
+                        <td>${o.customer_name}<br><small>${o.customer_phone}</small></td>
+                        <td>${Number(o.amount).toLocaleString()}</td>
+                        <td><span class="badge badge-${o.status}">${translateStatus(o.status)}</span></td>
+                    </tr>
+                `;
+                tbody.innerHTML += tr;
+            });
+        }
+
+        // 5. Handle Form Submit
+        document.getElementById('createOrderForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const user = Auth.getUser();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            // Add seller identity
+            data.seller_username = user.username;
+
+            try {
+                await Api.post('addOrder', data);
+                UI.showToast("تم إرسال الطلب بنجاح", "success");
+                e.target.reset(); // Clear form
+                loadSellerData(); // Refresh list
+            } catch (err) {
+                // Error handled by Api class
+            }
+        });
+    </script>
+</body>
+</html>

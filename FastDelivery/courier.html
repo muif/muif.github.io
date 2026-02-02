@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تطبيق المندوب - FastDelivery</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* --- Mobile App Specific Styles --- */
+        
+        body { 
+            padding-bottom: 90px; /* Space for bottom nav */ 
+            background: #f0f2f5; 
+            overscroll-behavior-y: none; /* Prevent pull-to-refresh on mobile */
+        }
+        
+        /* Sticky Header */
+        .app-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 900; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%;
+            background: white;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+            display: flex; 
+            justify-content: space-around;
+            padding: 12px 0; 
+            z-index: 1000;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+
+        .nav-item {
+            text-align: center; 
+            color: #ccc; 
+            font-size: 0.75rem;
+            flex: 1; 
+            cursor: pointer; 
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-item.active { 
+            color: var(--primary); 
+            font-weight: 700; 
+            transform: translateY(-5px);
+        }
+        
+        .nav-item span.icon { 
+            display: block; 
+            font-size: 1.6rem; 
+            margin-bottom: 4px; 
+        }
+
+        /* Order Card Mobile Style */
+        .mobile-card {
+            background: white; 
+            border-radius: 16px; 
+            padding: 1.2rem;
+            margin-bottom: 1rem; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border-right: 5px solid #ccc;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        
+        .mobile-card:active { transform: scale(0.98); }
+        
+        .mobile-card.new { border-right-color: var(--primary); }
+        .mobile-card.active { border-right-color: var(--warning); }
+        .mobile-card.done { border-right-color: var(--success); }
+        
+        .card-header { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 12px; 
+            font-weight: 700; 
+            font-size: 1.1rem;
+        }
+        
+        .card-price { 
+            color: var(--success); 
+            background: #e8f5e9;
+            padding: 2px 10px;
+            border-radius: 8px;
+        }
+        
+        .info-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            color: #444;
+        }
+
+        /* Action Buttons */
+        .action-row { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 15px; 
+        }
+        .btn-block { 
+            flex: 1; 
+            padding: 14px; 
+            border-radius: 12px; 
+            justify-content: center; 
+            font-size: 1rem;
+        }
+
+        /* Tab Visibility & Animation */
+        .tab-view { 
+            display: none; 
+            padding: 15px; 
+            animation: slideUp 0.3s ease-out; 
+        }
+        .tab-view.active { display: block; }
+        
+        @keyframes slideUp { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        /* Wallet Section */
+        .wallet-card {
+            background: linear-gradient(135deg, #4e54c8, #8f94fb);
+            color: white; 
+            padding: 30px; 
+            border-radius: 25px;
+            text-align: center; 
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(78, 84, 200, 0.3);
+        }
+
+        .map-btn {
+            background: #f1f3f4;
+            color: #1a73e8;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 10px 0;
+            transition: background 0.2s;
+        }
+        .map-btn:active { background: #e0e0e0; }
+    </style>
+</head>
+<body>
+
+    <div class="app-header">
+        <div>
+            <h3 style="margin: 0; font-size: 1.2rem;">👋 أهلاً كابتن</h3>
+            <span id="courierName" style="color: var(--primary); font-weight: bold;">...</span>
+        </div>
+        <button class="btn btn-sm btn-danger" onclick="Auth.logout()">
+            <span>🚪</span> خروج
+        </button>
+    </div>
+
+    <div id="tab-available" class="tab-view active">
+        <h4 style="margin-bottom: 15px; color: #666; font-size: 0.9rem;">الطلبات الجديدة المتاحة</h4>
+        <div id="list-available">
+            <div style="text-align: center; margin-top: 60px; color: #aaa;">
+                <div class="spinner" style="margin: 0 auto 20px; border-width: 3px; border-top-color: #ccc;"></div>
+                جاري البحث عن طلبات قريبة...
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-active" class="tab-view">
+        <h4 style="margin-bottom: 15px; color: #666; font-size: 0.9rem;">المهام النشطة حالياً</h4>
+        <div id="list-active">
+            <div style="text-align: center; margin-top: 60px; color: #aaa;">
+                <span style="font-size: 3rem; display: block; margin-bottom: 10px;">✅</span>
+                أنت غير مرتبط بأي طلب حالياً
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-wallet" class="tab-view">
+        <div class="wallet-card">
+            <p style="opacity: 0.9;">العهدة المالية (الكاش في اليد)</p>
+            <h1 id="wallet-amount" style="font-size: 3.5rem; margin: 10px 0;">0</h1>
+            <p style="opacity: 0.8;">دينار عراقي</p>
+        </div>
+        
+        <div class="card" style="padding: 0;">
+            <div class="card-title" style="padding: 15px; border-bottom: 1px solid #eee; margin: 0;">
+                سجل التوصيلات اليوم
+            </div>
+            <ul id="wallet-history" style="list-style: none; padding: 0; margin: 0;">
+                <li style="padding: 20px; text-align: center; color: #999;">لا توجد سجلات اليوم</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('available', this)">
+            <span class="icon">📋</span> 
+            <span>متاح</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('active', this)">
+            <span class="icon">🛵</span> 
+            <span>مهامي</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('wallet', this)">
+            <span class="icon">💰</span> 
+            <span>محفظتي</span>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        /**
+         * ------------------------------------------------------------------
+         * COURIER APP LOGIC
+         * Handles PWA Interface, Polling, and Geolocation Links
+         * ------------------------------------------------------------------
+         */
+
+        // --- INIT ---
+        window.addEventListener('DOMContentLoaded', () => {
+            // Security: Role Check
+            if (!Auth.checkRole('courier')) return;
+            
+            // Set User Name
+            const user = Auth.getUser();
+            if(user) document.getElementById('courierName').innerText = user.full_name.split(' ')[0]; // First name only
+            
+            // 🚀 FIRST LOAD: Show Full Loader (isBackground = false)
+            loadCourierData(false);
+
+            // 🔄 POLLING: Silent Update (isBackground = true)
+            // Updates every 15 seconds without blocking the UI
+            setInterval(() => {
+                loadCourierData(true);
+            }, 15000);
+        });
+
+        // --- DATA FETCHING ---
+        /**
+         * Fetches Orders assigned to or available for the courier.
+         * @param {boolean} isBackground - Passes to Api.post for silent mode.
+         */
+        async function loadCourierData(isBackground = false) {
+            try {
+                const user = Auth.getUser();
+                if(!user) return;
+
+                // Call API
+                const orders = await Api.post('getOrders', {
+                    role: 'courier',
+                    username: user.username
+                }, isBackground);
+
+                // Update UI Sections
+                renderAvailable(orders);
+                renderActive(orders);
+                renderWallet(orders);
+
+            } catch (err) {
+                console.error("Courier Sync Error:", err);
+                // Api class handles toasts for critical errors unless silent
+            }
+        }
+
+        // --- RENDERERS ---
+
+        // 1. Available Orders (Status = 'New')
+        function renderAvailable(orders) {
+            const container = document.getElementById('list-available');
+            const list = orders.filter(o => o.status === 'New');
+
+            if (list.length === 0) {
+                container.innerHTML = `
+                <div style="text-align: center; margin-top: 60px; color: #999;">
+                    <span style="font-size: 4rem; display: block; margin-bottom: 10px; opacity: 0.5;">😴</span>
+                    لا توجد طلبات جديدة حالياً<br>
+                    <small>سيتم التحديث تلقائياً...</small>
+                </div>`;
+                return;
+            }
+
+            let html = '';
+            list.forEach(o => {
+                // Formatting Details
+                const cleanAmount = Number(o.amount).toLocaleString();
+                const shortId = o.order_id.split('-')[1] || o.order_id;
+
+                html += `
+                <div class="mobile-card new">
+                    <div class="card-header">
+                        <span>#${shortId}</span>
+                        <span class="card-price">${cleanAmount}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span>🏪</span> 
+                        <b>التاجر:</b> ${o.seller_username}
+                    </div>
+                    <div class="info-row">
+                        <span>📍</span> 
+                        <b>العنوان:</b> ${o.customer_address}
+                    </div>
+                    <div class="info-row" style="color: #666; font-size: 0.85rem; background: #f9f9f9; padding: 8px; border-radius: 8px;">
+                        📝 ${o.order_details}
+                    </div>
+                    
+                    <div class="action-row">
+                        <button class="btn btn-primary btn-block" onclick="acceptOrder('${o.order_id}')">
+                            ✅ قبول الطلب
+                        </button>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // 2. Active Orders (Status = 'Assigned' OR 'PickedUp')
+        function renderActive(orders) {
+            const container = document.getElementById('list-active');
+            const user = Auth.getUser().username;
+            
+            // Filter: Must be assigned to THIS courier
+            const list = orders.filter(o => 
+                (o.status === 'Assigned' || o.status === 'PickedUp') && 
+                o.courier_username === user
+            );
+
+            if (list.length === 0) {
+                container.innerHTML = `
+                <div style="text-align: center; margin-top: 60px; color: #999;">
+                    <span style="font-size: 3rem; display: block; margin-bottom: 10px;">🙌</span>
+                    أنت جاهز لاستلام مهام جديدة
+                </div>`;
+                return;
+            }
+
+            let html = '';
+            list.forEach(o => {
+                let buttons = '';
+                let statusBadge = '';
+                
+                // Logic based on status
+                if (o.status === 'Assigned') {
+                    statusBadge = `<span class="badge badge-Assigned">في الطريق للتاجر</span>`;
+                    buttons = `<button class="btn btn-warning btn-block" onclick="updateStatus('${o.order_id}', 'PickedUp')">📦 تم الاستلام</button>`;
+                } else if (o.status === 'PickedUp') {
+                    statusBadge = `<span class="badge badge-PickedUp">في الطريق للعميل</span>`;
+                    buttons = `<button class="btn btn-success btn-block" onclick="updateStatus('${o.order_id}', 'Delivered')">🏁 تم التسليم</button>`;
+                }
+
+                // Google Maps Link
+                const mapQuery = encodeURIComponent(o.customer_address);
+                // Try to open native app, fallback to web
+                const mapLink = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+
+                html += `
+                <div class="mobile-card active">
+                    <div class="card-header">
+                        <span>#${o.order_id.split('-')[1]}</span>
+                        ${statusBadge}
+                    </div>
+                    
+                    <div style="margin-bottom: 15px; background: #f8f9fa; padding: 12px; border-radius: 12px; border: 1px solid #eee;">
+                        <div style="font-weight: bold; font-size: 1.1rem; margin-bottom: 5px;">👤 ${o.customer_name}</div>
+                        <div style="margin-bottom: 5px;">
+                            <a href="tel:${o.customer_phone}" style="color: var(--primary); text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 5px;">
+                                📞 ${o.customer_phone}
+                            </a>
+                        </div>
+                        <div style="color: var(--accent); font-weight: bold;">
+                            💰 التحصيل: ${Number(o.amount).toLocaleString()} IQD
+                        </div>
+                    </div>
+
+                    <a href="${mapLink}" target="_blank" class="map-btn">
+                        <span>📍</span> فتح العنوان في الخريطة
+                    </a>
+                    
+                    <div class="action-row">
+                        ${buttons}
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // 3. Wallet (Status = 'Delivered')
+        function renderWallet(orders) {
+            const user = Auth.getUser().username;
+            // Get all delivered orders by this courier (History)
+            const delivered = orders.filter(o => o.status === 'Delivered' && o.courier_username === user);
+            
+            // Calculate Total Cash (The amount courier holds)
+            const totalCash = delivered.reduce((sum, o) => sum + Number(o.amount), 0);
+            
+            // Animate number (simple implementation)
+            const el = document.getElementById('wallet-amount');
+            el.innerText = totalCash.toLocaleString();
+
+            const historyContainer = document.getElementById('wallet-history');
+            let historyHtml = '';
+            
+            if (delivered.length === 0) {
+                historyContainer.innerHTML = '<li style="padding: 20px; text-align: center; color: #999;">لا توجد طلبات مكتملة اليوم</li>';
+                return;
+            }
+
+            // Show last 10 orders
+            delivered.slice().reverse().slice(0, 10).forEach(o => { 
+                historyHtml += `
+                    <li style="padding: 15px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: bold;">طلب #${o.order_id.split('-')[1]}</div>
+                            <small style="color: #888;">${new Date(o.date_time).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'})}</small>
+                        </div>
+                        <span style="font-weight: bold; color: var(--success); background: #e8f5e9; padding: 5px 10px; border-radius: 20px;">
+                            +${Number(o.amount).toLocaleString()}
+                        </span>
+                    </li>
+                `;
+            });
+            historyContainer.innerHTML = historyHtml;
+        }
+
+        // --- ACTIONS ---
+
+        async function acceptOrder(orderId) {
+            if(!confirm("هل أنت متأكد من قبول هذا الطلب؟")) return;
+
+            const user = Auth.getUser().username;
+            try {
+                // Important: Actions should SHOW the spinner to confirm interaction
+                // So we pass isBackground = false (or omit it as default)
+                await Api.post('updateStatus', {
+                    order_id: orderId,
+                    status: 'Assigned',
+                    courier_username: user
+                }, false);
+                
+                UI.showToast("🚀 تم قبول الطلب! انتقل لقائمة مهامي");
+                
+                // Switch Tab Automatically
+                const tasksTabBtn = document.querySelectorAll('.nav-item')[1];
+                switchTab('active', tasksTabBtn);
+
+                // Reload Data
+                loadCourierData(false);
+
+            } catch (err) {
+                // Error Handled in Api
+            }
+        }
+
+        async function updateStatus(orderId, newStatus) {
+            let msg = newStatus === 'PickedUp' ? "هل استلمت الطلب من التاجر؟" : "هل سلمت الطلب واستلمت المبلغ؟";
+            if(!confirm(msg)) return;
+
+            try {
+                await Api.post('updateStatus', {
+                    order_id: orderId,
+                    status: newStatus
+                }, false);
+
+                UI.showToast("👍 تم تحديث الحالة بنجاح");
+                loadCourierData(false); // Force refresh with spinner
+            } catch (err) {
+                // Error Handled in Api
+            }
+        }
+
+        // --- UI UTILS ---
+        function switchTab(tabName, btnElement) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
+            // Show selected
+            document.getElementById('tab-' + tabName).classList.add('active');
+            
+            // Update Nav Styles
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo(0,0);
+        }
+    </script>
+</body>
+</html>

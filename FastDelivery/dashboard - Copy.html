@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار فاست دليفري (Firebase)</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f6f8; padding: 20px; text-align: right; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { color: #4361ee; margin-top: 0; }
+        .btn { 
+            background: #4361ee; color: white; border: none; padding: 12px 25px; 
+            border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; 
+            width: 100%; transition: 0.2s;
+        }
+        .btn:hover { background: #304ffe; transform: translateY(-2px); }
+        .status-box { margin-top: 20px; padding: 15px; background: #e3f2fd; border-radius: 8px; color: #0d47a1; display: none; }
+        
+        /* تصميم البطاقة */
+        .order-card { 
+            background: white; border: 1px solid #eee; padding: 15px; margin-top: 15px; 
+            border-radius: 10px; border-right: 5px solid #00b894; 
+            animation: slideIn 0.3s ease; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>🚀 اختبار سرعة الاتصال</h2>
+        <p>اضغط الزر لإرسال طلب إلى سيرفرات جوجل (ألمانيا) واستقباله فوراً.</p>
+        
+        <button class="btn" id="addBtn">➕ إضافة طلب جديد</button>
+        <div id="status" class="status-box"></div>
+
+        <hr style="margin: 25px 0; border: 0; border-top: 1px dashed #ccc;">
+        
+        <h3>البيانات الحية (Real-time):</h3>
+        <div id="ordersContainer">
+            <p style="color:#777; text-align:center;">جاري الاتصال بقاعدة البيانات...</p>
+        </div>
+    </div>
+
+    <script type="module">
+        // استيراد الدوال من سيرفرات جوجل مباشرة
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } 
+        from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // إعدادات مشروعك (تم نسخها من رسالتك)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCWukKBntaP3j-3OeVFJnuMEyXV2uJ_qfI",
+            authDomain: "fastdelivery-app-e7a69.firebaseapp.com",
+            projectId: "fastdelivery-app-e7a69",
+            storageBucket: "fastdelivery-app-e7a69.firebasestorage.app",
+            messagingSenderId: "749882364658",
+            appId: "1:749882364658:web:461f02b223b02e09f5766b"
+        };
+
+        // 1. تشغيل فايربيس
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const ordersRef = collection(db, "orders"); // اسم الجدول
+
+        // 2. دالة إضافة طلب عند ضغط الزر
+        document.getElementById('addBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('addBtn');
+            const status = document.getElementById('status');
+            
+            btn.disabled = true; 
+            btn.innerText = "جاري الإرسال...";
+            
+            try {
+                await addDoc(ordersRef, {
+                    customer_name: "عميل تجريبي " + Math.floor(Math.random() * 1000),
+                    amount: 5000 + Math.floor(Math.random() * 10000),
+                    status: "New",
+                    created_at: serverTimestamp() // توقيت السيرفر
+                });
+                
+                status.style.display = 'block';
+                status.innerText = "✅ تم الإرسال بنجاح!";
+                setTimeout(() => status.style.display = 'none', 2000);
+            } catch (error) {
+                alert("خطأ: " + error.message);
+                console.error(error);
+            }
+            
+            btn.disabled = false;
+            btn.innerText = "➕ إضافة طلب جديد";
+        });
+
+        // 3. الاستماع للتغييرات (هذا هو السحر!)
+        // أي تغيير في الداتابيس سيصل هنا فوراً
+        const q = query(ordersRef, orderBy("created_at", "desc"));
+        
+        onSnapshot(q, (snapshot) => {
+            const container = document.getElementById('ordersContainer');
+            container.innerHTML = ''; // تنظيف القائمة
+
+            if (snapshot.empty) {
+                container.innerHTML = '<p style="text-align:center">لا توجد طلبات حتى الآن</p>';
+                return;
+            }
+
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const card = `
+                    <div class="order-card">
+                        <div>
+                            <strong>${data.customer_name}</strong>
+                            <div style="font-size:12px; color:#666; margin-top:5px;">${data.status}</div>
+                        </div>
+                        <div style="font-weight:bold; color:#4361ee;">
+                            ${data.amount} د.ع
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        });
+    </script>
+</body>
+</html>
