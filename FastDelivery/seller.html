@@ -2,221 +2,421 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بوابة التاجر - FastDelivery</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>بوابة التاجر - FastDelivery V8.1</title>
+    
     <link rel="stylesheet" href="style.css">
+    
     <style>
-        /* Seller Specific Layout */
-        .seller-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+        /* --- تنسيقات خاصة بصفحة التاجر فقط --- */
+        body { 
+            padding-bottom: 90px; 
+            background: #f0f2f5; 
+            overscroll-behavior-y: none; 
         }
         
-        .grid-layout {
-            display: grid;
-            grid-template-columns: 1fr 2fr; /* 1/3 for form, 2/3 for table */
-            gap: 20px;
+        /* تحسينات للعرض على الموبايل */
+        .info-label { font-weight: bold; color: #555; font-size: 0.9rem; margin-left: 5px; }
+        .contact-btn { 
+            text-decoration: none; 
+            display: inline-flex; align-items: center; gap: 5px;
+            background: #eee; padding: 4px 10px; border-radius: 6px; 
+            color: #333; font-size: 0.85rem; font-weight: bold;
         }
-
-        @media (max-width: 768px) {
-            .grid-layout { grid-template-columns: 1fr; }
-        }
-
-        .stat-box {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 20px;
-            border-radius: var(--radius);
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .stat-box.warning {
-            background: linear-gradient(135deg, #f7971e, #ffd200);
+        @media (max-width: 900px) {
+            .desktop-only { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <nav class="topbar" style="margin: 20px; justify-content: space-between;">
-        <div class="brand" style="margin: 0;">🚀 FastDelivery <span style="font-size: 0.8rem; opacity: 0.7;">| التاجر</span></div>
-        <div style="display: flex; gap: 15px; align-items: center;">
-            <span id="sellerName" style="font-weight: bold;">...</span>
-            <button class="btn btn-sm btn-danger" onclick="Auth.logout()">خروج</button>
+    <div class="app-header">
+        <div>
+            <h3 style="margin: 0; font-size: 1.2rem;">🏪 متجر <span id="sellerName">...</span></h3>
+            <small style="font-size: 0.8rem; color: #666;">لوحة التحكم</small>
         </div>
-    </nav>
-
-    <div class="seller-container">
         
-        <div class="grid-layout" style="margin-bottom: 0; grid-template-columns: 1fr 1fr; display: flex; gap: 20px;">
-            <div class="stat-box" style="flex: 1;">
-                <div>
-                    <h3>إجمالي المبيعات</h3>
-                    <small>الطلبات المكتملة</small>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <div class="notif-wrapper" onclick="Notifier.showDropdown()">
+                <span class="notif-icon">🔔</span>
+                <span id="notif-badge" class="notif-badge">0</span>
+                
+                <div id="notif-dropdown" class="notif-dropdown" onclick="event.stopPropagation()">
+                    <div class="notif-header">
+                        <span>الإشعارات</span>
+                        <span id="sound-icon" class="sound-toggle" onclick="Notifier.toggleSound()" title="صوت الإشعارات">🔊</span>
+                    </div>
+                    <div id="notif-list" class="notif-list">
+                        <div style="padding:20px; text-align:center; color:#999;">جاري التحميل...</div>
+                    </div>
                 </div>
-                <h2 id="totalSales">0 IQD</h2>
             </div>
-            <div class="stat-box warning" style="flex: 1;">
-                <div>
-                    <h3>طلبات قيد التنفيذ</h3>
-                    <small>جديد / جاري التوصيل</small>
-                </div>
-                <h2 id="pendingCount">0</h2>
-            </div>
-        </div>
-
-        <div class="grid-layout" style="margin-top: 20px;">
             
-            <div class="card" style="height: fit-content;">
-                <div class="card-title">📝 إضافة طلب جديد</div>
-                <form id="createOrderForm">
-                    <div class="form-group">
-                        <label>اسم العميل</label>
-                        <input type="text" name="customer_name" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>رقم الهاتف</label>
-                        <input type="tel" name="customer_phone" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>العنوان الكامل</label>
-                        <input type="text" name="customer_address" class="form-control" placeholder="المنطقة - أقرب نقطة دالة" required>
-                    </div>
-                    <div class="form-group">
-                        <label>مبلغ الطلب (مع التوصيل)</label>
-                        <input type="number" name="amount" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>تفاصيل الطلب</label>
-                        <textarea name="order_details" class="form-control" rows="3" placeholder="محتويات الطلب..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>ملاحظات للمندوب</label>
-                        <input type="text" name="notes" class="form-control">
-                    </div>
-
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">إرسال الطلب</button>
-                </form>
-            </div>
-
-            <div class="card">
-                <div class="card-title">
-                    📦 طلباتي الأخيرة
-                    <button class="btn btn-sm btn-primary" onclick="loadSellerData()">🔄 تحديث</button>
-                </div>
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>التاريخ</th>
-                                <th>العميل</th>
-                                <th>المبلغ</th>
-                                <th>الحالة</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ordersTableBody">
-                            <tr><td colspan="5" style="text-align:center;">جاري التحميل...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
+            <button class="btn btn-sm btn-danger" onclick="Auth.logout()" title="تسجيل الخروج">
+                🚪
+            </button>
         </div>
     </div>
 
+    <div id="tab-create" class="tab-view active">
+        <h4 style="margin-bottom: 15px; color: #666; display: flex; align-items: center; gap: 10px;">
+            <span>📝</span> إضافة طلب جديد
+        </h4>
+        
+        <div class="mobile-card new">
+            <form id="createOrderForm">
+                <div class="form-group">
+                    <label>👤 اسم الزبون</label>
+                    <input type="text" name="customer_name" id="inp_name" class="form-control" required placeholder="الاسم الثلاثي أو اللقب">
+                </div>
+                
+                <div class="form-group">
+                    <label>📞 رقم الهاتف</label>
+                    <input type="tel" name="customer_phone" id="inp_phone" class="form-control" required placeholder="07xxxxxxxxx">
+                </div>
+                
+                <div class="form-group">
+                    <label>📍 العنوان الكامل</label>
+                    <input type="text" name="customer_address" id="inp_addr" class="form-control" required placeholder="المنطقة - المحلة - أقرب نقطة دالة">
+                </div>
+                
+                <div class="form-group">
+                    <label>💰 مبلغ الطلب الكلي (مع التوصيل)</label>
+                    <input type="number" name="amount" id="inp_amount" class="form-control" required placeholder="بالدينار العراقي">
+                </div>
+                
+                <div class="form-group">
+                    <label>📦 تفاصيل الطلب</label>
+                    <textarea name="order_details" id="inp_details" class="form-control" rows="2" placeholder="عدد المواد، نوعها، الحجم..."></textarea>
+                </div>
+                
+                <div class="form-group" style="background: #f0f7ff; padding: 10px; border-radius: 8px; border: 1px dashed #2196f3;">
+                    <label style="color: #1976d2;">🛵 تعيين مندوب محدد (اختياري)</label>
+                    <input type="text" name="assigned_courier" id="inp_courier" class="form-control" placeholder="أدخل اسم مستخدم المندوب (Username)">
+                    <small style="color: #666;">اتركه فارغاً ليظهر الطلب لجميع المناديب في المنطقة.</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>📋 ملاحظات للمندوب (اختياري)</label>
+                    <input type="text" name="notes" id="inp_notes" class="form-control" placeholder="مثلاً: الاتصال قبل الوصول">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block" style="margin-top: 20px;">
+                    🚀 إرسال الطلب
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="tab-list" class="tab-view">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h4 style="color: #666; margin:0;">📦 سجل طلباتي</h4>
+            <button class="btn btn-sm btn-primary" onclick="loadSellerData(false)">
+                🔄 تحديث
+            </button>
+        </div>
+        
+        <div id="orders-list-container">
+            <div style="text-align: center; margin-top: 50px; color: #999;">
+                <div class="spinner" style="margin: 0 auto 10px;"></div>
+                جاري تحميل البيانات...
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-stats" class="tab-view">
+        <h4 style="margin-bottom: 15px; color: #666;">💰 ملخص الحساب</h4>
+        
+        <div class="mobile-card active" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; text-align: center; padding: 30px;">
+            <p style="opacity: 0.9; margin-bottom: 5px;">إجمالي المبيعات (المستلمة)</p>
+            <h1 id="totalSales" style="font-size: 2.8rem; margin: 10px 0; font-weight: 800;">0</h1>
+            <p style="font-size: 1.1rem;">IQD</p>
+            <small style="opacity: 0.7;">الطلبات المكتملة فقط</small>
+        </div>
+
+        <div class="mobile-card active" style="text-align: center; border-right: 5px solid var(--warning);">
+            <h3 style="color: #666; margin-bottom: 10px;">📦 طلبات قيد التنفيذ</h3>
+            <h1 id="pendingCount" style="color: var(--warning); margin: 10px 0; font-size: 2.5rem;">0</h1>
+            <p style="color: #999; font-size: 0.9rem;">بانتظار التسليم أو التحصيل من المندوب</p>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('create', this)">
+            <span class="icon">➕</span> 
+            <span>طلب جديد</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('list', this)">
+            <span class="icon">📦</span> 
+            <span>السجل</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('stats', this)">
+            <span class="icon">💰</span> 
+            <span>حسابي</span>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="cancelModal">
+        <div class="modal-content">
+            <h3 style="color: var(--accent);">⛔ إلغاء الطلب</h3>
+            <p style="margin-bottom: 15px;">يرجى ذكر سبب إلغاء الطلب بوضوح:</p>
+            <form id="cancelForm">
+                <input type="hidden" id="cancelOrderId">
+                <div class="form-group">
+                    <textarea id="cancelReason" class="form-control" rows="3" required placeholder="مثال: الزبون رفض الطلب، نفاد الكمية..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-danger btn-block">تأكيد الإلغاء</button>
+                <button type="button" class="btn btn-block" onclick="UI.closeModal('cancelModal')" style="margin-top:10px; background:#eee; color:#333;">تراجع</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="detailsModal"></div>
+    <div class="modal-overlay" id="unifiedOrderModal"></div>
+
     <script src="app.js"></script>
     <script>
-        // 1. Security Check & Init
+        /**
+         * ------------------------------------------------------------------
+         * SELLER APP LOGIC (v8.1 - WhatsApp & Unified View)
+         * ------------------------------------------------------------------
+         */
+
+        let currentOrders = [];
+
+        // 1. التهيئة
         window.addEventListener('DOMContentLoaded', () => {
             if (!Auth.checkRole('seller')) return;
             
             const user = Auth.getUser();
-            document.getElementById('sellerName').innerText = user.full_name;
+            if(user) {
+                document.getElementById('sellerName').innerText = user.full_name.split(' ')[0];
+            }
 
-            // Load Data
-            loadSellerData();
+            loadSellerData(false);
+            setInterval(() => loadSellerData(true), 15000);
         });
 
-        // 2. Load Data Function
-        async function loadSellerData() {
+        // 2. جلب البيانات
+        async function loadSellerData(isBackground = false) {
             try {
                 const user = Auth.getUser();
-                const orders = await Api.post('getOrders', {
+                const newOrders = await Api.post('getOrders', {
                     role: 'seller',
                     username: user.username
-                });
+                }, isBackground);
 
-                renderStats(orders);
-                renderTable(orders);
+                currentOrders = newOrders;
+                renderStats(newOrders);
+                renderList(newOrders); 
 
             } catch (error) {
-                console.error(error);
+                console.error("Data Load Error:", error);
+                if(!isBackground) {
+                    document.getElementById('orders-list-container').innerHTML = 
+                        '<div style="text-align:center; padding:20px; color:red;">فشل تحميل البيانات. تأكد من الاتصال.</div>';
+                }
             }
         }
 
-        // 3. Render Stats
+        // 3. عرض الإحصائيات
         function renderStats(orders) {
-            // Calculate Total Sales (Only Delivered)
             const sales = orders
-                .filter(o => o.status === 'Delivered')
+                .filter(o => o.status === 'Delivered' || o.status === 'Completed')
                 .reduce((sum, o) => sum + Number(o.amount), 0);
             
-            document.getElementById('totalSales').innerText = sales.toLocaleString() + " IQD";
+            document.getElementById('totalSales').innerText = sales.toLocaleString();
 
-            // Calculate Pending (New + Assigned + PickedUp)
             const pending = orders.filter(o => ['New', 'Assigned', 'PickedUp'].includes(o.status)).length;
             document.getElementById('pendingCount').innerText = pending;
         }
 
-        // 4. Render Table
-        function renderTable(orders) {
-            const tbody = document.getElementById('ordersTableBody');
-            tbody.innerHTML = '';
+        // 4. عرض القائمة (تحديث V8.1: دعم النقر والواتساب)
+        function renderList(orders) {
+            const container = document.getElementById('orders-list-container');
+            container.innerHTML = '';
 
-            if (orders.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">لا توجد طلبات حتى الآن</td></tr>';
+            if (!orders || orders.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; margin-top: 50px; color: #999;">
+                        <span style="font-size: 3rem; display: block; margin-bottom: 10px;">📭</span>
+                        لا توجد طلبات حتى الآن
+                    </div>`;
                 return;
             }
 
-            // Show only last 20 orders to keep it clean
-            orders.slice(0, 20).forEach(o => {
-                const tr = `
-                    <tr>
-                        <td><b>${o.order_id.split('-')[1]}</b></td>
-                        <td>${new Date(o.date_time).toLocaleDateString()}</td>
-                        <td>${o.customer_name}<br><small>${o.customer_phone}</small></td>
-                        <td>${Number(o.amount).toLocaleString()}</td>
-                        <td><span class="badge badge-${o.status}">${translateStatus(o.status)}</span></td>
-                    </tr>
-                `;
-                tbody.innerHTML += tr;
+            orders.slice(0, 50).forEach(o => { // Limit render
+                const shortId = o.order_id.split('-')[1] || o.order_id;
+                
+                let cardClass = 'active'; 
+                if(o.status === 'New') cardClass = 'new';
+                if(o.status === 'Delivered' || o.status === 'Completed') cardClass = 'done';
+                if(o.status === 'Cancelled') cardClass = '';
+
+                let buttonsHtml = '';
+                const isPaid = (o.seller_paid === true || o.seller_paid === 'TRUE');
+
+                // --- الأزرار ---
+                
+                // زر استلام المبلغ
+                if (['Assigned', 'PickedUp'].includes(o.status) && !isPaid) {
+                    buttonsHtml += `
+                        <button class="btn btn-success btn-block" onclick="event.stopPropagation(); confirmPayment('${o.order_id}')">
+                            💰 استلام المبلغ
+                        </button>`;
+                } else if (isPaid) {
+                    buttonsHtml += `
+                        <div style="width:100%; text-align:center; padding:8px; background:#e8f5e9; color:var(--success); border-radius:8px; font-weight:bold; border: 1px solid var(--success);">
+                            ✅ تم استلام المبلغ
+                        </div>`;
+                }
+
+                // زر الإلغاء
+                if (o.status === 'New' || (['Assigned', 'PickedUp'].includes(o.status) && !isPaid)) {
+                    buttonsHtml += `
+                        <button class="btn btn-danger btn-block" onclick="event.stopPropagation(); openCancelModal('${o.order_id}')">
+                            ❌ إلغاء الطلب
+                        </button>`;
+                }
+                
+                // حالة الإلغاء
+                if (o.status === 'Cancelled') {
+                    buttonsHtml += `
+                        <div style="width:100%; text-align:center; padding:8px; background:#ffebee; color:#c62828; border-radius:8px; font-size:0.9rem;">
+                            ملغي: ${o.cancellation_reason || 'غير محدد'}
+                        </div>`;
+                }
+
+                // زر تكرار الطلب
+                if (o.status === 'Completed' || o.status === 'Cancelled' || o.status === 'Delivered') {
+                    // escape JSON string for attribute
+                    const jsonOrder = JSON.stringify(o).replace(/"/g, '&quot;');
+                    buttonsHtml += `
+                        <button class="btn btn-block" style="background:#f0f0f0; color:#333; margin-top:5px;" onclick="event.stopPropagation(); duplicateOrder(${jsonOrder})">
+                            🔄 تكرار الطلب (نسخ)
+                        </button>`;
+                }
+
+                // رابط واتساب العميل (V8.1)
+                const waLink = WhatsAppHelper.getLink(o.customer_phone, `مرحباً ${o.customer_name}، بخصوص طلبك من المتجر`);
+
+                // بناء البطاقة
+                // إضافة onclick لفتح التفاصيل الموحدة
+                const html = `
+                <div class="mobile-card ${cardClass}" onclick="UI.openOrderPage(currentOrders.find(x => x.order_id === '${o.order_id}'))">
+                    <div class="card-header">
+                        <span>#${shortId}</span>
+                        <span class="badge badge-${o.status}">${translateStatus(o.status)}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span style="font-size:1.2rem">👤</span>
+                        <div style="flex:1;">
+                            <b>${o.customer_name}</b><br>
+                            <div style="display:flex; gap:10px; margin-top:5px;">
+                                <a href="tel:${o.customer_phone}" class="contact-btn" onclick="event.stopPropagation()">📞 اتصال</a>
+                                <a href="${waLink}" target="_blank" class="contact-btn" style="color:#25D366;" onclick="event.stopPropagation()">💬 واتساب</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span style="font-size:1.2rem">📍</span>
+                        <span style="line-height: 1.4;">${o.customer_address}</span>
+                    </div>
+
+                    <div style="background:#f8f9fa; padding:10px; border-radius:8px; font-size:0.95rem; margin:10px 0; color:#444; border: 1px dashed #ccc;">
+                        📝 ${o.order_details}
+                    </div>
+                    
+                    ${o.notes ? `<div style="font-size:0.85rem; color:#666; margin-bottom:10px;">📋 <b>ملاحظة:</b> ${o.notes}</div>` : ''}
+
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-weight:bold; margin-top:5px; padding-top:10px; border-top:1px solid #eee;">
+                        <span>المبلغ الكلي:</span>
+                        <span style="color:var(--primary); font-size:1.2rem;">${Number(o.amount).toLocaleString()}</span>
+                    </div>
+
+                    <div class="action-grid">
+                        ${buttonsHtml}
+                    </div>
+                </div>`;
+                
+                container.innerHTML += html;
             });
         }
 
-        // 5. Handle Form Submit
+        // 5. العمليات (Actions)
+        
+        // أ. إضافة طلب
         document.getElementById('createOrderForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-
             const user = Auth.getUser();
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData.entries());
-
-            // Add seller identity
             data.seller_username = user.username;
 
             try {
                 await Api.post('addOrder', data);
-                UI.showToast("تم إرسال الطلب بنجاح", "success");
-                e.target.reset(); // Clear form
-                loadSellerData(); // Refresh list
-            } catch (err) {
-                // Error handled by Api class
-            }
+                UI.showToast("تم إرسال الطلب بنجاح ✅", "success");
+                e.target.reset();
+                switchTab('list', document.querySelectorAll('.nav-item')[1]);
+                loadSellerData(false);
+            } catch (err) { }
         });
+
+        // ب. تكرار الطلب
+        function duplicateOrder(orderData) {
+            document.getElementById('inp_name').value = orderData.customer_name;
+            document.getElementById('inp_phone').value = orderData.customer_phone;
+            document.getElementById('inp_addr').value = orderData.customer_address;
+            document.getElementById('inp_amount').value = orderData.amount;
+            document.getElementById('inp_details').value = orderData.order_details;
+            
+            switchTab('create', document.querySelectorAll('.nav-item')[0]);
+            UI.showToast("تم نسخ البيانات، يمكنك التعديل ثم الإرسال", "info");
+            window.scrollTo(0,0);
+        }
+
+        // ج. تأكيد الدفع
+        async function confirmPayment(orderId) {
+            if (!confirm("هل أنت متأكد من أنك استلمت المبلغ كاملاً من المندوب؟")) return;
+            try {
+                await Api.post('confirmSellerPayment', { order_id: orderId });
+                UI.showToast("تم تأكيد الاستلام وتحديث الحالة 💰", "success");
+                loadSellerData(false);
+            } catch (err) { }
+        }
+
+        // د. الإلغاء
+        function openCancelModal(orderId) {
+            document.getElementById('cancelOrderId').value = orderId;
+            document.getElementById('cancelReason').value = "";
+            UI.openModal('cancelModal');
+        }
+
+        document.getElementById('cancelForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                await Api.post('cancelOrderWithReason', {
+                    order_id: document.getElementById('cancelOrderId').value,
+                    reason: document.getElementById('cancelReason').value,
+                    role: 'seller'
+                });
+                UI.closeModal('cancelModal');
+                UI.showToast("تم إلغاء الطلب", "warning");
+                loadSellerData(false);
+            } catch (err) { }
+        });
+
+        // 6. التحكم في التبويبات
+        function switchTab(tabName, btnElement) {
+            document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
+            window.scrollTo(0,0);
+        }
+
     </script>
 </body>
 </html>
