@@ -3,141 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>تطبيق المندوب - FastDelivery</title>
+    <title>تطبيق المندوب - FastDelivery V8.1</title>
+    
     <link rel="stylesheet" href="style.css">
     
     <style>
-        /* --- Mobile App Specific Styles --- */
-        
+        /* --- تنسيقات خاصة بالمندوب (V8.1) --- */
         body { 
-            padding-bottom: 90px; /* Space for bottom nav */ 
+            padding-bottom: 90px; 
             background: #f0f2f5; 
-            overscroll-behavior-y: none; /* Prevent pull-to-refresh on mobile */
-        }
-        
-        /* Sticky Header */
-        .app-header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 15px 20px;
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            position: sticky; 
-            top: 0; 
-            z-index: 900; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overscroll-behavior-y: none;
         }
 
-        /* Bottom Navigation Bar */
-        .bottom-nav {
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
-            width: 100%;
-            background: white;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
-            display: flex; 
-            justify-content: space-around;
-            padding: 12px 0; 
-            z-index: 1000;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-        }
-
-        .nav-item {
-            text-align: center; 
-            color: #ccc; 
-            font-size: 0.75rem;
-            flex: 1; 
-            cursor: pointer; 
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        
-        .nav-item.active { 
-            color: var(--primary); 
-            font-weight: 700; 
-            transform: translateY(-5px);
-        }
-        
-        .nav-item span.icon { 
-            display: block; 
-            font-size: 1.6rem; 
-            margin-bottom: 4px; 
-        }
-
-        /* Order Card Mobile Style */
-        .mobile-card {
-            background: white; 
-            border-radius: 16px; 
-            padding: 1.2rem;
-            margin-bottom: 1rem; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            border-right: 5px solid #ccc;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.2s;
-        }
-        
-        .mobile-card:active { transform: scale(0.98); }
-        
-        .mobile-card.new { border-right-color: var(--primary); }
-        .mobile-card.active { border-right-color: var(--warning); }
-        .mobile-card.done { border-right-color: var(--success); }
-        
-        .card-header { 
-            display: flex; 
-            justify-content: space-between; 
-            margin-bottom: 12px; 
-            font-weight: 700; 
-            font-size: 1.1rem;
-        }
-        
-        .card-price { 
-            color: var(--success); 
-            background: #e8f5e9;
-            padding: 2px 10px;
-            border-radius: 8px;
-        }
-        
-        .info-row {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            margin-bottom: 8px;
-            font-size: 0.95rem;
-            color: #444;
-        }
-
-        /* Action Buttons */
-        .action-row { 
-            display: flex; 
-            gap: 10px; 
-            margin-top: 15px; 
-        }
-        .btn-block { 
-            flex: 1; 
-            padding: 14px; 
-            border-radius: 12px; 
-            justify-content: center; 
-            font-size: 1rem;
-        }
-
-        /* Tab Visibility & Animation */
-        .tab-view { 
-            display: none; 
-            padding: 15px; 
-            animation: slideUp 0.3s ease-out; 
-        }
-        .tab-view.active { display: block; }
-        
-        @keyframes slideUp { 
-            from { opacity: 0; transform: translateY(20px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-
-        /* Wallet Section */
+        /* بطاقة المحفظة */
         .wallet-card {
             background: linear-gradient(135deg, #4e54c8, #8f94fb);
             color: white; 
@@ -148,22 +26,30 @@
             box-shadow: 0 10px 30px rgba(78, 84, 200, 0.3);
         }
 
+        /* زر الخريطة العريض */
         .map-btn {
-            background: #f1f3f4;
-            color: #1a73e8;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 10px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            margin: 10px 0;
+            background: #f1f3f4; 
+            color: #1a73e8; 
+            width: 100%; 
+            display: flex; align-items: center; justify-content: center; gap: 8px; 
+            padding: 12px; border-radius: 12px; text-decoration: none; 
+            font-weight: 600; margin: 10px 0; border: 1px solid #e0e0e0;
             transition: background 0.2s;
         }
         .map-btn:active { background: #e0e0e0; }
+        
+        /* صندوق الملاحظات */
+        .notes-box {
+            background: #fff9c4; color: #5f5200;
+            padding: 10px; border-radius: 8px;
+            margin: 10px 0; font-size: 0.9rem;
+            border-right: 4px solid #fbc02d;
+        }
+
+        /* أزرار الاتصال السريع */
+        .contact-actions {
+            display: flex; gap: 10px; margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -173,34 +59,52 @@
             <h3 style="margin: 0; font-size: 1.2rem;">👋 أهلاً كابتن</h3>
             <span id="courierName" style="color: var(--primary); font-weight: bold;">...</span>
         </div>
-        <button class="btn btn-sm btn-danger" onclick="Auth.logout()">
-            <span>🚪</span> خروج
-        </button>
+        
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <div class="notif-wrapper" onclick="Notifier.showDropdown()">
+                <span class="notif-icon">🔔</span>
+                <span id="notif-badge" class="notif-badge">0</span>
+                
+                <div id="notif-dropdown" class="notif-dropdown" onclick="event.stopPropagation()">
+                    <div class="notif-header">
+                        <span>الإشعارات</span>
+                        <span id="sound-icon" class="sound-toggle" onclick="Notifier.toggleSound()" title="صوت الإشعارات">🔊</span>
+                    </div>
+                    <div id="notif-list" class="notif-list">
+                        <div style="padding:20px; text-align:center; color:#999;">جاري التحميل...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-sm btn-danger" onclick="Auth.logout()">
+                <span>🚪</span>
+            </button>
+        </div>
     </div>
 
     <div id="tab-available" class="tab-view active">
-        <h4 style="margin-bottom: 15px; color: #666; font-size: 0.9rem;">الطلبات الجديدة المتاحة</h4>
+        <h4 style="margin-bottom: 15px; color: #666; font-size: 0.9rem;">الفرص الجديدة المتاحة</h4>
         <div id="list-available">
             <div style="text-align: center; margin-top: 60px; color: #aaa;">
                 <div class="spinner" style="margin: 0 auto 20px; border-width: 3px; border-top-color: #ccc;"></div>
-                جاري البحث عن طلبات قريبة...
+                جاري البحث عن طلبات...
             </div>
         </div>
     </div>
 
     <div id="tab-active" class="tab-view">
-        <h4 style="margin-bottom: 15px; color: #666; font-size: 0.9rem;">المهام النشطة حالياً</h4>
+        <h4 style="margin-bottom: 15px; color: #666; font-size: 0.9rem;">مهامك الحالية</h4>
         <div id="list-active">
             <div style="text-align: center; margin-top: 60px; color: #aaa;">
                 <span style="font-size: 3rem; display: block; margin-bottom: 10px;">✅</span>
-                أنت غير مرتبط بأي طلب حالياً
+                لا توجد مهام نشطة حالياً
             </div>
         </div>
     </div>
 
     <div id="tab-wallet" class="tab-view">
         <div class="wallet-card">
-            <p style="opacity: 0.9;">العهدة المالية (الكاش في اليد)</p>
+            <p style="opacity: 0.9;">العهدة المالية (الكاش)</p>
             <h1 id="wallet-amount" style="font-size: 3.5rem; margin: 10px 0;">0</h1>
             <p style="opacity: 0.8;">دينار عراقي</p>
         </div>
@@ -217,77 +121,95 @@
 
     <div class="bottom-nav">
         <div class="nav-item active" onclick="switchTab('available', this)">
-            <span class="icon">📋</span> 
-            <span>متاح</span>
+            <span class="icon">📋</span> <span>متاح</span>
         </div>
         <div class="nav-item" onclick="switchTab('active', this)">
-            <span class="icon">🛵</span> 
-            <span>مهامي</span>
+            <span class="icon">🛵</span> <span>مهامي</span>
         </div>
         <div class="nav-item" onclick="switchTab('wallet', this)">
-            <span class="icon">💰</span> 
-            <span>محفظتي</span>
+            <span class="icon">💰</span> <span>محفظتي</span>
         </div>
     </div>
+
+    <div class="modal-overlay" id="cancelModal">
+        <div class="modal-content">
+            <h3>⛔ إلغاء الطلب</h3>
+            <p style="color:#666;">هل أنت مضطر لإلغاء هذا الطلب؟ يرجى ذكر السبب بوضوح.</p>
+            <form id="cancelForm">
+                <input type="hidden" id="cancelOrderId">
+                <div class="form-group">
+                    <label>السبب (مطلوب)</label>
+                    <textarea id="cancelReason" class="form-control" rows="3" required placeholder="مثال: تعطل الدراجة، الزبون لا يرد..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-danger btn-block">تأكيد الإلغاء</button>
+                <button type="button" class="btn btn-block" onclick="UI.closeModal('cancelModal')" style="margin-top: 10px; background: #eee;">تراجع</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="transferModal">
+        <div class="modal-content">
+            <h3 style="color:var(--primary);">♻️ تحويل لزميل</h3>
+            <p style="color:#666; font-size:0.9rem;">أدخل اسم المستخدم (Username) للمندوب الزميل لنقل العهدة إليه.</p>
+            
+            <input type="hidden" id="transferOrderId">
+            <div class="form-group">
+                <label>اسم مستخدم الزميل:</label>
+                <input type="text" id="transferTargetUser" class="form-control" placeholder="username" required>
+            </div>
+            
+            <button class="btn btn-primary btn-block" onclick="confirmTransfer()">تحويل الطلب</button>
+            <button class="btn btn-block" onclick="UI.closeModal('transferModal')" style="margin-top:10px; background:#eee;">إلغاء</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="detailsModal"></div>
+    <div class="modal-overlay" id="unifiedOrderModal"></div>
 
     <script src="app.js"></script>
     <script>
         /**
          * ------------------------------------------------------------------
-         * COURIER APP LOGIC
-         * Handles PWA Interface, Polling, and Geolocation Links
+         * COURIER APP LOGIC (v8.1 - WhatsApp & Unified View)
          * ------------------------------------------------------------------
          */
+        
+        let currentOrders = [];
 
-        // --- INIT ---
+        // 1. التهيئة
         window.addEventListener('DOMContentLoaded', () => {
-            // Security: Role Check
             if (!Auth.checkRole('courier')) return;
             
-            // Set User Name
             const user = Auth.getUser();
-            if(user) document.getElementById('courierName').innerText = user.full_name.split(' ')[0]; // First name only
+            if(user) document.getElementById('courierName').innerText = user.full_name.split(' ')[0];
             
-            // 🚀 FIRST LOAD: Show Full Loader (isBackground = false)
             loadCourierData(false);
-
-            // 🔄 POLLING: Silent Update (isBackground = true)
-            // Updates every 15 seconds without blocking the UI
-            setInterval(() => {
-                loadCourierData(true);
-            }, 15000);
+            setInterval(() => loadCourierData(true), 15000);
         });
 
-        // --- DATA FETCHING ---
-        /**
-         * Fetches Orders assigned to or available for the courier.
-         * @param {boolean} isBackground - Passes to Api.post for silent mode.
-         */
+        // 2. جلب البيانات
         async function loadCourierData(isBackground = false) {
             try {
                 const user = Auth.getUser();
                 if(!user) return;
 
-                // Call API
-                const orders = await Api.post('getOrders', {
+                const newOrders = await Api.post('getOrders', {
                     role: 'courier',
                     username: user.username
                 }, isBackground);
 
-                // Update UI Sections
-                renderAvailable(orders);
-                renderActive(orders);
-                renderWallet(orders);
+                currentOrders = newOrders;
 
-            } catch (err) {
-                console.error("Courier Sync Error:", err);
-                // Api class handles toasts for critical errors unless silent
-            }
+                renderAvailable(newOrders);
+                renderActive(newOrders);
+                renderWallet(newOrders);
+
+            } catch (err) { console.error("Sync Error:", err); }
         }
 
-        // --- RENDERERS ---
+        // --- دوال العرض ---
 
-        // 1. Available Orders (Status = 'New')
+        // أ. الطلبات المتاحة
         function renderAvailable(orders) {
             const container = document.getElementById('list-available');
             const list = orders.filter(o => o.status === 'New');
@@ -296,53 +218,48 @@
                 container.innerHTML = `
                 <div style="text-align: center; margin-top: 60px; color: #999;">
                     <span style="font-size: 4rem; display: block; margin-bottom: 10px; opacity: 0.5;">😴</span>
-                    لا توجد طلبات جديدة حالياً<br>
-                    <small>سيتم التحديث تلقائياً...</small>
+                    لا توجد طلبات جديدة حالياً
                 </div>`;
                 return;
             }
 
             let html = '';
             list.forEach(o => {
-                // Formatting Details
-                const cleanAmount = Number(o.amount).toLocaleString();
                 const shortId = o.order_id.split('-')[1] || o.order_id;
+                
+                // استخدام WhatsAppHelper لتوليد زر واتساب للتاجر (إذا أردنا الاتصال به)
+                // حالياً لا يوجد هاتف التاجر في الكائن، لذا نكتفي بالعرض
+                
+                let notesHtml = o.notes ? `<div class="notes-box">📝 <b>ملاحظة:</b> ${o.notes}</div>` : '';
 
+                // عند النقر على الكرت: نفتح نافذة التفاصيل الموحدة
                 html += `
-                <div class="mobile-card new">
+                <div class="mobile-card new" onclick="UI.openOrderPage(currentOrders.find(x => x.order_id === '${o.order_id}'))">
                     <div class="card-header">
                         <span>#${shortId}</span>
-                        <span class="card-price">${cleanAmount}</span>
+                        <span style="color:var(--success); background:#e8f5e9; padding:2px 10px; border-radius:8px;">${Number(o.amount).toLocaleString()}</span>
                     </div>
+                    <div class="info-row"><span>🏪</span> <b>التاجر:</b> ${o.seller_username}</div>
+                    <div class="info-row"><span>📍</span> <b>العنوان:</b> ${o.customer_address}</div>
                     
-                    <div class="info-row">
-                        <span>🏪</span> 
-                        <b>التاجر:</b> ${o.seller_username}
-                    </div>
-                    <div class="info-row">
-                        <span>📍</span> 
-                        <b>العنوان:</b> ${o.customer_address}
-                    </div>
                     <div class="info-row" style="color: #666; font-size: 0.85rem; background: #f9f9f9; padding: 8px; border-radius: 8px;">
                         📝 ${o.order_details}
                     </div>
+                    ${notesHtml}
                     
-                    <div class="action-row">
-                        <button class="btn btn-primary btn-block" onclick="acceptOrder('${o.order_id}')">
-                            ✅ قبول الطلب
-                        </button>
+                    <div class="action-grid">
+                        <button class="btn btn-primary btn-block" onclick="event.stopPropagation(); acceptOrder('${o.order_id}')">✅ قبول الطلب</button>
                     </div>
                 </div>`;
             });
             container.innerHTML = html;
         }
 
-        // 2. Active Orders (Status = 'Assigned' OR 'PickedUp')
+        // ب. المهام النشطة (مع واتساب)
         function renderActive(orders) {
             const container = document.getElementById('list-active');
             const user = Auth.getUser().username;
             
-            // Filter: Must be assigned to THIS courier
             const list = orders.filter(o => 
                 (o.status === 'Assigned' || o.status === 'PickedUp') && 
                 o.courier_username === user
@@ -359,66 +276,78 @@
 
             let html = '';
             list.forEach(o => {
-                let buttons = '';
+                let mainButton = '';
+                let extraButtons = '';
                 let statusBadge = '';
                 
-                // Logic based on status
+                let notesHtml = o.notes ? `<div class="notes-box">📝 <b>ملاحظة:</b> ${o.notes}</div>` : '';
+
+                // توليد أزرار الاتصال (هاتف + واتساب)
+                const waButton = WhatsAppHelper.getButton(o.customer_phone, `مرحباً، بخصوص طلبك #${o.order_id.split('-')[1]}`, "واتساب");
+                const phoneButton = `<a href="tel:${o.customer_phone}" class="btn btn-sm" style="background:#eee; color:#333; border:1px solid #ccc; text-decoration:none;" onclick="event.stopPropagation()">📞 اتصال</a>`;
+
                 if (o.status === 'Assigned') {
                     statusBadge = `<span class="badge badge-Assigned">في الطريق للتاجر</span>`;
-                    buttons = `<button class="btn btn-warning btn-block" onclick="updateStatus('${o.order_id}', 'PickedUp')">📦 تم الاستلام</button>`;
+                    const isPaid = (o.seller_paid === true || o.seller_paid === 'TRUE');
+                    
+                    if (isPaid) {
+                        mainButton = `<button class="btn btn-warning btn-block" onclick="event.stopPropagation(); updateStatus('${o.order_id}', 'PickedUp')">📦 استلام الطلب</button>`;
+                    } else {
+                        mainButton = `<button class="btn btn-block" style="background:#ddd; color:#888; cursor:not-allowed;" onclick="event.stopPropagation()">⏳ بانتظار دفع التاجر</button>`;
+                        
+                        extraButtons += `<button class="btn btn-danger btn-pulse btn-block" onclick="event.stopPropagation(); nudgeSeller('${o.order_id}', '${o.seller_username}')">🔔 استعجال التاجر</button>`;
+                        extraButtons += `<button class="btn btn-transfer btn-block" onclick="event.stopPropagation(); openTransferModal('${o.order_id}')">♻️ تحويل لزميل</button>`;
+                        extraButtons += `<button class="btn btn-danger btn-block" onclick="event.stopPropagation(); openCancelModal('${o.order_id}')">❌ إلغاء</button>`;
+                    }
+
                 } else if (o.status === 'PickedUp') {
                     statusBadge = `<span class="badge badge-PickedUp">في الطريق للعميل</span>`;
-                    buttons = `<button class="btn btn-success btn-block" onclick="updateStatus('${o.order_id}', 'Delivered')">🏁 تم التسليم</button>`;
+                    mainButton = `<button class="btn btn-success btn-block" onclick="event.stopPropagation(); updateStatus('${o.order_id}', 'Delivered')">🏁 تم التسليم</button>`;
                 }
 
-                // Google Maps Link
                 const mapQuery = encodeURIComponent(o.customer_address);
-                // Try to open native app, fallback to web
                 const mapLink = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
 
                 html += `
-                <div class="mobile-card active">
+                <div class="mobile-card active" onclick="UI.openOrderPage(currentOrders.find(x => x.order_id === '${o.order_id}'))">
                     <div class="card-header">
                         <span>#${o.order_id.split('-')[1]}</span>
                         ${statusBadge}
                     </div>
                     
                     <div style="margin-bottom: 15px; background: #f8f9fa; padding: 12px; border-radius: 12px; border: 1px solid #eee;">
-                        <div style="font-weight: bold; font-size: 1.1rem; margin-bottom: 5px;">👤 ${o.customer_name}</div>
-                        <div style="margin-bottom: 5px;">
-                            <a href="tel:${o.customer_phone}" style="color: var(--primary); text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 5px;">
-                                📞 ${o.customer_phone}
-                            </a>
+                        <div style="font-weight: bold; font-size: 1.1rem; margin-bottom:5px;">👤 ${o.customer_name}</div>
+                        <div class="contact-actions">
+                            ${phoneButton}
+                            ${waButton}
                         </div>
-                        <div style="color: var(--accent); font-weight: bold;">
+                        <div style="color: var(--accent); font-weight: bold; margin-top: 10px; border-top:1px dashed #ccc; padding-top:5px;">
                             💰 التحصيل: ${Number(o.amount).toLocaleString()} IQD
                         </div>
                     </div>
-
-                    <a href="${mapLink}" target="_blank" class="map-btn">
-                        <span>📍</span> فتح العنوان في الخريطة
-                    </a>
                     
-                    <div class="action-row">
-                        ${buttons}
+                    ${notesHtml}
+
+                    <a href="${mapLink}" target="_blank" class="map-btn" onclick="event.stopPropagation()"><span>📍</span> فتح العنوان في الخريطة</a>
+                    
+                    <div class="action-grid">
+                        ${mainButton}
+                    </div>
+                    <div class="action-grid" style="margin-top:10px;">
+                        ${extraButtons}
                     </div>
                 </div>`;
             });
             container.innerHTML = html;
         }
 
-        // 3. Wallet (Status = 'Delivered')
+        // ج. المحفظة
         function renderWallet(orders) {
             const user = Auth.getUser().username;
-            // Get all delivered orders by this courier (History)
             const delivered = orders.filter(o => o.status === 'Delivered' && o.courier_username === user);
-            
-            // Calculate Total Cash (The amount courier holds)
             const totalCash = delivered.reduce((sum, o) => sum + Number(o.amount), 0);
             
-            // Animate number (simple implementation)
-            const el = document.getElementById('wallet-amount');
-            el.innerText = totalCash.toLocaleString();
+            document.getElementById('wallet-amount').innerText = totalCash.toLocaleString();
 
             const historyContainer = document.getElementById('wallet-history');
             let historyHtml = '';
@@ -428,81 +357,104 @@
                 return;
             }
 
-            // Show last 10 orders
             delivered.slice().reverse().slice(0, 10).forEach(o => { 
                 historyHtml += `
-                    <li style="padding: 15px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
+                    <li style="padding: 15px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
                         <div>
                             <div style="font-weight: bold;">طلب #${o.order_id.split('-')[1]}</div>
                             <small style="color: #888;">${new Date(o.date_time).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'})}</small>
                         </div>
-                        <span style="font-weight: bold; color: var(--success); background: #e8f5e9; padding: 5px 10px; border-radius: 20px;">
-                            +${Number(o.amount).toLocaleString()}
-                        </span>
-                    </li>
-                `;
+                        <span style="font-weight: bold; color: var(--success);">+${Number(o.amount).toLocaleString()}</span>
+                    </li>`;
             });
             historyContainer.innerHTML = historyHtml;
         }
 
-        // --- ACTIONS ---
+        // --- الإجراءات (Actions) ---
 
         async function acceptOrder(orderId) {
             if(!confirm("هل أنت متأكد من قبول هذا الطلب؟")) return;
-
             const user = Auth.getUser().username;
             try {
-                // Important: Actions should SHOW the spinner to confirm interaction
-                // So we pass isBackground = false (or omit it as default)
-                await Api.post('updateStatus', {
-                    order_id: orderId,
-                    status: 'Assigned',
-                    courier_username: user
-                }, false);
-                
-                UI.showToast("🚀 تم قبول الطلب! انتقل لقائمة مهامي");
-                
-                // Switch Tab Automatically
-                const tasksTabBtn = document.querySelectorAll('.nav-item')[1];
-                switchTab('active', tasksTabBtn);
-
-                // Reload Data
+                await Api.post('updateStatus', { order_id: orderId, status: 'Assigned', courier_username: user }, false);
+                UI.showToast("🚀 تم قبول الطلب!");
+                switchTab('active', document.querySelectorAll('.nav-item')[1]);
                 loadCourierData(false);
-
-            } catch (err) {
-                // Error Handled in Api
-            }
+            } catch (err) { }
         }
 
         async function updateStatus(orderId, newStatus) {
-            let msg = newStatus === 'PickedUp' ? "هل استلمت الطلب من التاجر؟" : "هل سلمت الطلب واستلمت المبلغ؟";
+            const msg = newStatus === 'PickedUp' ? "تأكيد استلام الطلب من التاجر؟" : "تأكيد تسليم الطلب واستلام المبلغ؟";
             if(!confirm(msg)) return;
-
             try {
-                await Api.post('updateStatus', {
-                    order_id: orderId,
-                    status: newStatus
-                }, false);
-
-                UI.showToast("👍 تم تحديث الحالة بنجاح");
-                loadCourierData(false); // Force refresh with spinner
-            } catch (err) {
-                // Error Handled in Api
-            }
+                await Api.post('updateStatus', { order_id: orderId, status: newStatus }, false);
+                UI.showToast("👍 تم تحديث الحالة");
+                loadCourierData(false);
+            } catch (err) { }
         }
 
-        // --- UI UTILS ---
+        async function nudgeSeller(orderId, sellerUsername) {
+            if(!confirm("إرسال تنبيه للتاجر بأنك تنتظر الدفع؟")) return;
+            try {
+                const user = Auth.getUser().username;
+                await Api.post('nudgeUser', { 
+                    order_id: orderId, target_user: sellerUsername, target_role: 'seller', 
+                    username: user, message: "المندوب ينتظر تأكيد استلام المبلغ!"
+                }, false);
+                UI.showToast("تم إرسال التنبيه للتاجر 🔔");
+            } catch(e) {}
+        }
+
+        function openTransferModal(orderId) {
+            document.getElementById('transferOrderId').value = orderId;
+            document.getElementById('transferTargetUser').value = "";
+            UI.openModal('transferModal');
+        }
+
+        async function confirmTransfer() {
+            const orderId = document.getElementById('transferOrderId').value;
+            const targetUser = document.getElementById('transferTargetUser').value;
+            if(!targetUser) return UI.showToast("أدخل اسم المستخدم للزميل", "error");
+
+            try {
+                const currentUser = Auth.getUser().username;
+                await Api.post('transferOrder', { 
+                    order_id: orderId, new_courier_username: targetUser, username: currentUser
+                }, false);
+                
+                UI.closeModal('transferModal');
+                UI.showToast("تم تحويل الطلب بنجاح ♻️");
+                loadCourierData(false);
+            } catch(e) {}
+        }
+
+        function openCancelModal(orderId) {
+            document.getElementById('cancelOrderId').value = orderId;
+            document.getElementById('cancelReason').value = "";
+            UI.openModal('cancelModal');
+        }
+
+        document.getElementById('cancelForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const orderId = document.getElementById('cancelOrderId').value;
+            const reason = document.getElementById('cancelReason').value;
+
+            try {
+                await Api.post('cancelOrderWithReason', {
+                    order_id: orderId, reason: reason, role: 'courier'
+                }, false);
+                
+                UI.closeModal('cancelModal');
+                UI.showToast("تم إلغاء الطلب", "warning");
+                loadCourierData(false);
+            } catch (err) { }
+        });
+
         function switchTab(tabName, btnElement) {
-            // Hide all tabs
             document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
-            // Show selected
             document.getElementById('tab-' + tabName).classList.add('active');
-            
-            // Update Nav Styles
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             if(btnElement) btnElement.classList.add('active');
-            
-            // Scroll to top
             window.scrollTo(0,0);
         }
     </script>
