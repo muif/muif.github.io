@@ -10,8 +10,7 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbzQq0vOm2EEM-FT5voPYern9KkZCRcSN75ceo4XvH1G6LqfTBMEEd70jqkzcdT82GVc/exec";
 
 // نغمة التنبيه
-const NOTIF_SOUND = "data:audio/mp3;base64,//uQZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWgAAAA0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//uQZAAAB15FwYAAAAAQAAKgAAAAAETkPHgAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//uQZAAAB15FwYAAAAAQAAKgAAAAAETkPHgAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//uQZAAAB15FwYAAAAAQAAKgAAAAAETkPHgAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//uQZAAAB15FwYAAAAAQAAKgAAAAAETkPHgAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//uQZAAAB15FwYAAAAAQAAKgAAAAAETkPHgAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//uQZAAAB15FwYAAAAAQAAKgAAAAAETkPHgAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//uQZAAAB15FwYAAAAAQAAKgAAAAAETkPHgAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//uQZAAAB15FwYAAAAAQAAKgAAAAAETkPHgAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//uQZAAAB15FwYAAAAAQAAKgAAAAAETkPHgAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//uQZAAAB15FwYAAAAAQAAKgAAAAAETkPHgAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//uQZAAAB15FwYAAAAAQAAKgAAAAAETkPHgAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq";
-
+const NOTIF_SOUND = "https://cdn.pixabay.com/audio/2025/06/22/audio_76f254e734.mp3";
 /**
  * ------------------------------------------------------------------
  * 1. CORE API CLASS
