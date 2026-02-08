@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>FastDelivery - تطبيق العملاء V9.5</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #2563eb; 
+            --primary-dark: #1d4ed8;
+            --bg-body: #f8f9fa; 
+            --surface: #ffffff;
+            --text-main: #1f2937; 
+            --text-sub: #6b7280;
+            --border: #e5e7eb;
+            --success: #10b981; 
+            --danger: #ef4444; 
+            --warning: #f59e0b;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --radius-lg: 16px;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            margin: 0; 
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg-body); 
+            color: var(--text-main);
+            padding-bottom: 90px; 
+            overflow-x: hidden;
+        }
+
+        /* --- التحولات وإدارة العرض --- */
+        .view-section { 
+            display: none !important; 
+            padding: 20px; 
+            min-height: 100vh;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .view-section.active { display: block !important; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- العناصر العامة --- */
+        .card {
+            background: var(--surface); 
+            border-radius: var(--radius-lg);
+            padding: 20px; 
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(0,0,0,0.04); 
+            margin-bottom: 16px;
+        }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 700; font-size: 0.9rem; }
+        .form-control {
+            width: 100%; padding: 14px 16px; border: 2px solid var(--border);
+            border-radius: 12px; font-size: 1rem; font-family: 'Tajawal';
+            background: #f9fafb; transition: 0.3s;
+        }
+        .form-control:focus { border-color: var(--primary); background: #fff; outline: none; }
+
+        .btn {
+            border: none; padding: 16px; border-radius: 14px; font-size: 1rem;
+            font-weight: 800; cursor: pointer; width: 100%;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+            font-family: 'Tajawal'; transition: 0.2s;
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+        .btn-danger { background: #fee2e2; color: #ef4444; }
+        .btn-outline { background: transparent; border: 2px solid #e5e7eb; color: var(--text-main); }
+
+        /* --- ✅ تحديث 1: تنسيق السلايد شو (Carousel Styles) --- */
+        .stores-carousel-wrapper {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            padding: 10px 0;
+            margin-bottom: 15px;
+        }
+        
+        .stores-track {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding-bottom: 15px; /* لإخفاء شريط التمرير */
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .stores-track::-webkit-scrollbar { display: none; } /* إخفاء البار في كروم */
+        
+        .store-slide {
+            min-width: 150px;
+            scroll-snap-align: center;
+            background: white;
+            border-radius: 20px;
+            padding: 20px 15px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #f0f0f0;
+        }
+        
+        .store-slide:active { transform: scale(0.95); }
+        .store-slide:hover { border-color: var(--primary); transform: translateY(-5px); }
+        
+        .store-icon {
+            width: 60px; height: 60px;
+            background: #eff6ff; color: var(--primary);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; margin-bottom: 10px;
+        }
+
+        /* --- ✅ تحديث 2: حاوية الأزرار المتوسطة --- */
+        .auth-buttons-container {
+            width: 100%;
+            max-width: 320px; /* عرض ثابت لضمان التوسط */
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 0 auto; /* توسيط أفقي */
+        }
+
+        /* --- بطاقة تأكيد السعر --- */
+        .price-approval-card {
+            border: 2px solid var(--primary); background: #eff6ff;
+            text-align: center; padding: 20px; margin-top: 10px;
+            border-radius: 12px; animation: pulseBorder 2s infinite;
+        }
+        @keyframes pulseBorder { 0% { border-color: var(--primary); } 50% { border-color: #93c5fd; } 100% { border-color: var(--primary); } }
+
+        /* --- الهيدر والبار السفلي --- */
+        .app-header {
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
+            padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .notif-btn { position: relative; font-size: 1.4rem; padding: 5px; cursor: pointer; }
+        
+        /* الشارة تم نقل تنسيقها إلى app.js لضمان المركزية، لكن نبقي الأساس هنا */
+        .notif-badge { 
+            position: absolute; top: 0; right: 0; background: var(--danger);
+            color: white; font-size: 0.65rem; width: 18px; height: 18px;
+            border-radius: 50%; display: none; align-items: center; justify-content: center;
+            border: 2px solid white; font-weight: bold;
+        }
+        .notif-badge.show { display: flex; }
+
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: white; display: flex; justify-content: space-around;
+            padding: 12px 0 25px 0; border-top: 1px solid #f0f0f0; z-index: 900;
+        }
+        
+        /* --- ✅ تحديث: إصلاح شارة الإشعارات (Badge Alignment) --- */
+        .nav-item { 
+            text-align: center; color: #9ca3af; font-size: 0.7rem; cursor: pointer; flex: 1; 
+            position: relative; /* ضروري للمحاذاة */
+        }
+        
+        #history-badge {
+            position: absolute;
+            top: -2px;          
+            left: 50%;          
+            margin-left: 5px;   
+            width: 10px; height: 10px; 
+            background: var(--danger); 
+            border-radius: 50%; 
+            border: 2px solid white; 
+            display: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .nav-item.active { color: var(--primary); font-weight: bold; }
+        .nav-icon { font-size: 1.5rem; display: block; margin-bottom: 4px; }
+
+        /* --- اللودر والتوست --- */
+        .loader-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.9); display: none; 
+            justify-content: center; align-items: center; z-index: 9999;
+        }
+        .spinner { width: 40px; height: 40px; border: 4px solid #eee; border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        
+        .toast {
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+            background: #1f2937; color: white; padding: 10px 20px; border-radius: 50px;
+            font-size: 0.9rem; display: none; z-index: 3000;
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="view-welcome" class="view-section active" style="display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
+        <div style="font-size: 5rem; margin-bottom: 20px; filter: drop-shadow(0 10px 20px rgba(37,99,235,0.2));">🚀</div>
+        <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px;">FastDelivery</h1>
+        <p style="font-size: 1.1rem; color: var(--text-sub); margin-bottom: 40px;">طلباتك توصلك وين ما كنت.</p>
+        
+        <div class="auth-buttons-container">
+            <button class="btn btn-primary" onclick="showView('login')">تسجيل الدخول</button>
+            <button class="btn btn-outline" onclick="showView('register')" style="background: white;">حساب جديد</button>
+        </div>
+    </div>
+
+    <div id="view-login" class="view-section">
+        <div style="text-align: center; margin: 40px 0;">
+            <h2 style="font-size: 1.8rem;">أهلاً بك مجدداً 👋</h2>
+        </div>
+        <div class="card">
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>رقم الهاتف</label>
+                    <input type="tel" id="login-phone" class="form-control" placeholder="07xxxxxxxxx" required>
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="login-pass" class="form-control" placeholder="••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary">دخول</button>
+            </form>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <button onclick="showView('welcome')" class="btn btn-outline" style="border:none;">العودة</button>
+        </div>
+    </div>
+
+    <div id="view-register" class="view-section">
+        <div style="text-align: center; margin: 30px 0;">
+            <h2 style="font-size: 1.8rem;">حساب جديد 🚀</h2>
+        </div>
+        <div class="card">
+            <form onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>الاسم الكامل</label>
+                    <input type="text" id="reg-name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>رقم الهاتف</label>
+                    <input type="tel" id="reg-phone" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="reg-pass" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">إنشاء الحساب</button>
+            </form>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <button onclick="showView('welcome')" class="btn btn-outline" style="border:none;">العودة</button>
+        </div>
+    </div>
+<div id="app-header" class="app-header" style="display: none;">
+        <div>
+            <small style="color:var(--text-sub); font-size: 0.85rem;">مرحباً بك 👋</small>
+            <h3 id="header-user-name" style="margin:0; font-size: 1.1rem;">...</h3>
+        </div>
+        
+        <div class="notif-wrapper" onclick="toggleNotifDropdown()">
+            <div class="notif-btn">
+                🔔
+                <span id="notif-badge" class="notif-badge">0</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="notif-dropdown" style="display:none; position:fixed; top:75px; left:20px; width: calc(100% - 40px); background:white; z-index:2000; border-radius:16px; box-shadow:0 15px 40px rgba(0,0,0,0.15); border:1px solid #eee; overflow:hidden; max-height: 400px; overflow-y: auto;">
+        <div style="padding:15px; border-bottom:1px solid #f0f0f0; font-weight:bold; background: #fcfcfc; display:flex; justify-content:space-between; align-items:center;">
+            <span>الإشعارات</span>
+            <span style="font-size:0.8rem; color:#888;">(محدثة)</span>
+        </div>
+        <div id="notif-list">
+            <div style="padding:30px; text-align:center; color:#999;">لا توجد إشعارات جديدة</div>
+        </div>
+    </div>
+
+    <div id="view-home" class="view-section">
+        <div style="background: linear-gradient(135deg, #2563eb, #60a5fa); padding: 25px 20px; border-radius: 20px; color: white; margin-bottom: 25px; box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);">
+            <h2 style="color:white; margin-bottom: 5px; font-size: 1.5rem;">جوعان؟ 🍔</h2>
+            <p style="color: rgba(255,255,255,0.95); font-size: 0.95rem;">تصفح المتاجر واطلب الآن.</p>
+        </div>
+
+        <h3 style="margin-bottom: 15px; font-weight: 800; font-size: 1.1rem; display:flex; justify-content:space-between; align-items:center;">
+            المتاجر المتاحة 
+            <span style="font-size:0.8rem; font-weight:normal; color:#666;">(اسحب للتصفح 👈)</span>
+        </h3>
+        
+        <div class="stores-carousel-wrapper">
+            <div id="stores-track" class="stores-track">
+                <div style="text-align:center; padding: 40px 0; color: #999; width:100%; flex: 1;">
+                    <div class="spinner" style="margin: 0 auto 15px;"></div>
+                    جاري تحميل المتاجر...
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <h3 style="margin-bottom: 10px; font-weight: 800; font-size: 1.1rem;">طلب خاص؟</h3>
+            <div class="store-card" onclick="selectStore('General', 'طلب خاص/حر')" style="border: 2px dashed #93c5fd; background: #eff6ff; flex-direction: row; text-align: right; padding: 20px; min-height: auto;">
+                <div class="store-icon" style="background: white; width: 50px; height: 50px; font-size: 1.5rem; margin-bottom: 0; margin-left: 15px;">✨</div>
+                <div class="store-info" style="flex: 1;">
+                    <h4 style="color: var(--primary);">طلب حر (مندوب فقط)</h4>
+                    <p style="margin-bottom: 0;">اكتب الغرض واسم المحل وسنجلبه لك</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-order" class="view-section">
+        <button class="btn btn-outline" style="width:auto; padding:8px 20px; margin-bottom:20px; border-radius: 50px; font-size: 0.85rem;" onclick="showNavView('home')">➡️ العودة</button>
+        
+        <div style="margin-bottom:25px;">
+            <h2 style="font-size: 1.6rem; margin-bottom: 5px;">تفاصيل الطلب</h2>
+            <div style="display:flex; align-items:center; gap:8px; background:#f0f9ff; padding:10px 15px; border-radius:12px; color:#0369a1; width: fit-content;">
+                <span>🏪</span> <span style="font-size: 0.9rem;">الطلب من: <b id="target-store-name">...</b></span>
+            </div>
+        </div>
+
+        <div class="card">
+            <form onsubmit="submitOrder(event)">
+                <div class="form-group">
+                    <label>🛒 تفاصيل الطلب</label>
+                    <textarea id="ord-details" class="form-control" rows="4" placeholder="اكتب طلبك بدقة (النوع، العدد، الحجم...)" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>📍 عنوان التوصيل</label>
+                    <input type="text" id="ord-addr" class="form-control" placeholder="المنطقة، اسم الشارع، أقرب نقطة دالة" required>
+                </div>
+
+                <div class="form-group" style="background:#fffbeb; padding:15px; border-radius:12px; border:1px dashed #f59e0b;">
+                    <label style="color:#b45309;">💰 السعر التقريبي (اختياري)</label>
+                    <small style="display:block; color:#b45309; margin-bottom:8px; font-size: 0.8rem;">يساعد التاجر في فهم ميزانيتك.</small>
+                    <input type="number" id="ord-max-price" class="form-control" placeholder="مثال: 25000" style="border-color: #fcd34d;">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="margin-top:15px;">إرسال الطلب 🚀</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="view-success" class="view-section" style="text-align: center; justify-content: center; align-items: center; min-height: 80vh;">
+        <div style="background: white; padding: 40px 20px; border-radius: 30px; box-shadow: var(--shadow-sm); width: 100%;">
+            <div style="font-size: 5rem; margin-bottom: 20px;">🎉</div>
+            <h2 style="color: var(--success); font-weight: 800;">تم إرسال الطلب!</h2>
+            <p style="color: var(--text-sub); margin-bottom: 25px;">طلبك قيد المراجعة. سنخبرك فور تحديد السعر.</p>
+            
+            <div style="background: #f9fafb; padding: 15px; border-radius: 15px; margin-bottom: 30px; display: inline-block; width: 100%;">
+                <small style="color: var(--text-sub);">رقم التتبع</small>
+                <div id="success-id" style="font-size: 1.8rem; font-weight: 800; color: var(--primary); letter-spacing: 2px;">#0000</div>
+            </div>
+
+            <div style="display: grid; gap: 15px;">
+                <button class="btn btn-primary" onclick="showNavView('history')">📦 متابعة حالة الطلب</button>
+                <button class="btn btn-outline" onclick="showNavView('home')">🏠 العودة للرئيسية</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-history" class="view-section">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+            <h2 style="margin:0;">طلباتي</h2>
+            <button onclick="fetchHistory()" style="background:#f3f4f6; border:none; width: 40px; height: 40px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">🔄</button>
+        </div>
+        
+        <div id="history-container">
+            </div>
+    </div>
+
+    <div id="view-profile" class="view-section">
+        <h2 style="margin-bottom: 25px;">إعدادات الحساب</h2>
+        
+        <div class="card">
+            <div class="form-group">
+                <label>الاسم الظاهر</label>
+                <input type="text" id="prof-name" class="form-control">
+            </div>
+            
+            <div style="border-top: 1px solid #eee; margin: 25px 0 20px 0;"></div>
+            <h4 style="margin-bottom:15px; color: var(--text-main);">تغيير كلمة المرور</h4>
+            
+            <div class="form-group">
+                <label>كلمة المرور الحالية</label>
+                <input type="password" id="prof-pass-current" class="form-control" placeholder="******">
+            </div>
+            <div class="form-group">
+                <label>كلمة المرور الجديدة</label>
+                <input type="password" id="prof-pass-new" class="form-control" placeholder="الجديدة">
+            </div>
+            <div class="form-group">
+                <label>تأكيد كلمة المرور الجديدة</label>
+                <input type="password" id="prof-pass-confirm" class="form-control" placeholder="تأكيد الجديدة">
+            </div>
+            
+            <button class="btn btn-primary" onclick="updateProfile()" style="margin-top: 10px;">حفظ التغييرات</button>
+        </div>
+
+        <div class="card" style="border: 1px solid #fecaca; background: #fef2f2; margin-top: 20px;">
+            <button class="btn btn-danger" onclick="logout()" style="background: transparent; color: #ef4444; box-shadow: none;">
+                🚪 تسجيل الخروج
+            </button>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px; opacity: 0.5; font-size: 0.8rem;">
+            FastDelivery V9.5
+        </div>
+    </div>
+
+    <div id="price-confirm-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index:3000; justify-content:center; align-items:center;">
+        <div style="background:white; width:90%; max-width:380px; padding:30px 25px; border-radius:24px; text-align:center; animation: fadeIn 0.3s; box-shadow: 0 20px 60px rgba(0,0,0,0.2);">
+            <div style="font-size:3.5rem; margin-bottom:15px;">🏷️</div>
+            <h3 style="margin-bottom:10px; font-weight: 800;">تأكيد السعر</h3>
+            <p style="color:#666; font-size:0.95rem; line-height:1.6; margin-bottom: 20px;">
+                قام التاجر بتحديد السعر لطلبك رقم <b id="pcm-id" style="color: var(--text-main);">...</b>
+            </p>
+            
+            <div style="background:#f0f9ff; padding:20px; border-radius:16px; margin-bottom:20px; border:2px dashed #bae6fd;">
+                <div style="font-size:0.85rem; color:#64748b; margin-bottom: 5px;">السعر الكلي (مع التوصيل)</div>
+                <div style="font-size:2.2rem; font-weight:800; color:var(--primary); line-height: 1;" id="pcm-price">0</div>
+                <div style="font-size:0.9rem; color:var(--primary); font-weight: 600; margin-top: 5px;">دينار عراقي</div>
+            </div>
+            
+            <div style="background:#fffbeb; color:#92400e; padding:12px; border-radius:12px; font-size:0.85rem; margin-bottom:25px; text-align: right;">
+                ⚠️ <b>تنبيه:</b> الموافقة تعني أنك تقبل السعر وسيتم البحث عن مندوب فوراً.
+            </div>
+
+            <div style="display:grid; gap:12px;">
+                <button class="btn btn-primary" onclick="confirmOrderPrice(true)">✅ موافقة (ابحث عن مندوب)</button>
+                <button class="btn" onclick="confirmOrderPrice(false)" style="background: #fee2e2; color: #ef4444;">❌ إلغاء الطلب</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-nav" class="bottom-nav" style="display: none;">
+        <div class="nav-item active" onclick="showNavView('home')">
+            <span class="nav-icon">🏠</span> الرئيسية
+        </div>
+        <div class="nav-item" onclick="showNavView('history')">
+            <div style="position:relative; display: inline-block;">
+                <span class="nav-icon">📦</span>
+                <span id="history-badge"></span>
+            </div>
+            <div style="margin-top: 2px;">طلباتي</div>
+        </div>
+        <div class="nav-item" onclick="showNavView('profile')">
+            <span class="nav-icon">👤</span> حسابي
+        </div>
+    </div>
+
+    <div id="loader" class="loader-overlay"><div class="spinner"></div></div>
+    <div id="toast" class="toast"></div>
+<script src="app.js"></script>
+    
+    <script>
+        /**
+         * ------------------------------------------------------------------
+         * CUSTOMER APP LOGIC (v9.5 - Carousel & Centralized Notifications)
+         * ------------------------------------------------------------------
+         */
+
+        // ✅ تعريف الرابط هنا أيضاً لضمان عمل الملف حتى لو تأخر تحميل app.js
+        // يفضل تحديث هذا الرابط بنفس الرابط الموجود في app.js
+        const CUSTOMER_API_URL = "https://script.google.com/macros/s/AKfycbzjKIHvRJDOwqOGFwPj_CuAfOVpo2xzQSRTrklp-5pEVZB6J3iBoUoJ2khEWTK1MX2e/exec";
+
+        // إذا لم يكن Api معرفاً في app.js (احتياط)، نستخدم هذا التعريف البسيط
+        if (typeof Api === 'undefined') {
+            class Api {
+                static async post(action, payload = {}, silent = false) {
+                    if (!silent) document.getElementById('loader').style.display = 'flex';
+                    try {
+                        const res = await fetch(CUSTOMER_API_URL, {
+                            method: 'POST', body: JSON.stringify({ action, ...payload })
+                        });
+                        const json = await res.json();
+                        if (!silent) document.getElementById('loader').style.display = 'none';
+                        if (json.status === 'success') return json.data;
+                        else throw new Error(json.message);
+                    } catch (e) {
+                        if (!silent) document.getElementById('loader').style.display = 'none';
+                        alert("خطأ: " + e.message);
+                        return null;
+                    }
+                }
+            }
+            window.Api = Api;
+        }
+
+        let CURRENT_USER = JSON.parse(localStorage.getItem('fds_customer')) || null;
+        let SELECTED_STORE = null;
+        let CAROUSEL_INTERVAL = null;
+
+        // 1. التهيئة عند التحميل
+        window.onload = function() {
+            if (CURRENT_USER) {
+                initApp();
+            } else {
+                showView('welcome');
+            }
+        };
+
+        function initApp() {
+            document.getElementById('app-header').style.display = 'flex';
+            document.getElementById('main-nav').style.display = 'flex';
+            
+            updateHeaderInfo();
+            document.getElementById('prof-name').value = CURRENT_USER.name;
+            
+            // استعادة العنوان المحفوظ
+            const savedAddr = localStorage.getItem('last_address');
+            if(savedAddr) document.getElementById('ord-addr').value = savedAddr;
+
+            showNavView('home');
+            fetchStores();
+            
+            // ✅ بدء مزامنة الإشعارات (يعتمد على app.js إذا كان موجوداً)
+            if(window.Notifier) {
+                Notifier.sync();
+            } else {
+                // تفعيل عداد بسيط إذا لم يكن Notifier موجوداً
+                setInterval(() => fetchHistory(true), 30000);
+            }
+            
+            // التحديث التلقائي للسجل
+            fetchHistory(true); 
+        }
+
+        function updateHeaderInfo() {
+            if(CURRENT_USER) {
+                const firstName = CURRENT_USER.name.split(' ')[0];
+                document.getElementById('header-user-name').innerText = firstName;
+            }
+        }
+
+        // --- 2. إدارة التنقل (View Management) ---
+        function showView(id) {
+            const isAuth = ['welcome', 'login', 'register'].includes(id);
+            document.getElementById('app-header').style.display = isAuth ? 'none' : 'flex';
+            document.getElementById('main-nav').style.display = isAuth ? 'none' : 'flex';
+
+            document.querySelectorAll('.view-section').forEach(el => {
+                el.classList.remove('active');
+                el.style.display = 'none'; 
+            });
+            
+            const target = document.getElementById('view-' + id);
+            target.style.display = 'block'; 
+            setTimeout(() => target.classList.add('active'), 10);
+            window.scrollTo(0,0);
+        }
+
+        function showNavView(id) {
+            showView(id);
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            if(id === 'home') document.querySelectorAll('.nav-item')[0].classList.add('active');
+            if(id === 'history') {
+                document.querySelectorAll('.nav-item')[1].classList.add('active');
+                fetchHistory();
+            }
+            if(id === 'profile') document.querySelectorAll('.nav-item')[2].classList.add('active');
+            
+            if(id === 'history') fetchHistory();
+        }
+
+        // --- 3. المصادقة (Auth) ---
+        async function handleLogin(e) {
+            e.preventDefault();
+            const phone = document.getElementById('login-phone').value;
+            const pass = document.getElementById('login-pass').value;
+
+            const data = await Api.post('loginCustomer', { phone, password: pass });
+            if (data) {
+                CURRENT_USER = data;
+                localStorage.setItem('fds_customer', JSON.stringify(data));
+                initApp();
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value;
+            const phone = document.getElementById('reg-phone').value;
+            const pass = document.getElementById('reg-pass').value;
+
+            const data = await Api.post('registerCustomer', { name, phone, password: pass });
+            if (data) {
+                CURRENT_USER = data;
+                localStorage.setItem('fds_customer', JSON.stringify(data));
+                initApp();
+            }
+        }
+
+        function logout() {
+            if(!confirm("هل تود تسجيل الخروج؟")) return;
+            localStorage.removeItem('fds_customer');
+            location.reload();
+        }
+
+        async function updateProfile() {
+            const name = document.getElementById('prof-name').value;
+            const passNew = document.getElementById('prof-pass-new').value;
+            const passConfirm = document.getElementById('prof-pass-confirm').value;
+            
+            let payload = { customer_id: CURRENT_USER.customer_id, new_name: name };
+
+            if (passNew || passConfirm) {
+                if (passNew !== passConfirm) return alert("❌ كلمات المرور غير متطابقة");
+                if (passNew.length < 4) return alert("⚠️ كلمة المرور قصيرة");
+                payload.new_password = passNew;
+            }
+            
+            const res = await Api.post('updateCustomerProfile', payload);
+            if (res) {
+                alert("✅ تم تحديث البيانات");
+                CURRENT_USER.name = name;
+                localStorage.setItem('fds_customer', JSON.stringify(CURRENT_USER));
+                updateHeaderInfo();
+                document.getElementById('prof-pass-current').value = '';
+                document.getElementById('prof-pass-new').value = '';
+                document.getElementById('prof-pass-confirm').value = '';
+            }
+        }
+
+        // --- 4. المتاجر (Carousel System - المنطق الجديد) ---
+        async function fetchStores() {
+            const track = document.getElementById('stores-track');
+            
+            // جلب البيانات في الخلفية
+            const stores = await Api.post('getActiveStores', {}, true);
+            
+            track.innerHTML = '';
+            if(!stores || stores.length === 0) {
+                track.innerHTML = '<div style="width:100%; text-align:center; padding:30px; color:#9ca3af;">لا توجد متاجر نشطة</div>';
+                return;
+            }
+            
+            stores.forEach(s => {
+                const icon = "🏪"; 
+                track.innerHTML += `
+                <div class="store-slide" onclick="selectStore('${s.username}', '${s.name}')">
+                    <div class="store-icon">${icon}</div>
+                    <h4 style="margin:0; font-size:1rem; color:var(--text-main);">${s.name}</h4>
+                    <small style="color:var(--text-sub); margin-top:5px;">اضغط للطلب</small>
+                </div>`;
+            });
+
+            startCarousel(); // تشغيل التحريك التلقائي
+        }
+
+        function startCarousel() {
+            const track = document.getElementById('stores-track');
+            if(CAROUSEL_INTERVAL) clearInterval(CAROUSEL_INTERVAL);
+            
+            // تحريك كل 4 ثواني
+            CAROUSEL_INTERVAL = setInterval(() => {
+                // إذا كان المستخدم يلمس الشاشة لا نحرك
+                if(track.matches(':hover')) return;
+
+                track.scrollBy({ left: 160, behavior: 'smooth' });
+                
+                // العودة للبداية إذا وصلنا للنهاية
+                if(track.scrollLeft + track.clientWidth >= track.scrollWidth - 10) {
+                    track.scrollTo({ left: 0, behavior: 'smooth' });
+                }
+            }, 4000);
+        }
+
+        function selectStore(username, name) {
+            SELECTED_STORE = { username, name };
+            document.getElementById('target-store-name').innerText = name;
+            showView('order');
+        }
+
+        async function submitOrder(e) {
+            e.preventDefault();
+            const details = document.getElementById('ord-details').value;
+            const addr = document.getElementById('ord-addr').value;
+            const maxPrice = document.getElementById('ord-max-price').value;
+
+            if(maxPrice && !confirm("السعر الذي وضعته تقريبي. هل تود الاستمرار؟")) return;
+
+            const res = await Api.post('createCustomerOrder', {
+                customer_name: CURRENT_USER.name,
+                customer_phone: CURRENT_USER.phone,
+                customer_address: addr,
+                order_details: details,
+                target_store: SELECTED_STORE.username,
+                max_price: maxPrice
+            });
+
+            if (res) {
+                if(window.UI && UI.showToast) UI.showToast("🚀 تم إرسال طلبك!");
+                else alert("🚀 تم إرسال طلبك!");
+                
+                localStorage.setItem('last_address', addr);
+                document.getElementById('ord-details').value = "";
+                document.getElementById('ord-max-price').value = "";
+                document.getElementById('success-id').innerText = "#" + res.order_id.split('-')[1];
+                showView('success');
+            }
+        }
+
+        // --- 5. السجل وتأكيد السعر ---
+        async function fetchHistory(isBackground = false) {
+            const div = document.getElementById('history-container');
+            if(!isBackground) div.innerHTML = '<div style="text-align: center; padding: 40px; color: #9ca3af;"><div class="spinner" style="margin:0 auto 10px;"></div>جاري التحديث...</div>';
+            
+            const orders = await Api.post('getOrders', { 
+                role: 'customer', 
+                username: CURRENT_USER.phone 
+            }, isBackground);
+
+            if (!orders) return;
+
+            // منطق بسيط للشارة في البار السفلي
+            const activeOrders = orders.filter(o => !['Completed', 'Cancelled', 'Delivered'].includes(o.status)).length;
+            const navBadge = document.getElementById('history-badge');
+            if(activeOrders > 0 && navBadge) {
+                navBadge.style.display = 'block';
+            } else if(navBadge) {
+                navBadge.style.display = 'none';
+            }
+
+            if(isBackground && !document.getElementById('view-history').classList.contains('active')) return;
+
+            div.innerHTML = '';
+            if(orders.length === 0) {
+                div.innerHTML = '<div style="text-align: center; padding: 60px 20px; color: #9ca3af;">ليس لديك طلبات سابقة</div>';
+                return;
+            }
+            
+            orders.forEach(o => {
+                let statusInfo = getStatusInfo(o.status);
+                let actionHtml = '';
+
+                // زر مراجعة السعر (الحالة New تعني تم التسعير)
+                if (o.status === 'New') {
+                    statusInfo = { text: 'بانتظار موافقتك', color: '#2563eb', bg: '#eff6ff' };
+                    actionHtml = `
+                    <div class="price-approval-card">
+                        <div style="font-size:0.85rem; margin-bottom:5px; color:#64748b;">السعر المحدد:</div>
+                        <div style="font-size:1.5rem; font-weight:bold; color:var(--primary); margin-bottom:10px;">${Number(o.amount).toLocaleString()} <span style="font-size:0.8rem;">د.ع</span></div>
+                        <button class="btn btn-primary" style="padding:10px; font-size:0.9rem;" onclick="openPriceConfirmModal('${o.order_id}', '${o.amount}')">مراجعة وتأكيد ✅</button>
+                    </div>`;
+                }
+
+                if(o.status === 'Cancelled') {
+                    actionHtml += `<div style="background:#fef2f2; color:#ef4444; padding:10px; border-radius:10px; margin-top:10px; font-size:0.9rem;">⛔ <b>السبب:</b> ${o.cancellation_reason || 'غير محدد'}</div>`;
+                }
+
+                const shortId = o.order_id.split('-')[1];
+
+                div.innerHTML += `
+                <div class="card" style="border-right: 4px solid ${statusInfo.color};">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <b style="color:var(--text-main); font-size:1.1rem;">#${shortId}</b>
+                        <span style="font-size:0.8rem; font-weight:700; color:${statusInfo.color}; background:${statusInfo.bg}; padding:4px 10px; border-radius:20px;">${statusInfo.text}</span>
+                    </div>
+                    <div style="font-size:0.85rem; color:#9ca3af; margin-bottom:10px;">${new Date(o.date_time).toLocaleDateString('ar-IQ')} • ${o.seller_username}</div>
+                    <div style="background:#f9fafb; padding:12px; border-radius:12px; line-height:1.6; font-size:0.95rem; color:var(--text-main);">${o.order_details}</div>
+                    ${actionHtml}
+                </div>`;
+            });
+        }
+
+        // --- 6. نافذة تأكيد السعر ---
+        let pendingPriceOrderId = null;
+
+        function openPriceConfirmModal(orderId, amount) {
+            pendingPriceOrderId = orderId;
+            document.getElementById('pcm-id').innerText = "#" + orderId.split('-')[1];
+            document.getElementById('pcm-price').innerText = Number(amount).toLocaleString();
+            document.getElementById('price-confirm-modal').style.display = 'flex';
+        }
+
+        async function confirmOrderPrice(isApproved) {
+            document.getElementById('price-confirm-modal').style.display = 'none';
+            
+            if (isApproved) {
+                // مجرد إغلاق النافذة، فالطلب أصلاً في حالة New وهي متاحة للمناديب
+                // يمكن إضافة نداء للسيرفر لتأكيد "تمت المشاهدة" إذا أردنا
+                if(window.UI && UI.showToast) UI.showToast("✅ تم تأكيد السعر! جاري البحث عن مندوب...");
+                else alert("✅ تم تأكيد السعر! جاري البحث عن مندوب...");
+            } else {
+                const reason = prompt("سبب الإلغاء:", "السعر غير مناسب");
+                if(!reason) return; // تراجع
+
+                await Api.post('cancelOrderWithReason', {
+                    order_id: pendingPriceOrderId,
+                    reason: "العميل رفض السعر: " + reason,
+                    role: 'customer'
+                });
+                
+                if(window.UI && UI.showToast) UI.showToast("تم إلغاء الطلب 🗑️");
+                else alert("تم إلغاء الطلب");
+                
+                fetchHistory();
+            }
+        }
+
+        // --- 7. الإشعارات ---
+        function toggleNotifDropdown() {
+            const d = document.getElementById('notif-dropdown');
+            
+            if(window.Notifier) {
+                Notifier.showDropdown(); // استخدام دالة app.js إذا وجدت
+            } else {
+                // احتياط في حال عدم تحميل Notifier بعد
+                d.style.display = (d.style.display === 'block') ? 'none' : 'block';
+            }
+        }
+
+        function getStatusInfo(s) {
+            const map = {
+                'Pending_Admin': { text: 'قيد المراجعة', color: '#64748b', bg: '#f1f5f9' },
+                'Pending_Seller': { text: 'بانتظار التسعير', color: '#d97706', bg: '#fffbeb' },
+                'New': { text: 'تم التسعير (جاري البحث)', color: '#2563eb', bg: '#eff6ff' },
+                'Assigned': { text: 'تم القبول', color: '#0891b2', bg: '#ecfeff' },
+                'PickedUp': { text: 'جاري التوصيل 🛵', color: '#7c3aed', bg: '#f5f3ff' },
+                'Delivered': { text: 'تم التوصيل 🎉', color: '#10b981', bg: '#ecfdf5' },
+                'Cancelled': { text: 'ملغي', color: '#ef4444', bg: '#fef2f2' },
+                'Completed': { text: 'مكتمل', color: '#059669', bg: '#ecfdf5' }
+            };
+            return map[s] || { text: s, color: '#333', bg: '#eee' };
+        }
+    </script>
+</body>
+</html>
