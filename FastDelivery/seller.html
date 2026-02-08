@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>بوابة التاجر - FastDelivery V8.1</title>
+    <title>بوابة التاجر - FastDelivery V9.4</title>
     
     <link rel="stylesheet" href="style.css">
     
@@ -23,6 +23,63 @@
             background: #eee; padding: 4px 10px; border-radius: 6px; 
             color: #333; font-size: 0.85rem; font-weight: bold;
         }
+        
+        /* ✅ تنسيقات قسم الطلبات الواردة (Pending Seller) */
+        .pending-card {
+            border: 2px solid #f59e0b;
+            background: #fffbf0;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.1);
+        }
+        .pending-header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px dashed #f59e0b; padding-bottom: 10px; margin-bottom: 10px;
+        }
+
+        /* --- ✅ تحديث 1: إصلاح قائمة الإشعارات للموبايل --- */
+        @media (max-width: 600px) {
+            .notif-dropdown {
+                position: fixed !important;
+                top: 65px !important;
+                left: 15px !important;
+                right: 15px !important;
+                width: auto !important;
+                max-height: 75vh !important;
+                overflow-y: auto !important;
+                box-shadow: 0 100vh 0 100vh rgba(0,0,0,0.5) !important; /* تعتيم الخلفية */
+                border: 1px solid rgba(0,0,0,0.1);
+                z-index: 9999;
+            }
+        }
+
+        /* --- ✅ تحديث 2: دعم النوافذ العصرية (Modern Modals) --- */
+        .modal-content {
+            border-radius: 20px !important;
+            padding: 0 !important;
+            border: none !important;
+            overflow: hidden;
+        }
+        .modal-header-modern {
+            background: linear-gradient(135deg, var(--primary), #1e3a8a);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .modal-body-modern { padding: 20px; background: #fff; }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 10px 15px;
+            font-size: 0.95rem;
+            align-items: baseline;
+        }
+        .detail-label { color: #666; font-weight: bold; min-width: 80px; }
+        .detail-value { color: #333; }
+        .detail-divider { grid-column: 1 / -1; height: 1px; background: #eee; margin: 8px 0; }
+
         @media (max-width: 900px) {
             .desktop-only { display: none; }
         }
@@ -57,8 +114,7 @@
             </button>
         </div>
     </div>
-
-    <div id="tab-create" class="tab-view active">
+<div id="tab-create" class="tab-view active">
         <h4 style="margin-bottom: 15px; color: #666; display: flex; align-items: center; gap: 10px;">
             <span>📝</span> إضافة طلب جديد
         </h4>
@@ -66,38 +122,38 @@
         <div class="mobile-card new">
             <form id="createOrderForm">
                 <div class="form-group">
-                    <label>👤 اسم الزبون</label>
+                    <label class="info-label">👤 اسم الزبون</label>
                     <input type="text" name="customer_name" id="inp_name" class="form-control" required placeholder="الاسم الثلاثي أو اللقب">
                 </div>
                 
                 <div class="form-group">
-                    <label>📞 رقم الهاتف</label>
+                    <label class="info-label">📞 رقم الهاتف</label>
                     <input type="tel" name="customer_phone" id="inp_phone" class="form-control" required placeholder="07xxxxxxxxx">
                 </div>
                 
                 <div class="form-group">
-                    <label>📍 العنوان الكامل</label>
+                    <label class="info-label">📍 العنوان الكامل</label>
                     <input type="text" name="customer_address" id="inp_addr" class="form-control" required placeholder="المنطقة - المحلة - أقرب نقطة دالة">
                 </div>
                 
                 <div class="form-group">
-                    <label>💰 مبلغ الطلب الكلي (مع التوصيل)</label>
+                    <label class="info-label">💰 مبلغ الطلب الكلي (مع التوصيل)</label>
                     <input type="number" name="amount" id="inp_amount" class="form-control" required placeholder="بالدينار العراقي">
                 </div>
                 
                 <div class="form-group">
-                    <label>📦 تفاصيل الطلب</label>
+                    <label class="info-label">📦 تفاصيل الطلب</label>
                     <textarea name="order_details" id="inp_details" class="form-control" rows="2" placeholder="عدد المواد، نوعها، الحجم..."></textarea>
                 </div>
                 
                 <div class="form-group" style="background: #f0f7ff; padding: 10px; border-radius: 8px; border: 1px dashed #2196f3;">
-                    <label style="color: #1976d2;">🛵 تعيين مندوب محدد (اختياري)</label>
+                    <label style="color: #1976d2; font-weight:bold;">🛵 تعيين مندوب محدد (اختياري)</label>
                     <input type="text" name="assigned_courier" id="inp_courier" class="form-control" placeholder="أدخل اسم مستخدم المندوب (Username)">
                     <small style="color: #666;">اتركه فارغاً ليظهر الطلب لجميع المناديب في المنطقة.</small>
                 </div>
                 
                 <div class="form-group">
-                    <label>📋 ملاحظات للمندوب (اختياري)</label>
+                    <label class="info-label">📋 ملاحظات للمندوب (اختياري)</label>
                     <input type="text" name="notes" id="inp_notes" class="form-control" placeholder="مثلاً: الاتصال قبل الوصول">
                 </div>
 
@@ -116,6 +172,14 @@
             </button>
         </div>
         
+        <div id="pending-section" style="display: none; margin-bottom: 25px;">
+            <div style="background: #f59e0b; color: white; padding: 10px; border-radius: 8px 8px 0 0; font-weight: bold; display: flex; align-items: center; gap: 8px;">
+                <span>⚠️</span> طلبات واردة (بانتظار سعرك وموافقتك)
+            </div>
+            <div id="pending-container" style="background: #fff8e1; padding: 10px; border: 2px solid #f59e0b; border-top: none; border-radius: 0 0 8px 8px;">
+                </div>
+        </div>
+
         <div id="orders-list-container">
             <div style="text-align: center; margin-top: 50px; color: #999;">
                 <div class="spinner" style="margin: 0 auto 10px;"></div>
@@ -158,33 +222,40 @@
 
     <div class="modal-overlay" id="cancelModal">
         <div class="modal-content">
-            <h3 style="color: var(--accent);">⛔ إلغاء الطلب</h3>
-            <p style="margin-bottom: 15px;">يرجى ذكر سبب إلغاء الطلب بوضوح:</p>
-            <form id="cancelForm">
-                <input type="hidden" id="cancelOrderId">
-                <div class="form-group">
-                    <textarea id="cancelReason" class="form-control" rows="3" required placeholder="مثال: الزبون رفض الطلب، نفاد الكمية..."></textarea>
-                </div>
-                <button type="submit" class="btn btn-danger btn-block">تأكيد الإلغاء</button>
-                <button type="button" class="btn btn-block" onclick="UI.closeModal('cancelModal')" style="margin-top:10px; background:#eee; color:#333;">تراجع</button>
-            </form>
+            <div class="modal-header-modern" style="background: var(--danger);">
+                <h3 style="margin:0;">⛔ إلغاء الطلب</h3>
+            </div>
+            <div class="modal-body-modern">
+                <p style="margin-bottom: 15px; color:#666;">يرجى ذكر سبب إلغاء الطلب بوضوح:</p>
+                <form id="cancelForm">
+                    <input type="hidden" id="cancelOrderId">
+                    <div class="form-group">
+                        <textarea id="cancelReason" class="form-control" rows="3" required placeholder="مثال: الزبون رفض الطلب، نفاد الكمية..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-danger btn-block">تأكيد الإلغاء</button>
+                    <button type="button" class="btn btn-block" onclick="UI.closeModal('cancelModal')" style="margin-top:10px; background:#f3f4f6; color:#333;">تراجع</button>
+                </form>
+            </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="detailsModal"></div>
     <div class="modal-overlay" id="unifiedOrderModal"></div>
-
-    <script src="app.js"></script>
+<script src="app.js"></script>
+    
     <script>
         /**
          * ------------------------------------------------------------------
-         * SELLER APP LOGIC (v8.1 - WhatsApp & Unified View)
+         * SELLER APP LOGIC (v9.4 - Modern UI & WhatsApp Fixes)
          * ------------------------------------------------------------------
          */
 
+        // ✅ تأكد من أن الرابط هنا يطابق الرابط الموجود في app.js والملفات الأخرى
+        // if(window.Api) window.API_URL = "ضع_رابط_النشر_الجديد_هنا";
+
         let currentOrders = [];
 
-        // 1. التهيئة
+        // 1. التهيئة (Initialization)
         window.addEventListener('DOMContentLoaded', () => {
             if (!Auth.checkRole('seller')) return;
             
@@ -194,11 +265,19 @@
             }
 
             loadSellerData(false);
+            
+            // تحديث تلقائي كل 15 ثانية (مع حماية الكتابة)
             setInterval(() => loadSellerData(true), 15000);
         });
 
-        // 2. جلب البيانات
+        // 2. جلب البيانات (Data Sync)
         async function loadSellerData(isBackground = false) {
+            // ✅ حماية: منع التحديث إذا كان التاجر يكتب في حقل نصي
+            if (isBackground && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+                console.log("Skipping refresh: User is typing...");
+                return;
+            }
+
             try {
                 const user = Auth.getUser();
                 const newOrders = await Api.post('getOrders', {
@@ -207,19 +286,115 @@
                 }, isBackground);
 
                 currentOrders = newOrders;
+                
+                // تحديث أقسام الصفحة
+                renderPendingForSeller(newOrders); 
                 renderStats(newOrders);
-                renderList(newOrders); 
+                renderList(newOrders);
 
             } catch (error) {
                 console.error("Data Load Error:", error);
                 if(!isBackground) {
                     document.getElementById('orders-list-container').innerHTML = 
-                        '<div style="text-align:center; padding:20px; color:red;">فشل تحميل البيانات. تأكد من الاتصال.</div>';
+                        '<div style="text-align:center; padding:20px; color:var(--danger);">فشل تحميل البيانات. تأكد من الاتصال.</div>';
                 }
             }
         }
 
-        // 3. عرض الإحصائيات
+        // 3. عرض الطلبات الواردة (Pending Seller)
+        function renderPendingForSeller(orders) {
+            const pending = orders.filter(o => o.status === 'Pending_Seller');
+            const container = document.getElementById('pending-container');
+            const section = document.getElementById('pending-section');
+            
+            // حماية إضافية أثناء الكتابة داخل هذا القسم
+            if (document.activeElement.closest('#pending-container')) return;
+
+            container.innerHTML = '';
+            
+            if (pending.length > 0) {
+                section.style.display = 'block';
+                
+                pending.forEach(o => {
+                    // عرض ميزانية العميل إن وجدت
+                    const maxPriceHtml = o.max_price 
+                        ? `<span style="background:#e0f2fe; color:#0284c7; padding:2px 6px; border-radius:4px; font-size:0.8rem;">💰 ميزانية العميل: ${Number(o.max_price).toLocaleString()}</span>` 
+                        : '';
+
+                    const div = document.createElement('div');
+                    div.className = 'pending-card';
+                    div.innerHTML = `
+                        <div class="pending-header">
+                            <span>🔥 طلب جديد #${o.order_id.split('-')[1]}</span>
+                            <span style="font-size:0.8rem; background:#fff; padding:3px 8px; border-radius:10px;">${new Date(o.date_time).toLocaleTimeString('ar-IQ')}</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                            <p style="margin:0;"><b>الزبون:</b> ${o.customer_name}</p>
+                            ${maxPriceHtml}
+                        </div>
+                        
+                        <p style="background:#fff; padding:10px; border-radius:5px; border:1px dashed #ccc; margin-bottom:10px; line-height:1.4;">
+                            📝 ${o.order_details}
+                        </p>
+                        
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">
+                            <div>
+                                <label class="info-label">السعر الكلي (دينار)</label>
+                                <input type="number" id="price-${o.order_id}" class="form-control" placeholder="شاملاً التوصيل">
+                            </div>
+                            <div>
+                                <label class="info-label">وقت التحضير/ملاحظة</label>
+                                <input type="text" id="note-${o.order_id}" class="form-control" placeholder="مثال: 15 دقيقة">
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary btn-block" onclick="acceptCustomerOrder('${o.order_id}')">
+                            ✅ اعتماد السعر والنشر للمناديب
+                        </button>
+                    `;
+                    container.appendChild(div);
+                });
+            } else {
+                section.style.display = 'none';
+            }
+        }
+
+        // 4. اعتماد الطلب وتسعيره
+        async function acceptCustomerOrder(orderId) {
+            const priceInput = document.getElementById(`price-${orderId}`);
+            const noteInput = document.getElementById(`note-${orderId}`);
+            
+            const price = priceInput.value;
+            const note = noteInput.value;
+            
+            if(!price || price <= 0) return UI.showToast("يجب تحديد السعر الكلي للطلب!", "error");
+            
+            if(!confirm(`هل أنت متأكد من اعتماد السعر: ${price} دينار؟\nسيتم نشر الطلب للمناديب.`)) return;
+            
+            // تعطيل الزر لمنع التكرار
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = "جاري الإرسال...";
+
+            try {
+                // الحالة New تعني أنه أصبح متاحاً للمناديب
+                await Api.post('updateStatus', {
+                    order_id: orderId,
+                    status: 'New', 
+                    new_amount: price,
+                    notes: note 
+                });
+                
+                UI.showToast("تم اعتماد الطلب ونشره بنجاح 🚀");
+                loadSellerData(false); 
+            } catch(e) {
+                btn.disabled = false;
+                btn.innerText = originalText;
+            }
+        }
+
+        // 5. عرض الإحصائيات
         function renderStats(orders) {
             const sales = orders
                 .filter(o => o.status === 'Delivered' || o.status === 'Completed')
@@ -231,21 +406,23 @@
             document.getElementById('pendingCount').innerText = pending;
         }
 
-        // 4. عرض القائمة (تحديث V8.1: دعم النقر والواتساب)
+        // 6. عرض القائمة (السجل) - ✅ V9.4 Updated
         function renderList(orders) {
             const container = document.getElementById('orders-list-container');
             container.innerHTML = '';
 
-            if (!orders || orders.length === 0) {
+            const listOrders = orders.filter(o => o.status !== 'Pending_Seller' && o.status !== 'Pending_Admin');
+
+            if (listOrders.length === 0) {
                 container.innerHTML = `
                     <div style="text-align: center; margin-top: 50px; color: #999;">
                         <span style="font-size: 3rem; display: block; margin-bottom: 10px;">📭</span>
-                        لا توجد طلبات حتى الآن
+                        لا توجد طلبات في السجل
                     </div>`;
                 return;
             }
 
-            orders.slice(0, 50).forEach(o => { // Limit render
+            listOrders.slice(0, 50).forEach(o => { 
                 const shortId = o.order_id.split('-')[1] || o.order_id;
                 
                 let cardClass = 'active'; 
@@ -256,40 +433,36 @@
                 let buttonsHtml = '';
                 const isPaid = (o.seller_paid === true || o.seller_paid === 'TRUE');
 
-                // --- الأزرار ---
-                
-                // زر استلام المبلغ
-                if (['Assigned', 'PickedUp'].includes(o.status) && !isPaid) {
-                    buttonsHtml += `
-                        <button class="btn btn-success btn-block" onclick="event.stopPropagation(); confirmPayment('${o.order_id}')">
-                            💰 استلام المبلغ
-                        </button>`;
-                } else if (isPaid) {
-                    buttonsHtml += `
-                        <div style="width:100%; text-align:center; padding:8px; background:#e8f5e9; color:var(--success); border-radius:8px; font-weight:bold; border: 1px solid var(--success);">
-                            ✅ تم استلام المبلغ
-                        </div>`;
+                // أزرار الحالة
+                if (['Assigned', 'PickedUp', 'Delivered'].includes(o.status)) {
+                     if (!isPaid) {
+                        buttonsHtml += `
+                            <button id="btn-pay-${o.order_id}" class="btn btn-success btn-block" onclick="event.stopPropagation(); confirmPayment('${o.order_id}')">
+                                💰 استلام المبلغ
+                            </button>`;
+                     } else {
+                        buttonsHtml += `
+                            <div style="width:100%; text-align:center; padding:8px; background:#e8f5e9; color:var(--success); border-radius:8px; font-weight:bold; border: 1px solid var(--success);">
+                                ✅ تم استلام المبلغ
+                            </div>`;
+                     }
                 }
 
-                // زر الإلغاء
-                if (o.status === 'New' || (['Assigned', 'PickedUp'].includes(o.status) && !isPaid)) {
+                if ((o.status === 'New' || ['Assigned', 'PickedUp'].includes(o.status)) && !isPaid) {
                     buttonsHtml += `
                         <button class="btn btn-danger btn-block" onclick="event.stopPropagation(); openCancelModal('${o.order_id}')">
                             ❌ إلغاء الطلب
                         </button>`;
                 }
                 
-                // حالة الإلغاء
                 if (o.status === 'Cancelled') {
                     buttonsHtml += `
-                        <div style="width:100%; text-align:center; padding:8px; background:#ffebee; color:#c62828; border-radius:8px; font-size:0.9rem;">
+                        <div style="width:100%; text-align:center; padding:8px; background:#ffebee; color:var(--danger); border-radius:8px; font-size:0.9rem;">
                             ملغي: ${o.cancellation_reason || 'غير محدد'}
                         </div>`;
                 }
 
-                // زر تكرار الطلب
-                if (o.status === 'Completed' || o.status === 'Cancelled' || o.status === 'Delivered') {
-                    // escape JSON string for attribute
+                if (['Completed', 'Cancelled', 'Delivered'].includes(o.status)) {
                     const jsonOrder = JSON.stringify(o).replace(/"/g, '&quot;');
                     buttonsHtml += `
                         <button class="btn btn-block" style="background:#f0f0f0; color:#333; margin-top:5px;" onclick="event.stopPropagation(); duplicateOrder(${jsonOrder})">
@@ -297,11 +470,10 @@
                         </button>`;
                 }
 
-                // رابط واتساب العميل (V8.1)
-                const waLink = WhatsAppHelper.getLink(o.customer_phone, `مرحباً ${o.customer_name}، بخصوص طلبك من المتجر`);
+                // ✅ استخدام WhatsAppHelper الجديد (V9.4)
+                const waLink = WhatsAppHelper.getLink(o.customer_phone, `مرحباً ${o.customer_name}، بخصوص طلبك رقم ${shortId}`);
 
-                // بناء البطاقة
-                // إضافة onclick لفتح التفاصيل الموحدة
+                // ✅ ربط الكرت بـ UI.openOrderPage للتصميم العصري
                 const html = `
                 <div class="mobile-card ${cardClass}" onclick="UI.openOrderPage(currentOrders.find(x => x.order_id === '${o.order_id}'))">
                     <div class="card-header">
@@ -345,9 +517,8 @@
             });
         }
 
-        // 5. العمليات (Actions)
-        
-        // أ. إضافة طلب
+        // 7. العمليات (Actions)
+
         document.getElementById('createOrderForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const user = Auth.getUser();
@@ -364,7 +535,6 @@
             } catch (err) { }
         });
 
-        // ب. تكرار الطلب
         function duplicateOrder(orderData) {
             document.getElementById('inp_name').value = orderData.customer_name;
             document.getElementById('inp_phone').value = orderData.customer_phone;
@@ -373,21 +543,31 @@
             document.getElementById('inp_details').value = orderData.order_details;
             
             switchTab('create', document.querySelectorAll('.nav-item')[0]);
-            UI.showToast("تم نسخ البيانات، يمكنك التعديل ثم الإرسال", "info");
+            UI.showToast("تم نسخ البيانات للتعديل", "info");
             window.scrollTo(0,0);
         }
 
-        // ج. تأكيد الدفع
         async function confirmPayment(orderId) {
-            if (!confirm("هل أنت متأكد من أنك استلمت المبلغ كاملاً من المندوب؟")) return;
+            if (!confirm("هل استلمت المبلغ كاملاً من المندوب؟\nسيتم تسجيل الطلب كـ 'مدفوع'.")) return;
+            
+            const btn = document.getElementById(`btn-pay-${orderId}`);
+            if(btn) {
+                btn.innerText = "جاري التأكيد...";
+                btn.disabled = true;
+            }
+
             try {
                 await Api.post('confirmSellerPayment', { order_id: orderId });
-                UI.showToast("تم تأكيد الاستلام وتحديث الحالة 💰", "success");
+                UI.showToast("تم تأكيد الاستلام 💰", "success");
                 loadSellerData(false);
-            } catch (err) { }
+            } catch (err) { 
+                if(btn) {
+                    btn.innerText = "💰 استلام المبلغ";
+                    btn.disabled = false;
+                }
+            }
         }
 
-        // د. الإلغاء
         function openCancelModal(orderId) {
             document.getElementById('cancelOrderId').value = orderId;
             document.getElementById('cancelReason').value = "";
@@ -408,7 +588,6 @@
             } catch (err) { }
         });
 
-        // 6. التحكم في التبويبات
         function switchTab(tabName, btnElement) {
             document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
             document.getElementById('tab-' + tabName).classList.add('active');
