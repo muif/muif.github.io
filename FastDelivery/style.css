@@ -140,27 +140,30 @@ body {
 
 .notif-wrapper:hover .notif-icon { transform: scale(1.1); color: var(--primary); }
 
+/* --- تعديل 1: إصلاح شارة الإشعارات لتكون مرنة ومحاذية للوسط --- */
 .notif-badge {
     position: absolute;
-    top: -5px;
-    right: -5px;
+    top: -8px; 
+    right: -8px;
     background: var(--accent);
     color: white;
-    font-size: 0.7rem;
+    font-size: 0.75rem; /* تكبير الخط قليلاً */
     font-weight: bold;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
+    min-width: 22px;   /* بدلاً من width ثابت، نستخدم min-width */
+    height: 22px;
+    padding: 0 4px;    /* هوامش داخلية للأرقام الكبيرة */
+    border-radius: 50px; /* شكل كبسولة للأرقام الطويلة */
     display: flex;
     align-items: center;
     justify-content: center;
     border: 2px solid white;
     opacity: 0;
-    transition: opacity 0.3s;
-    transform: scale(0.8);
+    transform: scale(0.5); /* نبدأ بتصغير للحركة */
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* حركة ظهور مرنة */
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 .notif-badge.visible { opacity: 1; transform: scale(1); }
-
 /* Dropdown Menu */
 .notif-dropdown {
     position: absolute;
@@ -363,12 +366,37 @@ tr:hover { background: rgba(255,255,255,0.5); }
     z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.3s;
 }
 .modal-overlay.active { opacity: 1; pointer-events: all; }
+/* --- تعديل 2: إصلاح النوافذ لتثبيت الرأس وتمرير المحتوى فقط --- */
 .modal-content {
-    background: white; width: 90%; max-width: 500px;
-    padding: 2rem; border-radius: var(--radius);
+    background: white; 
+    width: 90%; 
+    max-width: 500px;
+    border-radius: var(--radius);
     box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-    transform: scale(0.9); transition: transform 0.3s;
-    max-height: 90vh; overflow-y: auto;
+    transform: scale(0.9); 
+    transition: transform 0.3s;
+    
+    /* الخصائص الجديدة للتمرير */
+    display: flex;           /* تحويل النافذة لصندوق مرن */
+    flex-direction: column;  /* ترتيب العناصر عمودياً */
+    max-height: 85vh;        /* أقصى ارتفاع 85% من الشاشة */
+    padding: 0;              /* إزالة الحشوة العامة لكي يلتصق الرأس بالحواف */
+    overflow: hidden;        /* منع التمرير الخارجي */
+}
+
+/* كلاس جديد لضمان التمرير داخل الجسم فقط */
+.modal-body-modern, 
+.modal-scrollable {
+    padding: 20px;
+    background: #fff;
+    overflow-y: auto;       /* تفعيل التمرير العمودي هنا فقط */
+    flex: 1;                /* يملأ المساحة المتبقية */
+}
+
+/* دعم النوافذ القديمة التي قد لا تستخدم Modern Structure */
+.modal-content > form {
+    padding: 2rem;
+    overflow-y: auto;
 }
 .modal-overlay.active .modal-content { transform: scale(1); }
 
