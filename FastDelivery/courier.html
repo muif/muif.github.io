@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>تطبيق المندوب - FastDelivery V8.1</title>
+    <title>تطبيق المندوب - FastDelivery V9.4</title>
     
     <link rel="stylesheet" href="style.css">
     
     <style>
-        /* --- تنسيقات خاصة بالمندوب (V8.1) --- */
+        /* --- تنسيقات خاصة بالمندوب (V9.4) --- */
         body { 
             padding-bottom: 90px; 
             background: #f0f2f5; 
@@ -50,6 +50,49 @@
         .contact-actions {
             display: flex; gap: 10px; margin-top: 5px;
         }
+
+        /* --- ✅ تحديث 1: إصلاح قائمة الإشعارات للموبايل --- */
+        @media (max-width: 600px) {
+            .notif-dropdown {
+                position: fixed !important;
+                top: 70px !important;
+                left: 10px !important;
+                right: 10px !important;
+                width: auto !important;
+                max-height: 80vh !important;
+                overflow-y: auto !important;
+                box-shadow: 0 100vh 0 100vh rgba(0,0,0,0.5) !important; /* تعتيم الخلفية */
+                z-index: 9999;
+                border: 1px solid rgba(0,0,0,0.1);
+            }
+        }
+
+        /* --- ✅ تحديث 2: دعم النوافذ العصرية (Modern Modals CSS) --- */
+        .modal-content {
+            border-radius: 20px !important;
+            padding: 0 !important;
+            border: none !important;
+            overflow: hidden;
+        }
+        .modal-header-modern {
+            background: linear-gradient(135deg, var(--primary), #1e3a8a);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .modal-body-modern { padding: 20px; background: #fff; }
+        
+        /* شبكة التفاصيل داخل النافذة */
+        .detail-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 10px 15px;
+            font-size: 0.95rem;
+            align-items: baseline;
+        }
+        .detail-label { color: #666; font-weight: bold; min-width: 80px; }
+        .detail-value { color: #333; }
+        .detail-divider { grid-column: 1 / -1; height: 1px; background: #eee; margin: 8px 0; }
     </style>
 </head>
 <body>
@@ -81,8 +124,7 @@
             </button>
         </div>
     </div>
-
-    <div id="tab-available" class="tab-view active">
+<div id="tab-available" class="tab-view active">
         <h4 style="margin-bottom: 15px; color: #666; font-size: 0.9rem;">الفرص الجديدة المتاحة</h4>
         <div id="list-available">
             <div style="text-align: center; margin-top: 60px; color: #aaa;">
@@ -133,50 +175,61 @@
 
     <div class="modal-overlay" id="cancelModal">
         <div class="modal-content">
-            <h3>⛔ إلغاء الطلب</h3>
-            <p style="color:#666;">هل أنت مضطر لإلغاء هذا الطلب؟ يرجى ذكر السبب بوضوح.</p>
-            <form id="cancelForm">
-                <input type="hidden" id="cancelOrderId">
-                <div class="form-group">
-                    <label>السبب (مطلوب)</label>
-                    <textarea id="cancelReason" class="form-control" rows="3" required placeholder="مثال: تعطل الدراجة، الزبون لا يرد..."></textarea>
-                </div>
-                <button type="submit" class="btn btn-danger btn-block">تأكيد الإلغاء</button>
-                <button type="button" class="btn btn-block" onclick="UI.closeModal('cancelModal')" style="margin-top: 10px; background: #eee;">تراجع</button>
-            </form>
+            <div class="modal-header-modern" style="background: var(--danger);">
+                <h3 style="margin:0;">⛔ إلغاء الطلب</h3>
+            </div>
+            <div class="modal-body-modern">
+                <p style="color:#666; margin-bottom:15px;">هل أنت مضطر لإلغاء هذا الطلب؟ يرجى ذكر السبب بوضوح.</p>
+                <form id="cancelForm">
+                    <input type="hidden" id="cancelOrderId">
+                    <div class="form-group">
+                        <label>السبب (مطلوب)</label>
+                        <textarea id="cancelReason" class="form-control" rows="3" required placeholder="مثال: تعطل الدراجة، الزبون لا يرد..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-danger btn-block">تأكيد الإلغاء</button>
+                    <button type="button" class="btn btn-block" onclick="UI.closeModal('cancelModal')" style="margin-top: 10px; background: #eee; color: #333;">تراجع</button>
+                </form>
+            </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="transferModal">
         <div class="modal-content">
-            <h3 style="color:var(--primary);">♻️ تحويل لزميل</h3>
-            <p style="color:#666; font-size:0.9rem;">أدخل اسم المستخدم (Username) للمندوب الزميل لنقل العهدة إليه.</p>
-            
-            <input type="hidden" id="transferOrderId">
-            <div class="form-group">
-                <label>اسم مستخدم الزميل:</label>
-                <input type="text" id="transferTargetUser" class="form-control" placeholder="username" required>
+            <div class="modal-header-modern" style="background: var(--primary);">
+                <h3 style="margin:0;">♻️ تحويل لزميل</h3>
             </div>
-            
-            <button class="btn btn-primary btn-block" onclick="confirmTransfer()">تحويل الطلب</button>
-            <button class="btn btn-block" onclick="UI.closeModal('transferModal')" style="margin-top:10px; background:#eee;">إلغاء</button>
+            <div class="modal-body-modern">
+                <p style="color:#666; font-size:0.9rem; margin-bottom:15px;">أدخل اسم المستخدم (Username) للمندوب الزميل لنقل العهدة إليه.</p>
+                
+                <input type="hidden" id="transferOrderId">
+                <div class="form-group">
+                    <label>اسم مستخدم الزميل:</label>
+                    <input type="text" id="transferTargetUser" class="form-control" placeholder="username" required>
+                </div>
+                
+                <button class="btn btn-primary btn-block" onclick="confirmTransfer()">تحويل الطلب</button>
+                <button class="btn btn-block" onclick="UI.closeModal('transferModal')" style="margin-top:10px; background:#eee; color: #333;">إلغاء</button>
+            </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="detailsModal"></div>
     <div class="modal-overlay" id="unifiedOrderModal"></div>
-
-    <script src="app.js"></script>
+<script src="app.js"></script>
+    
     <script>
         /**
          * ------------------------------------------------------------------
-         * COURIER APP LOGIC (v8.1 - WhatsApp & Unified View)
+         * COURIER APP LOGIC (v9.4 - Smart WhatsApp & Modern Cards)
          * ------------------------------------------------------------------
          */
         
+        // ✅ تجاوز الرابط القديم (اختياري، لضمان التوافق)
+        // if(window.Api) window.API_URL = "ضع_رابط_النشر_الجديد_هنا";
+
         let currentOrders = [];
 
-        // 1. التهيئة
+        // 1. التهيئة (Initialization)
         window.addEventListener('DOMContentLoaded', () => {
             if (!Auth.checkRole('courier')) return;
             
@@ -184,6 +237,8 @@
             if(user) document.getElementById('courierName').innerText = user.full_name.split(' ')[0];
             
             loadCourierData(false);
+            
+            // تحديث تلقائي كل 15 ثانية
             setInterval(() => loadCourierData(true), 15000);
         });
 
@@ -207,9 +262,9 @@
             } catch (err) { console.error("Sync Error:", err); }
         }
 
-        // --- دوال العرض ---
+        // --- دوال العرض (Render Functions) ---
 
-        // أ. الطلبات المتاحة
+        // أ. الفرص المتاحة (Available Orders)
         function renderAvailable(orders) {
             const container = document.getElementById('list-available');
             const list = orders.filter(o => o.status === 'New');
@@ -227,12 +282,9 @@
             list.forEach(o => {
                 const shortId = o.order_id.split('-')[1] || o.order_id;
                 
-                // استخدام WhatsAppHelper لتوليد زر واتساب للتاجر (إذا أردنا الاتصال به)
-                // حالياً لا يوجد هاتف التاجر في الكائن، لذا نكتفي بالعرض
-                
                 let notesHtml = o.notes ? `<div class="notes-box">📝 <b>ملاحظة:</b> ${o.notes}</div>` : '';
 
-                // عند النقر على الكرت: نفتح نافذة التفاصيل الموحدة
+                // بطاقة الطلب الجديد
                 html += `
                 <div class="mobile-card new" onclick="UI.openOrderPage(currentOrders.find(x => x.order_id === '${o.order_id}'))">
                     <div class="card-header">
@@ -242,12 +294,12 @@
                     <div class="info-row"><span>🏪</span> <b>التاجر:</b> ${o.seller_username}</div>
                     <div class="info-row"><span>📍</span> <b>العنوان:</b> ${o.customer_address}</div>
                     
-                    <div class="info-row" style="color: #666; font-size: 0.85rem; background: #f9f9f9; padding: 8px; border-radius: 8px;">
-                        📝 ${o.order_details}
+                    <div class="info-row" style="color: #666; font-size: 0.9rem; background: #f9f9f9; padding: 10px; border-radius: 8px; margin-top:10px;">
+                        ${o.order_details}
                     </div>
                     ${notesHtml}
                     
-                    <div class="action-grid">
+                    <div class="action-grid" style="margin-top:15px;">
                         <button class="btn btn-primary btn-block" onclick="event.stopPropagation(); acceptOrder('${o.order_id}')">✅ قبول الطلب</button>
                     </div>
                 </div>`;
@@ -255,7 +307,7 @@
             container.innerHTML = html;
         }
 
-        // ب. المهام النشطة (مع واتساب)
+        // ب. المهام النشطة (Active Tasks) - مع إصلاح الواتساب
         function renderActive(orders) {
             const container = document.getElementById('list-active');
             const user = Auth.getUser().username;
@@ -279,50 +331,52 @@
                 let mainButton = '';
                 let extraButtons = '';
                 let statusBadge = '';
-                
                 let notesHtml = o.notes ? `<div class="notes-box">📝 <b>ملاحظة:</b> ${o.notes}</div>` : '';
 
-                // توليد أزرار الاتصال (هاتف + واتساب)
-                const waButton = WhatsAppHelper.getButton(o.customer_phone, `مرحباً، بخصوص طلبك #${o.order_id.split('-')[1]}`, "واتساب");
-                const phoneButton = `<a href="tel:${o.customer_phone}" class="btn btn-sm" style="background:#eee; color:#333; border:1px solid #ccc; text-decoration:none;" onclick="event.stopPropagation()">📞 اتصال</a>`;
+                // ✅ إصلاح الواتساب (964)
+                const shortId = o.order_id.split('-')[1];
+                const waButton = WhatsAppHelper.getButton(o.customer_phone, `مرحباً، أنا مندوب التوصيل بخصوص طلبك #${shortId}`, "واتساب");
+                const phoneButton = `<a href="tel:${o.customer_phone}" class="btn btn-sm" style="background:#eee; color:#333; border:1px solid #ccc; text-decoration:none; display:inline-flex; align-items:center; gap:5px;" onclick="event.stopPropagation()">📞 اتصال</a>`;
 
+                // المنطق حسب الحالة
                 if (o.status === 'Assigned') {
                     statusBadge = `<span class="badge badge-Assigned">في الطريق للتاجر</span>`;
                     const isPaid = (o.seller_paid === true || o.seller_paid === 'TRUE');
                     
                     if (isPaid) {
-                        mainButton = `<button class="btn btn-warning btn-block" onclick="event.stopPropagation(); updateStatus('${o.order_id}', 'PickedUp')">📦 استلام الطلب</button>`;
+                        mainButton = `<button class="btn btn-warning btn-block" onclick="event.stopPropagation(); updateStatus('${o.order_id}', 'PickedUp')">📦 تم استلام الطلب من التاجر</button>`;
                     } else {
-                        mainButton = `<button class="btn btn-block" style="background:#ddd; color:#888; cursor:not-allowed;" onclick="event.stopPropagation()">⏳ بانتظار دفع التاجر</button>`;
+                        mainButton = `<button class="btn btn-block" style="background:#f3f4f6; color:#888; cursor:not-allowed;" onclick="event.stopPropagation()">⏳ بانتظار دفع التاجر</button>`;
                         
-                        extraButtons += `<button class="btn btn-danger btn-pulse btn-block" onclick="event.stopPropagation(); nudgeSeller('${o.order_id}', '${o.seller_username}')">🔔 استعجال التاجر</button>`;
-                        extraButtons += `<button class="btn btn-transfer btn-block" onclick="event.stopPropagation(); openTransferModal('${o.order_id}')">♻️ تحويل لزميل</button>`;
+                        extraButtons += `<button class="btn btn-danger btn-pulse btn-block" onclick="event.stopPropagation(); nudgeSeller('${o.order_id}', '${o.seller_username}')">🔔 استعجال التاجر للدفع</button>`;
+                        extraButtons += `<button class="btn btn-transfer btn-block" style="background:#e0f2fe; color:#0284c7;" onclick="event.stopPropagation(); openTransferModal('${o.order_id}')">♻️ تحويل لزميل</button>`;
                         extraButtons += `<button class="btn btn-danger btn-block" onclick="event.stopPropagation(); openCancelModal('${o.order_id}')">❌ إلغاء</button>`;
                     }
 
                 } else if (o.status === 'PickedUp') {
                     statusBadge = `<span class="badge badge-PickedUp">في الطريق للعميل</span>`;
-                    mainButton = `<button class="btn btn-success btn-block" onclick="event.stopPropagation(); updateStatus('${o.order_id}', 'Delivered')">🏁 تم التسليم</button>`;
+                    mainButton = `<button class="btn btn-success btn-block" onclick="event.stopPropagation(); updateStatus('${o.order_id}', 'Delivered')">🏁 تم تسليم الطلب للعميل</button>`;
                 }
 
+                // رابط الخريطة
                 const mapQuery = encodeURIComponent(o.customer_address);
                 const mapLink = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
 
                 html += `
                 <div class="mobile-card active" onclick="UI.openOrderPage(currentOrders.find(x => x.order_id === '${o.order_id}'))">
                     <div class="card-header">
-                        <span>#${o.order_id.split('-')[1]}</span>
+                        <span>#${shortId}</span>
                         ${statusBadge}
                     </div>
                     
-                    <div style="margin-bottom: 15px; background: #f8f9fa; padding: 12px; border-radius: 12px; border: 1px solid #eee;">
-                        <div style="font-weight: bold; font-size: 1.1rem; margin-bottom:5px;">👤 ${o.customer_name}</div>
+                    <div style="margin-bottom: 15px; background: #fff; padding: 15px; border-radius: 12px; border: 1px solid #eee; box-shadow: 0 2px 5px rgba(0,0,0,0.02);">
+                        <div style="font-weight: bold; font-size: 1.1rem; margin-bottom:8px; color:var(--text-main);">👤 ${o.customer_name}</div>
                         <div class="contact-actions">
                             ${phoneButton}
                             ${waButton}
                         </div>
-                        <div style="color: var(--accent); font-weight: bold; margin-top: 10px; border-top:1px dashed #ccc; padding-top:5px;">
-                            💰 التحصيل: ${Number(o.amount).toLocaleString()} IQD
+                        <div style="color: var(--primary); font-weight: 800; font-size:1.1rem; margin-top: 12px; border-top:1px dashed #eee; padding-top:8px;">
+                            💰 التحصيل: ${Number(o.amount).toLocaleString()}
                         </div>
                     </div>
                     
@@ -330,22 +384,24 @@
 
                     <a href="${mapLink}" target="_blank" class="map-btn" onclick="event.stopPropagation()"><span>📍</span> فتح العنوان في الخريطة</a>
                     
-                    <div class="action-grid">
+                    <div class="action-grid" style="margin-top:15px;">
                         ${mainButton}
                     </div>
-                    <div class="action-grid" style="margin-top:10px;">
-                        ${extraButtons}
-                    </div>
+                    ${extraButtons ? `<div class="action-grid" style="margin-top:10px; gap:8px;">${extraButtons}</div>` : ''}
                 </div>`;
             });
             container.innerHTML = html;
         }
 
-        // ج. المحفظة
+        // ج. المحفظة (Wallet)
         function renderWallet(orders) {
             const user = Auth.getUser().username;
             const delivered = orders.filter(o => o.status === 'Delivered' && o.courier_username === user);
-            const totalCash = delivered.reduce((sum, o) => sum + Number(o.amount), 0);
+            
+            // حساب الكاش الذي لم يتم تسويته بعد
+            const totalCash = delivered
+                .filter(o => !o.settled || o.settled === 'FALSE')
+                .reduce((sum, o) => sum + Number(o.amount), 0);
             
             document.getElementById('wallet-amount').innerText = totalCash.toLocaleString();
 
@@ -357,38 +413,43 @@
                 return;
             }
 
-            delivered.slice().reverse().slice(0, 10).forEach(o => { 
+            delivered.slice().reverse().slice(0, 15).forEach(o => { 
+                const isSettled = (o.settled === true || o.settled === 'TRUE');
+                const icon = isSettled ? '✅' : '⏳';
+                const statusText = isSettled ? 'تمت التصفية' : 'بذمتك';
+                const color = isSettled ? '#999' : 'var(--danger)';
+
                 historyHtml += `
-                    <li style="padding: 15px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                    <li style="padding: 15px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items:center;">
                         <div>
-                            <div style="font-weight: bold;">طلب #${o.order_id.split('-')[1]}</div>
-                            <small style="color: #888;">${new Date(o.date_time).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'})}</small>
+                            <div style="font-weight: bold; color:#333;">طلب #${o.order_id.split('-')[1]}</div>
+                            <small style="color: ${color};">${icon} ${statusText}</small>
                         </div>
-                        <span style="font-weight: bold; color: var(--success);">+${Number(o.amount).toLocaleString()}</span>
+                        <span style="font-weight: bold; color: var(--primary); direction:ltr;">+${Number(o.amount).toLocaleString()}</span>
                     </li>`;
             });
             historyContainer.innerHTML = historyHtml;
         }
 
-        // --- الإجراءات (Actions) ---
+        // --- 3. الإجراءات (Actions) ---
 
         async function acceptOrder(orderId) {
             if(!confirm("هل أنت متأكد من قبول هذا الطلب؟")) return;
             const user = Auth.getUser().username;
             try {
                 await Api.post('updateStatus', { order_id: orderId, status: 'Assigned', courier_username: user }, false);
-                UI.showToast("🚀 تم قبول الطلب!");
+                UI.showToast("🚀 تم قبول الطلب! انتقل لتبويب 'مهامي'");
                 switchTab('active', document.querySelectorAll('.nav-item')[1]);
                 loadCourierData(false);
             } catch (err) { }
         }
 
         async function updateStatus(orderId, newStatus) {
-            const msg = newStatus === 'PickedUp' ? "تأكيد استلام الطلب من التاجر؟" : "تأكيد تسليم الطلب واستلام المبلغ؟";
+            const msg = newStatus === 'PickedUp' ? "تأكيد استلام الطلب من التاجر؟" : "تأكيد تسليم الطلب للعميل واستلام المبلغ؟";
             if(!confirm(msg)) return;
             try {
                 await Api.post('updateStatus', { order_id: orderId, status: newStatus }, false);
-                UI.showToast("👍 تم تحديث الحالة");
+                UI.showToast(newStatus === 'PickedUp' ? "📦 تم الاستلام" : "💰 تم التسليم والتحصيل");
                 loadCourierData(false);
             } catch (err) { }
         }
@@ -399,7 +460,7 @@
                 const user = Auth.getUser().username;
                 await Api.post('nudgeUser', { 
                     order_id: orderId, target_user: sellerUsername, target_role: 'seller', 
-                    username: user, message: "المندوب ينتظر تأكيد استلام المبلغ!"
+                    username: user, message: "المندوب موجود وينتظر تأكيد استلام المبلغ!"
                 }, false);
                 UI.showToast("تم إرسال التنبيه للتاجر 🔔");
             } catch(e) {}
