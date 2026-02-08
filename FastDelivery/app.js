@@ -2,15 +2,16 @@
  * ------------------------------------------------------------------
  * PROJECT: FastDelivery System
  * FILE: app.js
- * VERSION: 8.1 (Unified UI, WhatsApp, Full Notification Details)
+ * VERSION: 9.4 (Modern UI Modals, Smart WhatsApp, Financial Fixes)
  * ------------------------------------------------------------------
  */
 
-// ✅ الرابط الجديد (V8.0 Backend)
-const API_URL = "https://script.google.com/macros/s/AKfycbzQq0vOm2EEM-FT5voPYern9KkZCRcSN75ceo4XvH1G6LqfTBMEEd70jqkzcdT82GVc/exec";
+// ⚠️ هام: قم بلصق رابط النشر الجديد (Deployment URL) هنا
+const API_URL = "https://script.google.com/macros/s/AKfycbzjKIHvRJDOwqOGFwPj_CuAfOVpo2xzQSRTrklp-5pEVZB6J3iBoUoJ2khEWTK1MX2e/exec"; 
 
 // نغمة التنبيه
 const NOTIF_SOUND = "https://cdn.pixabay.com/audio/2025/06/22/audio_76f254e734.mp3";
+
 /**
  * ------------------------------------------------------------------
  * 1. CORE API CLASS
@@ -108,16 +109,21 @@ class Finance {
 
 /**
  * ------------------------------------------------------------------
- * 4. WHATSAPP HELPER (NEW V8.0)
+ * 4. WHATSAPP HELPER (✅ V9.4 Fixed International Format)
  * ------------------------------------------------------------------
  */
 class WhatsAppHelper {
     static formatPhone(phone) {
         if (!phone) return "";
-        let p = phone.toString().replace(/\D/g, ''); // إزالة الرموز
-        // معالجة الأرقام العراقية القياسية
-        if (p.startsWith('07')) p = '964' + p.substring(1); 
-        if (p.startsWith('7')) p = '964' + p;
+        // إبقاء الأرقام فقط
+        let p = phone.toString().replace(/\D/g, ''); 
+        
+        // حذف الصفر من البداية إن وجد
+        if (p.startsWith('0')) p = p.substring(1);
+        
+        // إضافة الكود الدولي 964 إذا لم يكن موجوداً
+        if (!p.startsWith('964')) p = '964' + p;
+        
         return p;
     }
 
@@ -129,8 +135,8 @@ class WhatsAppHelper {
 
     static getButton(phone, message, label = "واتساب") {
         if(!phone) return "";
-        return `<a href="${this.getLink(phone, message)}" target="_blank" class="btn btn-sm btn-success" style="background:#25D366; border:none; margin-right:5px;" onclick="event.stopPropagation()">
-            <span style="font-size:1.1em; vertical-align:middle;">💬</span> ${label}
+        return `<a href="${this.getLink(phone, message)}" target="_blank" class="btn btn-sm" style="background:#25D366; color:white; border:none; margin-right:5px; text-decoration:none; display:inline-flex; align-items:center; gap:5px;" onclick="event.stopPropagation()">
+            <span style="font-size:1.2em;">💬</span> ${label}
         </a>`;
     }
 }
@@ -145,11 +151,11 @@ class NotificationManager {
         this.notifications = []; 
         this.soundEnabled = localStorage.getItem('fds_sound') !== 'off'; 
         this.audio = new Audio(NOTIF_SOUND);
-        
         this.lastReadTime = parseInt(localStorage.getItem('fds_last_read_time')) || 0;
 
         setTimeout(() => this.sync(), 2000);
         setInterval(() => this.sync(), 15000); 
+	this.lastCount = 0;
     }
 
     async sync() {
@@ -168,16 +174,29 @@ class NotificationManager {
         } catch(e) { console.error("Notif Sync Failed", e); }
     }
 
-    handleUpdates(serverNotifs) {
-        const newestServerTime = serverNotifs.length > 0 ? serverNotifs[0].date : 0;
-        const currentLatest = this.notifications.length > 0 ? this.notifications[0].date : 0;
+  handleUpdates(serverNotifs) {
+        // 1. نحسب عدد الإشعارات غير المقروءة حالياً
+        // (أي الإشعارات التي وقتها أحدث من آخر مرة فتحت فيها القائمة)
+        const unreadCount = serverNotifs.filter(n => n.date > this.lastReadTime).length;
 
-        if (newestServerTime > currentLatest && newestServerTime > this.lastReadTime) {
-            const latest = serverNotifs[0];
-            UI.showToast(`🔔 ${latest.text}`, latest.type || "info");
+        // 2. الشرط الذكي: هل زاد العدد عن المرة الماضية؟
+        // هذا يمنع تكرار الصوت إذا كان العدد ثابتاً (مثلاً بقي 5)
+        if (unreadCount > this.lastCount && unreadCount > 0) {
+            
+            // تشغيل الصوت مرة واحدة فقط
             this.playSound();
+
+            // إظهار رسالة منبثقة لأحدث إشعار
+            if (serverNotifs.length > 0) {
+                const latest = serverNotifs[0];
+                UI.showToast(`🔔 ${latest.text}`, latest.type || "info");
+            }
         }
 
+        // 3. تحديث الذاكرة للمرة القادمة
+        this.lastCount = unreadCount;
+
+        // 4. تحديث البيانات والواجهة (كما في الكود القديم)
         this.notifications = serverNotifs;
         this.updateBadge();
         
@@ -187,18 +206,25 @@ class NotificationManager {
         }
     }
 
-    updateBadge() {
-        const badge = document.getElementById('notif-badge');
-        if (!badge) return;
-        const unreadCount = this.notifications.filter(n => n.date > this.lastReadTime).length;
+   updateBadge() {
+    const badge = document.getElementById('notif-badge');
+    if (!badge) return;
 
-        if (unreadCount > 0) {
-            badge.innerText = unreadCount > 99 ? '99+' : unreadCount;
-            badge.classList.add('visible');
-        } else {
-            badge.classList.remove('visible');
-        }
+    // حساب عدد غير المقروء
+    const unreadCount = this.notifications.filter(n => n.date > this.lastReadTime).length;
+
+    if (unreadCount > 0) {
+        // إذا كان أكثر من 99 نكتب +99
+        badge.innerText = unreadCount > 99 ? '99+' : unreadCount;
+        
+        // ✅ التعديل: نعتمد على الكلاس فقط (CSS سيتكفل بالظهور والـ Flex)
+        badge.classList.add('visible'); 
+        
+        // ❌ حذفنا badge.style.display = 'inline-block' لأنها تخرب التوسيط
+    } else {
+        badge.classList.remove('visible');
     }
+}
 
     showDropdown() {
         const dropdown = document.getElementById('notif-dropdown');
@@ -230,7 +256,7 @@ class NotificationManager {
     renderList(container) {
         container.innerHTML = '';
         if (this.notifications.length === 0) {
-            container.innerHTML = '<div class="notif-empty">لا توجد إشعارات حديثة</div>';
+            container.innerHTML = '<div style="padding:20px; text-align:center; color:#999;">لا توجد إشعارات حديثة</div>';
             return;
         }
 
@@ -242,14 +268,16 @@ class NotificationManager {
             let icon = "📌";
             if(item.type === 'success') { typeColor = "var(--success)"; icon = "✅"; }
             if(item.type === 'warning') { typeColor = "var(--warning)"; icon = "⚠️"; }
-            if(item.type === 'alert') { typeColor = "var(--accent)"; icon = "⛔"; }
+            if(item.type === 'alert') { typeColor = "var(--danger)"; icon = "⛔"; }
 
             const html = `
-                <div class="notif-item ${isUnread ? 'unread' : ''}" onclick="Notifier.handleNotificationClick(${index})" style="border-right: 3px solid ${typeColor}">
-                    <div style="font-size:1.2rem;">${icon}</div>
-                    <div>
-                        <div>${item.text}</div>
-                        <span class="notif-time">${date}</span>
+                <div class="notif-item ${isUnread ? 'unread' : ''}" onclick="Notifier.handleNotificationClick(${index})" style="border-right: 4px solid ${typeColor}; padding:10px; border-bottom:1px solid #eee; cursor:pointer;">
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <div style="font-size:1.2rem;">${icon}</div>
+                        <div>
+                            <div style="font-size:0.9rem; font-weight:bold;">${item.text}</div>
+                            <span style="font-size:0.75rem; color:#888;">${date}</span>
+                        </div>
                     </div>
                 </div>
             `;
@@ -269,8 +297,6 @@ class NotificationManager {
                 order_id: notif.order_id,
                 actor_username: notif.actor 
             });
-            
-            // ✅ استخدام دالة العرض التفصيلي الخاصة بالإشعارات (لعرض الفاعل)
             UI.showDetailsModal(details, notif);
         } catch (e) {
             console.error("Fetch Details Error", e);
@@ -294,13 +320,15 @@ class NotificationManager {
     }
 }
 
+/* --- تعديل: نظام الإشعارات الذكي (يمنع تكرار الصوت) --- */
 const Notifier = new NotificationManager();
 
 /**
  * ------------------------------------------------------------------
- * 6. UI CLASS (COMPREHENSIVE V8.1)
+ * 6. UI CLASS (✅ V9.4 Modern Modals)
  * ------------------------------------------------------------------
  */
+
 class UI {
     static showLoader() {
         let loader = document.getElementById("loader");
@@ -335,136 +363,159 @@ class UI {
         setTimeout(() => toast.remove(), 4000);
     }
 
-    // ✅ دالة 1: عرض تفاصيل الإشعار (مستعادة من V7.0 + تحسينات)
-    // هذه الدالة تعرض من قام بالفعل (Actor) والطلب المرتبط
+    // ✅ نافذة تفاصيل الإشعار (تصميم عصري)
     static showDetailsModal(data, notif) {
         let modal = document.getElementById('detailsModal');
-        
-        // إعادة بناء النافذة لضمان نظافتها
         if (modal) modal.remove();
         
         modal = document.createElement('div');
         modal.id = 'detailsModal';
-        modal.className = 'modal-overlay';
-        modal.innerHTML = `
+        modal.className = 'modal-overlay active';
+        
+        // محتوى النافذة
+        let content = `
             <div class="modal-content">
-                <h3 style="border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:15px;">📝 تفاصيل الإشعار</h3>
+                <div class="modal-header-modern" style="background: linear-gradient(135deg, #4b5563, #1f2937);">
+                    <h3 style="margin:0;">🔔 تفاصيل الإشعار</h3>
+                    <div style="font-size:0.8rem; opacity:0.8; margin-top:5px;">${new Date(notif.date).toLocaleString('ar-IQ')}</div>
+                </div>
                 
-                <div style="background:#f8f9fa; padding:15px; border-radius:8px; margin-bottom:15px;">
-                    <p id="dm-msg" style="font-size:1.1rem; font-weight:bold; color:#333;"></p>
-                    <small id="dm-time" style="color:#888;"></small>
-                </div>
+                <div class="modal-body-modern">
+                    <div style="background:#f3f4f6; padding:15px; border-radius:12px; font-weight:bold; color:#1f2937; margin-bottom:20px; border-left:4px solid var(--primary);">
+                        ${notif.text}
+                    </div>
 
-                <div id="dm-actor-sec" style="margin-bottom:15px; display:none;">
-                    <label style="color:var(--primary); font-weight:bold;">👤 قام بهذا الإجراء:</label>
-                    <div style="display:flex; justify-content:space-between; margin-top:5px; background:#fff; padding:10px; border:1px solid #eee; border-radius:8px;">
-                        <span id="dm-actor-name" style="font-weight:bold;"></span>
-                        <a id="dm-actor-phone" href="#" style="text-decoration:none;"></a>
+                    ${data.actor ? `
+                    <div class="detail-grid">
+                        <div class="detail-label">👤 المرسل:</div>
+                        <div class="detail-value">${data.actor.full_name} (${this.translateRole(data.actor.role)})</div>
+                        ${data.actor.phone ? `<div class="detail-label">📞 الهاتف:</div><div class="detail-value"><a href="tel:${data.actor.phone}">${data.actor.phone}</a></div>` : ''}
+                    </div>
+                    <div class="detail-divider"></div>
+                    ` : ''}
+
+                    ${data.order ? `
+                    <div style="margin-top:15px;">
+                        <div style="font-weight:bold; margin-bottom:10px; color:var(--primary);">📦 معلومات الطلب المرتبط:</div>
+                        <div class="detail-grid">
+                            <div class="detail-label">رقم الطلب:</div>
+                            <div class="detail-value">#${data.order.order_id.split('-')[1]}</div>
+                            <div class="detail-label">الحالة:</div>
+                            <div class="detail-value"><span class="badge badge-${data.order.status}">${translateStatus(data.order.status)}</span></div>
+                            <div class="detail-label">المبلغ:</div>
+                            <div class="detail-value">${Number(data.order.amount).toLocaleString()}</div>
+                        </div>
+                        <div style="margin-top:15px; text-align:center;">
+                             <button id="btn-view-full-order" class="btn" style="background:var(--primary); color:white; width:100%;">عرض التفاصيل الكاملة 🔗</button>
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    <div style="margin-top:20px;">
+                        <button class="btn" style="background:#e5e7eb; color:#374151; width:100%;" onclick="UI.closeModal('detailsModal')">إغلاق</button>
                     </div>
                 </div>
-
-                <div id="dm-order-sec" style="margin-bottom:15px; display:none; border:1px dashed #ccc; padding:10px; border-radius:8px;">
-                    <label style="color:var(--primary); font-weight:bold;">📦 ملخص الطلب المرتبط:</label>
-                    <table style="width:100%; font-size:0.9rem; margin-top:5px;">
-                        <tr><td style="color:#666;">رقم الطلب:</td><td id="dm-ord-id" style="font-weight:bold;"></td></tr>
-                        <tr><td style="color:#666;">المبلغ:</td><td id="dm-ord-amount"></td></tr>
-                        <tr><td style="color:#666;">الحالة:</td><td id="dm-ord-status"></td></tr>
-                        <tr><td style="color:#666;">المندوب الحالي:</td><td id="dm-ord-courier"></td></tr>
-                    </table>
-                    <div style="margin-top:10px; text-align:center;">
-                         <button id="btn-view-full-order" class="btn btn-sm btn-info">عرض التفاصيل الكاملة والواتساب 🔗</button>
-                    </div>
-                </div>
-
-                <button class="btn btn-primary btn-block" onclick="UI.closeModal('detailsModal')">إغلاق</button>
             </div>
         `;
+        
+        modal.innerHTML = content;
         document.body.appendChild(modal);
 
-        // تعبئة البيانات
-        document.getElementById('dm-msg').innerText = notif.text;
-        document.getElementById('dm-time').innerText = new Date(notif.date).toLocaleString('ar-IQ');
-
-        // بيانات المرسل (الفاعل) - مهمة جداً للمدير
-        const actorSec = document.getElementById('dm-actor-sec');
-        if (data.actor) {
-            actorSec.style.display = 'block';
-            document.getElementById('dm-actor-name').innerText = `${data.actor.full_name} (${this.translateRole(data.actor.role)})`;
-            const ph = document.getElementById('dm-actor-phone');
-            if(data.actor.phone && data.actor.phone !== '-') {
-                ph.innerText = `📞 ${data.actor.phone}`;
-                ph.href = `tel:${data.actor.phone}`;
-            } else {
-                ph.innerText = "";
-            }
-        } else {
-            actorSec.style.display = 'none';
-        }
-
-        // بيانات الطلب المختصرة
-        const orderSec = document.getElementById('dm-order-sec');
-        if (data.order) {
-            orderSec.style.display = 'block';
-            document.getElementById('dm-ord-id').innerText = data.order.order_id;
-            document.getElementById('dm-ord-amount').innerText = Number(data.order.amount).toLocaleString();
-            document.getElementById('dm-ord-status').innerHTML = `<span class="badge badge-${data.order.status}">${translateStatus(data.order.status)}</span>`;
-            document.getElementById('dm-ord-courier').innerText = data.order.courier_username || "غير مسند";
-            
-            // ربط زر "عرض التفاصيل الكاملة" بالدالة الجديدة
+        if(data.order) {
             document.getElementById('btn-view-full-order').onclick = function() {
                 UI.closeModal('detailsModal');
-                UI.openOrderPage(data.order); // الانتقال للنافذة الموحدة الجديدة
+                UI.openOrderPage(data.order); 
             };
-        } else {
-            orderSec.style.display = 'none';
         }
-
-        this.openModal('detailsModal');
     }
 
-    // ✅ دالة 2: نافذة تفاصيل الطلب الموحدة (الجديدة V8.0)
-    // تستخدم عند النقر على جدول الطلبات أو الانتقال من الإشعار
+    // ✅ نافذة تفاصيل الطلب الموحدة (Modern Card Design - Grid System)
     static openOrderPage(order) {
-        // إزالة أي نافذة قديمة
         const old = document.getElementById('unifiedOrderModal');
         if(old) old.remove();
 
-        // تجهيز أزرار الواتساب باستخدام الكلاس الجديد
-        const waCust = WhatsAppHelper.getButton(order.customer_phone, `مرحباً ${order.customer_name}، بخصوص طلبك رقم ${order.order_id}`, "واتساب العميل");
+        const shortId = order.order_id.split('-')[1];
+        const waCust = WhatsAppHelper.getButton(order.customer_phone, `مرحباً ${order.customer_name}، بخصوص طلبك رقم ${shortId}`, "واتساب العميل");
         
-        // واتساب التاجر (إذا توفر رقمه في المستقبل يمكن جلبه، حالياً نعتمد على الزر العام)
-        // const waSeller = ... 
+        // تحديد لون الهيدر حسب الحالة
+        let headerColor = "var(--primary)";
+        if(order.status === 'Cancelled') headerColor = "var(--danger)";
+        if(order.status === 'Completed' || order.status === 'Delivered') headerColor = "var(--success)";
+        if(order.status === 'Pending_Seller') headerColor = "var(--warning)";
 
         const modal = document.createElement('div');
         modal.id = 'unifiedOrderModal';
-        modal.className = 'modal-overlay active'; // تفتح مباشرة
+        modal.className = 'modal-overlay active'; 
+        
         modal.innerHTML = `
-            <div class="modal-content" style="max-width:600px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:15px;">
-                    <h3>📦 تفاصيل الطلب #${order.order_id.split('-')[1]}</h3>
-                    <span class="badge badge-${order.status}" style="font-size:1rem;">${translateStatus(order.status)}</span>
+            <div class="modal-content">
+                <div class="modal-header-modern" style="background: ${headerColor};">
+                    <h3 style="margin:0;">📦 طلب #${shortId}</h3>
+                    <div style="font-size:0.8rem; opacity:0.9; margin-top:5px;">${new Date(order.date_time).toLocaleString('ar-IQ')}</div>
+                    <div style="margin-top:5px;"><span class="badge" style="background:rgba(255,255,255,0.2); color:white;">${translateStatus(order.status)}</span></div>
                 </div>
                 
-                <table class="detail-table">
-                    <tr><td style="width:30%;">التاريخ:</td><td>${new Date(order.date_time).toLocaleString('ar-IQ')}</td></tr>
-                    <tr><td>العميل:</td><td>${order.customer_name}</td></tr>
-                    <tr><td>الهاتف:</td><td>${order.customer_phone} <br> ${waCust}</td></tr>
-                    <tr><td>العنوان:</td><td>${order.customer_address}</td></tr>
-                    <tr><td>التفاصيل:</td><td>${order.order_details}</td></tr>
-                    <tr><td>الملاحظات:</td><td style="color:var(--warning);">${order.notes || "لا يوجد"}</td></tr>
-                    <tr><td>المبلغ الكلي:</td><td style="font-weight:bold; font-size:1.1rem;">${Number(order.amount).toLocaleString()}</td></tr>
-                    <tr><td>التاجر:</td><td>${order.seller_username}</td></tr>
-                    <tr><td>المندوب:</td><td>${order.courier_username || "غير مسند"}</td></tr>
-                    
-                    <tr style="border-top:2px solid #eee;"><td colspan="2" style="padding-top:10px; font-weight:bold; color:var(--primary);">📊 البيانات المالية:</td></tr>
-                    <tr><td>صافي التاجر:</td><td style="color:var(--primary); font-weight:bold;">${Number(order.net_seller).toLocaleString()}</td></tr>
-                    <tr><td>سعر التوصيل:</td><td style="color:var(--success);">${Number(order.delivery_fee).toLocaleString()}</td></tr>
-                    <tr><td>حالة التسوية:</td><td>${(order.settled === true || order.settled === 'TRUE') ? '✅ تم التسديد للشركة' : '❌ في ذمة المندوب'}</td></tr>
-                    <tr><td>حالة التاجر:</td><td>${(order.seller_paid === true || order.seller_paid === 'TRUE') ? '✅ تم استلام المبلغ' : '⏳ بانتظار الاستلام'}</td></tr>
-                </table>
+                <div class="modal-body-modern">
+                    <div class="detail-grid">
+                        <div class="detail-label">👤 العميل:</div>
+                        <div class="detail-value">${order.customer_name}</div>
+                        
+                        <div class="detail-label">📞 الهاتف:</div>
+                        <div class="detail-value" style="display:flex; flex-wrap:wrap; gap:5px;">
+                            <a href="tel:${order.customer_phone}" style="text-decoration:none;">${order.customer_phone}</a>
+                            ${waCust}
+                        </div>
+                        
+                        <div class="detail-divider"></div>
+                        
+                        <div class="detail-label">📍 العنوان:</div>
+                        <div class="detail-value" style="font-size:0.95rem; line-height:1.4;">${order.customer_address}</div>
+                        
+                        <div class="detail-divider"></div>
+                        
+                        <div class="detail-label" style="align-self:start;">📝 التفاصيل:</div>
+                        <div class="detail-value" style="background:#f9fafb; padding:10px; border-radius:8px; line-height:1.5; color:#374151; border:1px dashed #e5e7eb;">
+                            ${order.order_details}
+                        </div>
 
-                <div style="margin-top:20px;">
-                    <button class="btn btn-block" style="background:#eee; color:#333;" onclick="document.getElementById('unifiedOrderModal').remove()">إغلاق</button>
+                        ${order.notes ? `
+                        <div class="detail-label">📋 ملاحظات:</div>
+                        <div class="detail-value" style="color:#d97706; background:#fffbeb; padding:5px; border-radius:5px;">${order.notes}</div>` : ''}
+                        
+                        <div class="detail-divider"></div>
+
+                        <div class="detail-label">💰 المبلغ:</div>
+                        <div class="detail-value" style="font-size:1.3rem; color:var(--primary); font-weight:800;">
+                            ${Number(order.amount).toLocaleString()} <span style="font-size:0.8rem; font-weight:normal; color:#666;">د.ع</span>
+                        </div>
+                        
+                        <div class="detail-label">🏪 التاجر:</div>
+                        <div class="detail-value">${order.seller_username}</div>
+                        
+                        <div class="detail-label">🛵 المندوب:</div>
+                        <div class="detail-value">${order.courier_username || "---"}</div>
+                    </div>
+
+                    <div style="margin-top:20px; background:#f8fafc; padding:15px; border-radius:12px; border:1px solid #e2e8f0;">
+                        <div style="font-weight:bold; color:#64748b; margin-bottom:10px;">📊 الملخص المالي:</div>
+                        <div class="detail-grid" style="gap:5px;">
+                            <div class="detail-label">سعر التوصيل:</div>
+                            <div class="detail-value" style="color:var(--success);">+${Number(order.delivery_fee || 0).toLocaleString()}</div>
+                            
+                            <div class="detail-label">صافي التاجر:</div>
+                            <div class="detail-value" style="color:#1e293b; font-weight:bold;">${Number(order.net_seller || 0).toLocaleString()}</div>
+                            
+                            <div class="detail-label">حالة التسوية:</div>
+                            <div class="detail-value">${(order.settled === true || order.settled === 'TRUE') ? '✅ واصل للشركة' : '❌ بذمة المندوب'}</div>
+                            
+                            <div class="detail-label">حالة التاجر:</div>
+                            <div class="detail-value">${(order.seller_paid === true || order.seller_paid === 'TRUE') ? '✅ تم الاستلام' : '⏳ بانتظار الدفع'}</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:20px;">
+                        <button class="btn" style="background:#f1f5f9; color:#475569; width:100%; font-weight:bold;" onclick="document.getElementById('unifiedOrderModal').remove()">إغلاق النافذة</button>
+                    </div>
                 </div>
             </div>
         `;
@@ -472,7 +523,7 @@ class UI {
     }
 
     static translateRole(role) {
-        const map = { 'admin': 'مدير', 'seller': 'تاجر', 'courier': 'مندوب' };
+        const map = { 'admin': 'مدير', 'seller': 'تاجر', 'courier': 'مندوب', 'customer': 'عميل' };
         return map[role] || role;
     }
 
@@ -514,14 +565,22 @@ class UI {
 }
 
 function translateStatus(status) {
-    const map = { 'New': 'جديد', 'Assigned': 'تم الإسناد', 'PickedUp': 'جاري التوصيل', 'Delivered': 'تم التوصيل', 'Cancelled': 'ملغي', 'Completed': 'مكتمل' };
+    const map = { 
+        'Pending_Admin': '⏳ قيد المراجعة',
+        'Pending_Seller': 'بانتظار التسعير',
+        'New': 'جديد (للمناديب)', 
+        'Assigned': 'تم الإسناد', 
+        'PickedUp': 'جاري التوصيل', 
+        'Delivered': 'تم التوصيل', 
+        'Cancelled': 'ملغي', 
+        'Completed': 'مكتمل' 
+    };
     return map[status] || status;
 }
 
 window.onclick = function(event) {
     if (event.target.classList.contains('modal-overlay')) {
          event.target.classList.remove('active');
-         // إزالة النوافذ الديناميكية عند النقر خارجها
          if(event.target.id === 'unifiedOrderModal') event.target.remove();
          if(event.target.id === 'detailsModal') event.target.classList.remove('active');
     }
