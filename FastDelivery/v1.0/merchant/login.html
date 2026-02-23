@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>دخول التاجر | FastDelivery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ========================================= */
+        /* تصميم مخصص للهواتف (Mobile-First UI) */
+        /* ========================================= */
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;900&display=swap');
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+            /* إلغاء تأثيرات الضغط الافتراضية في الموبايل */
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            /* خلفية فاتحة ونظيفة جداً */
+            background-color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* الحاوية الرئيسية للمحتوى */
+        .mobile-container {
+            width: 100%;
+            max-width: 450px; /* لن تتوسع أكثر من حجم تابلت صغير */
+            padding: 30px 25px;
+            background: white;
+            /* في الشاشات الكبيرة نعطيها حواف، في الموبايل تملأ الشاشة */
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        /* على الشاشات الأكبر قليلاً، نعطيها شكل بطاقة */
+        @media (min-width: 480px) {
+            .mobile-container {
+                border-radius: 30px;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+                padding: 40px 35px;
+            }
+        }
+
+        /* رأس الصفحة والشعار */
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            /* تدرج لوني يوحي بالنشاط التجاري (أزرق وبرتقالي) */
+            background: linear-gradient(135deg, #3b82f6, #f97316);
+            border-radius: 22px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
+            transform: rotate(-3deg);
+        }
+
+            .logo-icon i {
+                font-size: 36px;
+                color: white;
+            }
+
+        h1 {
+            margin: 0;
+            font-size: 26px;
+            color: #1e293b;
+            font-weight: 900;
+        }
+
+        p.subtitle {
+            margin: 10px 0 0 0;
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        /* حقول الإدخال الضخمة للموبايل */
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+            .input-wrapper i {
+                position: absolute;
+                top: 50%;
+                right: 18px;
+                transform: translateY(-50%);
+                color: #94a3b8;
+                font-size: 20px;
+                pointer-events: none; /* لضمان عدم اعتراض اللمس */
+                transition: 0.3s;
+            }
+
+        input {
+            width: 100%;
+            /* حشوة كبيرة جداً لتكبير منطقة اللمس */
+            padding: 18px 55px 18px 20px;
+            font-size: 16px; /* حجم 16 يمنع الـ Zoom التلقائي في الآيفون */
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            background: #f1f5f9;
+            color: #334155;
+            font-weight: 500;
+            outline: none;
+            transition: all 0.3s;
+            -webkit-appearance: none; /* إزالة ستايل الآيفون الافتراضي */
+        }
+
+            input:focus {
+                background: white;
+                border-color: #3b82f6;
+                box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            }
+
+                input:focus + i {
+                    color: #3b82f6;
+                }
+
+        /* زر الدخول العملاق */
+        .main-btn {
+            width: 100%;
+            padding: 18px;
+            /* تدرج لوني قوي */
+            background: linear-gradient(to right, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 19px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+            /* تأثير الضغط (Active State) مهم جداً في الموبايل */
+            .main-btn:active {
+                transform: scale(0.98);
+                box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+            }
+
+            .main-btn:disabled {
+                background: #cbd5e1;
+                box-shadow: none;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+        /* رسالة الخطأ */
+        #errorMsg {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 15px;
+            font-weight: 700;
+            min-height: 25px;
+        }
+    </style>
+</head>
+<body>
+
+    <main class="mobile-container">
+        <div class="header-section">
+            <div class="logo-icon">
+                <i class="fas fa-store-alt"></i>
+            </div>
+            <h1>أهلاً بك، شريكنا!</h1>
+            <p class="subtitle">سجل الدخول لإدارة طلبات متجرك</p>
+        </div>
+
+        <form id="loginForm" onsubmit="return false;">
+            <div class="input-wrapper">
+                <input type="email" id="email" placeholder="البريد الإلكتروني" autocomplete="email" required>
+                <i class="fas fa-envelope"></i>
+            </div>
+
+            <div class="input-wrapper">
+                <input type="password" id="password" placeholder="كلمة المرور" autocomplete="current-password" required>
+                <i class="fas fa-lock"></i>
+            </div>
+
+            <button type="submit" id="loginBtn" class="main-btn">
+                <span>تسجيل الدخول</span>
+                <i class="fas fa-arrow-left" style="font-size: 18px;"></i>
+            </button>
+        </form>
+
+        <p id="errorMsg"></p>
+    </main>
+
+    <script type="module">
+        import { loginUser } from '../../shared/auth.js';
+
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMsg = document.getElementById('errorMsg');
+        const loginForm = document.getElementById('loginForm');
+
+        // استخدام حدث submit للنموذج يدعم زر Enter في كيبورد الهاتف تلقائياً
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // منع إعادة تحميل الصفحة
+
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            // إخفاء الكيبورد في الموبايل عند البدء
+            emailInput.blur();
+            passwordInput.blur();
+
+            errorMsg.style.color = "#3b82f6";
+            errorMsg.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق من بياناتك...';
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin fa-lg"></i>'; // تكبير أيقونة التحميل
+
+            const result = await loginUser(email, password);
+
+            if (!result.success) {
+                errorMsg.style.color = "#ef4444";
+                errorMsg.innerHTML = `<i class="fas fa-circle-exclamation"></i> ${result.message}`;
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<span>تسجيل الدخول</span> <i class="fas fa-arrow-left"></i>';
+                // هز الهاتف عند الخطأ (إذا كان مدعوماً)
+                if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+            } else {
+                errorMsg.style.color = "#10b981";
+                errorMsg.innerHTML = '<i class="fas fa-circle-check"></i> تم بنجاح! أهلاً بك في متجرك.';
+                // التوجيه للصفحة الرئيسية للتاجر
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>
