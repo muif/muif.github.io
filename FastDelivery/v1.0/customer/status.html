@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تتبع الطلبات</title>
+    <link rel="stylesheet" href="css/customer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body style="display: none;">
+    <header class="customer-header" style="justify-content: center; position: relative;">
+        <a href="index.html" style="position: absolute; right: 20px; color: white; text-decoration: none; font-size: 20px;">
+            <i class="fas fa-arrow-right"></i>
+        </a>
+        <h2 style="margin: 0;">تتبع طلباتي</h2>
+    </header>
+
+    <div style="padding: 20px;" id="orders-container">
+        <p style="text-align: center; color: gray;">جاري تحميل الطلبات...</p>
+    </div>
+    <div id="ticket-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; justify-content:center; align-items:center;">
+        <div style="background:white; padding:20px; border-radius:12px; width:90%; max-width:400px; text-align:right;">
+            <h3 style="color:#e74c3c; margin-bottom:5px;"><i class="fas fa-headset"></i> الدعم الفني</h3>
+            <p id="ticket-order-info" style="font-size:13px; color:gray; margin-bottom:15px;"></p>
+
+            <select id="ticket-subject" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:5px;">
+                <option value="استفسار عن الطلب">استفسار عن الطلب</option>
+                <option value="تأخير في التوصيل">تأخير في التوصيل</option>
+                <option value="الطلب غير مطابق">الطلب غير مطابق</option>
+                <option value="شكوى بخصوص المندوب">شكوى بخصوص المندوب</option>
+                <option value="أخرى">أخرى...</option>
+            </select>
+
+            <textarea id="ticket-message" placeholder="اكتب تفاصيل رسالتك هنا..." style="width:100%; padding:10px; border:1px solid #ccc; border-radius:5px; height:80px; resize:none;"></textarea>
+
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button id="submit-ticket-btn" style="flex:2; background:#e74c3c; color:white; padding:10px; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">إرسال للإدارة</button>
+                <button onclick="document.getElementById('ticket-modal').style.display='none'" style="flex:1; background:#95a5a6; color:white; padding:10px; border:none; border-radius:5px; cursor:pointer;">إلغاء</button>
+            </div>
+        </div>
+    </div>
+    <style>
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 10px;
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.08);
+            z-index: 1500;
+            /* حواف علوية دائرية ناعمة للشريط نفسه */
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+            height: 70px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: bold;
+            gap: 4px;
+            transition: 0.3s;
+            flex: 1;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+            .nav-item i {
+                font-size: 22px;
+                transition: 0.3s;
+            }
+
+            /* لون الزر المفعل (أحمر أنيق) */
+            .nav-item.active {
+                color: #e11d48;
+            }
+
+                .nav-item.active i {
+                    transform: translateY(-4px);
+                    filter: drop-shadow(0 4px 6px rgba(225, 29, 72, 0.3));
+                }
+
+        /* ========================================= */
+        /* 🚀 تصميم الزر المركزي الطائر (Floating Button) */
+        /* ========================================= */
+        .center-btn-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1.2;
+            height: 100%;
+        }
+
+        .center-fab-btn {
+            position: absolute;
+            top: -45px; /* رفع الزر للأعلى ليبرز من الشريط */
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            /* تدرج لوني فخم */
+            background: linear-gradient(135deg, #e11d48, #be123c);
+            color: white;
+            /* الإطار الملون بنفس لون خلفية الصفحة يعطي خدعة (الحفرة) البصرية */
+            border: 8px solid #f8fafc;
+            box-shadow: 0 10px 20px rgba(225, 29, 72, 0.4);
+            font-size: 28px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            /* حركة ارتدادية عند الضغط (Bounce) */
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            outline: none;
+            z-index: 10;
+            /* تأثير النبض لجذب عين العميل */
+            animation: pulse-ring 2.5s infinite;
+        }
+
+            .center-fab-btn:active {
+                transform: scale(0.85); /* تصغير عند اللمس */
+            }
+
+        .center-fab-text {
+            position: absolute;
+            bottom: -5px;
+            font-size: 11px;
+            color: #e11d48;
+            font-weight: 900;
+        }
+
+        /* تأثير النبض للزر المركزي */
+        @keyframes pulse-ring {
+            0% {
+                box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.5);
+            }
+
+            70% {
+                box-shadow: 0 0 0 15px rgba(225, 29, 72, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(225, 29, 72, 0);
+            }
+        }
+    </style>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <i class="fas fa-home"></i> <span>الرئيسية</span>
+        </a>
+
+        <a href="status.html" class="nav-item active">
+            <i class="fas fa-clipboard-list"></i> <span>طلباتي</span>
+        </a>
+
+        <div class="center-btn-wrapper">
+            <button id="open-direct-order-btn" class="center-fab-btn">
+                <i class="fas fa-bolt"></i>
+            </button>
+            <span class="center-fab-text">طلب حر</span>
+        </div>
+
+        <a href="rewards.html" class="nav-item">
+            <i class="fas fa-gift"></i> <span>مكافآتي</span>
+        </a>
+
+        <a href="account.html" class="nav-item">
+            <i class="fas fa-user"></i> <span>حسابي</span>
+        </a>
+    </nav>
+    <div id="customer-order-details-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f8fafc; z-index: 4000; overflow-y: auto; direction: rtl;">
+
+        <div style="background: white; padding: 20px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 15px; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+            <i class="fas fa-arrow-right" id="close-customer-order-details" style="font-size: 22px; color: #64748b; cursor: pointer; padding: 5px;"></i>
+            <h3 style="margin: 0; color: #1e293b; font-size: 18px;">تفاصيل الطلب</h3>
+        </div>
+
+        <div style="display: flex; border-bottom: 2px solid #e2e8f0; background: #fff;">
+            <button class="c-order-tab-btn active" data-tab="c-tab-details" style="flex: 1; padding: 15px; border: none; background: none; font-weight: bold; font-size: 15px; color: #3b82f6; border-bottom: 3px solid #3b82f6; cursor: pointer;">📄 التفاصيل</button>
+            <button class="c-order-tab-btn" data-tab="c-tab-logs" style="flex: 1; padding: 15px; border: none; background: none; font-weight: bold; font-size: 15px; color: #64748b; border-bottom: 3px solid transparent; cursor: pointer;">⏳ التتبع الزمني</button>
+        </div>
+
+        <div style="padding: 20px; padding-bottom: 100px;">
+
+            <div id="c-tab-details" class="c-order-tab-content">
+                <div style="background: white; border: 1px solid #e2e8f0; padding: 15px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                    <h4 style="color: #475569; margin: 0 0 10px 0; font-size: 14px;"><i class="fas fa-store"></i> المتجر / التاجر</h4>
+                    <p style="margin: 0; font-size: 16px; color: #1e293b; font-weight: bold;" id="modal-c-merchant-name">جاري التحميل...</p>
+                </div>
+
+                <div id="modal-c-driver-section" style="display: none; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+                    <h4 style="color: #166534; margin: 0 0 10px 0; font-size: 14px;"><i class="fas fa-motorcycle"></i> بيانات المندوب (للتواصل)</h4>
+                    <p style="margin: 0 0 8px 0; font-size: 15px; color: #166534; font-weight: bold;" id="modal-c-driver-name">...</p>
+                    <p style="margin: 0; font-size: 15px; color: #166534; font-weight: bold;" dir="ltr" id="modal-c-driver-phone">...</p>
+                </div>
+
+                <div id="modal-c-cancel-section" style="display: none; background: #fef2f2; border: 1px dashed #f87171; padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+                    <h4 style="color: #b91c1c; margin: 0 0 8px 0; font-size: 14px;"><i class="fas fa-ban"></i> سبب الإلغاء</h4>
+                    <p id="modal-c-cancel-reason" style="margin: 0; font-size: 14px; color: #7f1d1d; line-height: 1.5;"></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                    <h4 style="color: #475569; margin: 0 0 12px 0; font-size: 14px;"><i class="fas fa-wallet"></i> تفاصيل الحساب</h4>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; color: #475569;">
+                        <span>سعر المنتجات:</span><strong id="modal-c-price">0 د.ع</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; color: #475569;">
+                        <span>أجرة التوصيل:</span><strong id="modal-c-delivery">0 د.ع</strong>
+                    </div>
+                    <hr style="border: 0; border-top: 1px dashed #cbd5e1; margin: 10px 0;">
+                    <div style="display: flex; justify-content: space-between; font-size: 18px; color: #e74c3c;">
+                        <strong>الإجمالي المطلوب:</strong><strong id="modal-c-total">0 د.ع</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div id="c-tab-logs" class="c-order-tab-content" style="display: none;">
+                <div id="audit-log-content-customer">
+                    <p style="text-align: center; color: gray; margin-top: 20px;"><i class="fas fa-spinner fa-spin"></i> جاري جلب السجل...</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script type="module" src="js/tracking.js"></script>
+</body>
+</html>

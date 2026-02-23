@@ -1,0 +1,576 @@
+/* ============================================================================
+   ملف التنسيقات الخاص بتطبيق العميل (Customer App CSS)
+   الخطوة 1: تأسيس الخطوط، الخلفية، والهيدر العصري (Mobile-First UI)
+============================================================================ */
+
+/* استدعاء الخطوط العصرية */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    /* الخط الأساسي للتطبيق */
+    font-family: 'Tajawal', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+}
+
+body {
+    background-color: #f8fafc; /* خلفية أهدأ وأكثر عصرية */
+    direction: rtl;
+    padding-bottom: 80px;
+    color: #334155; /* لون نص مريح للعين */
+}
+
+/* ----------------------------------------------------------------------------
+   الرأس (Header) وتجربة المستخدم
+---------------------------------------------------------------------------- */
+.customer-header {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    padding: 20px;
+    border-bottom-left-radius: 24px; /* حواف أنعم */
+    border-bottom-right-radius: 24px;
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.25); /* ظل أحمر ناعم يضيف عمقاً */
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-info h2 {
+    font-size: 19px;
+    margin-bottom: 5px;
+    letter-spacing: 0.5px;
+}
+
+/* شارة نقاط الولاء بلمسة زجاجية عصرية (Glassmorphism) */
+.loyalty-badge {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    display: inline-block;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* توزيع متناسق للأيقونات */
+}
+
+    .header-actions a, .header-actions i {
+        color: white;
+        text-decoration: none;
+        font-size: 20px;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+
+    .header-actions a {
+        font-size: 15px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+        .header-actions a:hover, .header-actions i:hover {
+            transform: scale(1.1); /* تأثير تكبير لطيف عند اللمس */
+        }
+
+/* ----------------------------------------------------------------------------
+[تطبيقاً للجزء الثاني]: زر الطلب المباشر (Direct Order)
+زر ضخم يبرز بشكل واضح في أعلى الشاشة لتشجيع العميل على طلب ما لا يجده في المتاجر.
+---------------------------------------------------------------------------- 
+*/
+/* ----------------------------------------------------------------------------
+   الطلب المباشر (Direct Order) - تصميم عصري بارز
+---------------------------------------------------------------------------- */
+.direct-order-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    width: 90%;
+    margin: -20px auto 25px auto;
+    background: #ffffff;
+    color: #e74c3c;
+    padding: 16px;
+    border-radius: 16px; /* حواف دائرية أكثر نعومة */
+    font-family: 'Cairo', sans-serif; /* خط بارز */
+    font-weight: 700;
+    font-size: 16px;
+    box-shadow: 0 8px 20px rgba(231, 76, 60, 0.15); /* ظل أنعم وأكثر انتشاراً */
+    text-decoration: none;
+    position: relative;
+    z-index: 10;
+    cursor: pointer;
+    border: 2px solid #fee2e2; /* لون إطار ألطف من الأحمر الصارخ */
+    transition: all 0.3s ease;
+}
+
+    .direct-order-btn:active {
+        transform: scale(0.97); /* تأثير الضغط لأسفل عند النقر */
+        box-shadow: 0 4px 10px rgba(231, 76, 60, 0.1);
+    }
+
+/* الأقسام (Sections) */
+.section-title {
+    padding: 0 20px;
+    margin-bottom: 15px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 18px;
+    color: #1e293b; /* لون أغمق وعصري */
+    font-weight: 700;
+}
+
+/* ----------------------------------------------------------------------------
+   السلايد شو الأفقي للمتاجر والمنتجات (Horizontal Carousels)
+---------------------------------------------------------------------------- */
+.horizontal-scroll {
+    display: flex;
+    overflow-x: auto;
+    padding: 5px 20px 20px 20px; /* مساحة مريحة للظل السفلي */
+    gap: 15px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* إخفاء سكرول فايرفوكس */
+}
+
+    .horizontal-scroll::-webkit-scrollbar {
+        display: none; /* إخفاء سكرول كروم وسفاري */
+    }
+
+/* بطاقة التاجر المحدثة */
+.merchant-card {
+    min-width: 130px;
+    background: #ffffff;
+    border-radius: 16px; /* حواف عصرية */
+    padding: 18px 15px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04); /* ظل خفيف جداً ونظيف */
+    border: 1px solid #f1f5f9;
+    scroll-snap-align: start;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    .merchant-card:active {
+        transform: scale(0.95);
+        background-color: #f8fafc;
+    }
+
+.merchant-emoji {
+    font-size: 38px;
+    margin-bottom: 12px;
+    background: #f1f5f9; /* دائرة رمادية مزرقة فاتحة خلف الإيموجي */
+    width: 70px;
+    height: 70px;
+    line-height: 70px;
+    border-radius: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.merchant-name {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: #1e293b;
+}
+
+/* بطاقة المنتج المحدثة */
+.product-card {
+    min-width: 220px;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    border: 1px solid #f1f5f9;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.product-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+    .product-header span {
+        font-size: 35px;
+        background: #f8fafc;
+        padding: 10px;
+        border-radius: 12px;
+    }
+
+.product-details h4 {
+    font-family: 'Cairo', sans-serif;
+    font-size: 15px;
+    margin-bottom: 4px;
+    color: #1e293b;
+    line-height: 1.3;
+}
+
+.product-price {
+    font-weight: 700;
+    color: #e74c3c;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.add-btn {
+    background: #10b981; /* لون أخضر زمردي عصري ومحفز للضغط */
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 10px; /* حواف أنعم للزر */
+    width: 100%;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+    .add-btn:active {
+        transform: scale(0.96);
+    }
+
+/* ----------------------------------------------------------------------------
+[تطبيقاً للجزء السابع]: شاشة إتمام الطلب المنبثقة (Checkout Overlay)
+تظهر من الأسفل بحركة ناعمة (Slide up) لتبقي العميل في نفس الصفحة دون تشتيت.
+---------------------------------------------------------------------------- 
+*/
+/* ----------------------------------------------------------------------------
+   شاشة إتمام الطلب المنبثقة (Modern Checkout Bottom Sheet)
+---------------------------------------------------------------------------- */
+.checkout-overlay {
+    position: fixed;
+    bottom: -100%;
+    left: 0;
+    width: 100%;
+    height: 85vh;
+    background: #ffffff;
+    border-top-left-radius: 28px; /* حواف علوية عصرية جداً */
+    border-top-right-radius: 28px;
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.08); /* ظل علوي ناعم ومنتشر */
+    z-index: 200;
+    transition: bottom 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* حركة انبثاق مريحة للعين */
+    padding: 25px 20px;
+    overflow-y: auto;
+}
+
+    .checkout-overlay.open {
+        bottom: 0;
+    }
+
+/* زر إغلاق الشاشة */
+.close-checkout {
+    position: absolute;
+    top: 25px;
+    left: 20px;
+    font-size: 20px;
+    color: #94a3b8;
+    background: #f1f5f9; /* خلفية دائرية للزر */
+    width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    .close-checkout:active {
+        background: #e2e8f0;
+        color: #ef4444; /* يحمر عند الضغط */
+        transform: scale(0.9);
+    }
+
+/* حقول الإدخال العصرية */
+.form-group {
+    margin-bottom: 18px;
+}
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 700;
+        color: #334155;
+    }
+
+    /* توحيد تصميم جميع المدخلات في الشاشة */
+    .form-group select, .form-group input, #custom-order-text, #ticket-subject, #ticket-message {
+        width: 100%;
+        padding: 14px 15px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 14px;
+        font-family: 'Tajawal', sans-serif;
+        color: #1e293b;
+        background-color: #f8fafc;
+        transition: all 0.3s ease;
+        outline: none;
+    }
+
+        /* تأثير الإضاءة الزرقاء عند النقر داخل الحقل */
+        .form-group select:focus, .form-group input:focus, #custom-order-text:focus, #ticket-subject:focus, #ticket-message:focus {
+            border-color: #3b82f6;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+/* زر تأكيد الطلب وإرساله */
+.submit-order-btn {
+    width: 100%;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 14px; /* حواف متناسقة مع الحقول */
+    font-family: 'Cairo', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-top: 10px;
+    margin-bottom: 100px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(231, 76, 60, 0.2);
+    transition: all 0.3s ease;
+}
+
+    .submit-order-btn:active {
+        transform: scale(0.96); /* تأثير النقر */
+        box-shadow: 0 4px 10px rgba(231, 76, 60, 0.15);
+    }
+/* ----------------------------------------------------------------------------
+[تطبيقاً للجزء الرابع]: شريط التتبع البصري (Visual Progress Bar) للعميل
+---------------------------------------------------------------------------- 
+*/
+/* ----------------------------------------------------------------------------
+   شريط التتبع البصري (Modern Visual Progress Bar)
+---------------------------------------------------------------------------- */
+.tracking-container {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin: 30px 0 20px 0;
+    direction: rtl;
+}
+
+    /* الخط الرمادي الخلفي (المسار الكامل) */
+    .tracking-container::before {
+        content: '';
+        position: absolute;
+        top: 18px; /* تم تعديله ليتوسط الدوائر الجديدة */
+        right: 12.5%;
+        left: 12.5%;
+        height: 4px; /* خط أسمك قليلاً */
+        background: #f1f5f9;
+        z-index: 1;
+        border-radius: 2px;
+    }
+
+/* الخط الملون الذي يتحرك ليمثل التقدم */
+.tracking-progress-line {
+    position: absolute;
+    top: 18px;
+    right: 12.5%;
+    height: 4px;
+    background: #10b981; /* أخضر زمردي عصري */
+    z-index: 1;
+    transition: width 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); /* حركة انسيابية جداً */
+    border-radius: 2px;
+}
+
+/* محطات التتبع (الدوائر) */
+.track-step {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 25%;
+}
+
+.track-icon {
+    width: 40px; /* تكبير الدائرة لتكون أوضح في الجوال */
+    height: 40px;
+    border-radius: 50%;
+    background: #f8fafc;
+    color: #cbd5e1; /* لون رمادي باهت للحالات غير المكتملة */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    margin-bottom: 10px;
+    transition: all 0.4s ease;
+    border: 4px solid #ffffff; /* إطار أبيض سميك لقطع الخط الخلفي */
+    box-shadow: 0 0 0 1px #e2e8f0; /* تحديد خفيف جداً */
+}
+
+.track-text {
+    font-family: 'Tajawal', sans-serif;
+    font-size: 12px;
+    color: #94a3b8;
+    font-weight: 700;
+    text-align: center;
+    transition: color 0.3s ease;
+}
+
+/* ----------------------------------------------------------------------------
+   الحالات البصرية للمحطات: النشطة والمكتملة
+---------------------------------------------------------------------------- */
+/* المرحلة النشطة حالياً (تضيء بالأزرق وتنبض) */
+.track-step.active .track-icon {
+    background: #3b82f6; /* أزرق مشرق */
+    color: white;
+    box-shadow: 0 0 0 1px #3b82f6;
+    animation: modernPulse 2s infinite; /* تأثير نبض أهدأ وأفخم */
+}
+
+.track-step.active .track-text {
+    color: #3b82f6;
+}
+
+/* المرحلة المكتملة (باللون الأخضر الزمردي) */
+.track-step.completed .track-icon {
+    background: #10b981;
+    color: white;
+    box-shadow: 0 0 0 1px #10b981;
+}
+
+.track-step.completed .track-text {
+    color: #10b981;
+}
+
+/* تأثير النبض العصري */
+@keyframes modernPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+    }
+}
+
+/* ----------------------------------------------------------------------------
+   حالة الإلغاء (Canceled State) - تصميم محترم للعين
+---------------------------------------------------------------------------- */
+.track-canceled {
+    text-align: center;
+    color: #ef4444; /* أحمر عصري */
+    font-family: 'Tajawal', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 16px;
+    background: #fef2f2; /* خلفية حمراء فاتحة جداً */
+    border-radius: 12px;
+    margin: 20px 0;
+    border: 1px solid #fecaca;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+    .track-canceled i {
+        font-size: 24px;
+        opacity: 0.8;
+    }
+
+/* ============================================================================
+   قسم البانر الإعلاني الذكي (Ads Carousel)
+============================================================================ */
+#ads-carousel-wrapper {
+    position: relative;
+    width: 90%;
+    margin: -5px auto 25px auto;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    background: #ffffff;
+    z-index: 10;
+}
+
+/* حاوية التمرير الأفقي */
+.ads-carousel-container {
+    display: flex;
+    width: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* إخفاء شريط التمرير في فايرفوكس */
+    scroll-behavior: smooth;
+}
+
+    .ads-carousel-container::-webkit-scrollbar {
+        display: none; /* إخفاء شريط التمرير في كروم وسفاري */
+    }
+
+/* الشريحة الإعلانية الواحدة */
+.ad-slide {
+    min-width: 100%;
+    scroll-snap-align: center;
+    position: relative;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+    .ad-slide img {
+        width: 100%;
+        height: 180px; /* الارتفاع المثالي للإعلان */
+        object-fit: cover;
+        display: block;
+        transition: transform 0.3s ease;
+    }
+
+    .ad-slide:active img {
+        transform: scale(0.98); /* تأثير النقر */
+    }
+
+/* النقاط السفلية (Dots Indicator) */
+.ad-dots {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.ad-dot {
+    width: 8px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+    .ad-dot.active {
+        background: #ffffff;
+        transform: scale(1.3);
+        box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    }
