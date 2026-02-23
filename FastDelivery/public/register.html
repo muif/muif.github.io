@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>إنشاء حساب جديد | FastDelivery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;900&display=swap');
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mobile-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 30px 25px;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            text-align: center;
+            margin: 20px;
+        }
+
+        .header-icon {
+            width: 70px;
+            height: 70px;
+            background: #f0fdf4;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+            .header-icon i {
+                font-size: 30px;
+                color: #22c55e;
+            }
+
+        h1 {
+            margin: 0 0 5px 0;
+            font-size: 22px;
+            color: #1e293b;
+            font-weight: 900;
+        }
+
+        p.subtitle {
+            margin: 0 0 20px 0;
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+            .input-wrapper i {
+                position: absolute;
+                top: 50%;
+                right: 15px;
+                transform: translateY(-50%);
+                color: #94a3b8;
+                font-size: 16px;
+            }
+
+        input {
+            width: 100%;
+            padding: 14px 45px 14px 15px;
+            font-size: 14px;
+            border: 2px solid #f1f5f9;
+            border-radius: 12px;
+            background: #f8fafc;
+            color: #334155;
+            outline: none;
+            transition: 0.3s;
+        }
+
+            input:focus {
+                border-color: #22c55e;
+                background: white;
+                box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+            }
+
+                input:focus + i {
+                    color: #22c55e;
+                }
+
+        .main-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(to right, #22c55e, #16a34a);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.2);
+            transition: 0.2s;
+            margin-top: 10px;
+        }
+
+            .main-btn:active {
+                transform: scale(0.97);
+            }
+
+            .main-btn:disabled {
+                background: #cbd5e1;
+                box-shadow: none;
+                cursor: not-allowed;
+            }
+
+        #statusMsg {
+            margin-top: 15px;
+            font-size: 13px;
+            font-weight: bold;
+            min-height: 20px;
+        }
+
+        .login-link {
+            display: block;
+            margin-top: 20px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+            .login-link span {
+                color: #22c55e;
+            }
+    </style>
+</head>
+<body>
+
+    <main class="mobile-container">
+        <div class="header-icon"><i class="fas fa-user-plus"></i></div>
+        <h1>انضم لعائلتنا!</h1>
+        <p class="subtitle">أنشئ حسابك الآن للبدء في طلب ما تحتاجه</p>
+
+        <form id="registerForm" onsubmit="return false;">
+            <div class="input-wrapper">
+                <input type="text" id="reg-name" placeholder="الاسم الكامل" required>
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="input-wrapper">
+                <input type="tel" id="reg-phone" placeholder="رقم الهاتف (07XXXXXXXXX)" dir="ltr" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                <i class="fas fa-phone"></i>
+            </div>
+            <div class="input-wrapper">
+                <input type="email" id="reg-email" placeholder="البريد الإلكتروني" required>
+                <i class="fas fa-envelope"></i>
+            </div>
+            <div class="input-wrapper">
+                <input type="password" id="reg-password" placeholder="كلمة المرور (6 أحرف على الأقل)" required>
+                <i class="fas fa-lock"></i>
+            </div>
+
+            <button type="submit" id="registerBtn" class="main-btn">إنشاء حساب جديد</button>
+        </form>
+
+        <p id="statusMsg"></p>
+        <a href="login.html" class="login-link">لديك حساب بالفعل؟ <span>سجل دخولك</span></a>
+    </main>
+
+    <script type="module" src="js/register.js"></script>
+</body>
+</html>

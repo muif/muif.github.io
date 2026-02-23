@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تسجيل الدخول | FastDelivery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;900&display=swap');
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        .mobile-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 30px 25px;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .header-icon {
+            width: 80px;
+            height: 80px;
+            background: #ffe4e6;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+            .header-icon i {
+                font-size: 35px;
+                color: #e11d48;
+            }
+
+        h1 {
+            margin: 0 0 5px 0;
+            font-size: 24px;
+            color: #1e293b;
+            font-weight: 900;
+        }
+
+        p.subtitle {
+            margin: 0 0 25px 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+            .input-wrapper i {
+                position: absolute;
+                top: 50%;
+                right: 15px;
+                transform: translateY(-50%);
+                color: #94a3b8;
+                font-size: 18px;
+            }
+
+        input {
+            width: 100%;
+            padding: 15px 45px 15px 15px;
+            font-size: 15px;
+            border: 2px solid #f1f5f9;
+            border-radius: 14px;
+            background: #f8fafc;
+            color: #334155;
+            outline: none;
+            transition: 0.3s;
+        }
+
+            input:focus {
+                border-color: #e11d48;
+                background: white;
+                box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.1);
+            }
+
+                input:focus + i {
+                    color: #e11d48;
+                }
+
+        .main-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(to right, #e11d48, #be123c);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(225, 29, 72, 0.2);
+            transition: 0.2s;
+            margin-top: 10px;
+        }
+
+            .main-btn:active {
+                transform: scale(0.97);
+            }
+
+            .main-btn:disabled {
+                background: #cbd5e1;
+                box-shadow: none;
+            }
+
+        #errorMsg {
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: bold;
+            min-height: 20px;
+        }
+
+        .guest-link {
+            display: block;
+            margin-top: 20px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+            .guest-link:hover {
+                color: #e11d48;
+            }
+    </style>
+</head>
+<body>
+
+    <main class="mobile-container">
+        <div class="header-icon"><i class="fas fa-shopping-bag"></i></div>
+        <h1>أهلاً بك معنا!</h1>
+        <p class="subtitle">سجل دخولك لتتمكن من الطلب وتتبع مشترياتك</p>
+
+        <form id="loginForm" onsubmit="return false;">
+            <div class="input-wrapper">
+                <input type="email" id="email" placeholder="البريد الإلكتروني" required>
+                <i class="fas fa-envelope"></i>
+            </div>
+            <div class="input-wrapper">
+                <input type="password" id="password" placeholder="كلمة المرور" required>
+                <i class="fas fa-lock"></i>
+            </div>
+            <button type="submit" id="loginBtn" class="main-btn">تسجيل الدخول</button>
+        </form>
+
+        <p id="errorMsg"></p>
+        <a href="register.html" style="display: block; margin-top: 15px; color: #e11d48; text-decoration: none; font-size: 15px; font-weight: bold;"><i class="fas fa-user-plus"></i> إنشاء حساب جديد</a>
+        <a href="index.html" class="guest-link"><i class="fas fa-arrow-right"></i> العودة لتصفح المتاجر كزائر</a>
+    </main>
+
+    <script type="module">
+        import { loginUser } from './auth.js';
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMsg = document.getElementById('errorMsg');
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            errorMsg.style.color = "#e11d48";
+            errorMsg.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الدخول...';
+            loginBtn.disabled = true;
+
+            const result = await loginUser(email, password);
+            if (!result.success) {
+                errorMsg.innerText = result.message;
+                loginBtn.disabled = false;
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>
