@@ -1,7 +1,7 @@
 {
   "name": "Fast Delivery Driver",
   "short_name": "Delivery",
-  "start_url": "/deliveryman/index.html",
+  "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#3b82f6",
