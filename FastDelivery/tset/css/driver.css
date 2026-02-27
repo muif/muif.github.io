@@ -1,0 +1,377 @@
+/* ============================================================================
+   ملف التنسيقات الخاص بتطبيق المندوب (Driver App CSS - Modern V2)
+   الخطوة 1: الهوية البصرية، الخطوط، والهيدر العصري
+============================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Tajawal', sans-serif; /* الخط الأساسي ناعم ومقروء */
+    -webkit-tap-highlight-color: transparent; /* منع المربع الأزرق عند النقر بالجوال */
+}
+
+body {
+    background-color: #f0f4f8; /* خلفية عصرية فاتحة ومريحة للعين */
+    color: #1e293b;
+    direction: rtl;
+    padding-bottom: 90px; /* مساحة واسعة للشريط السفلي الذي سنضيفه لاحقاً */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cairo', sans-serif; /* خط العناوين قوي وواضح */
+}
+
+/* ----------------------------------------------------------------------------
+   الرأس (Header) - تصميم فخم بحواف سفلية ناعمة وتدرج لوني
+---------------------------------------------------------------------------- */
+.driver-header {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); /* كحلي داكن جداً فخم */
+    padding: 25px 20px 35px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
+    position: relative;
+    z-index: 50;
+    margin-bottom: 10px;
+}
+
+#driver-name {
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+}
+
+#assigned-zones {
+    font-size: 12px;
+    color: #94a3b8; /* رمادي فاتح مقروء بوضوح على الخلفية الداكنة */
+}
+
+/* ----------------------------------------------------------------------------
+   محفظة الذمة المالية (Glassmorphism Effect)
+---------------------------------------------------------------------------- */
+.wallet-box {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 10px 16px;
+    border-radius: 14px;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    color: #facc15; /* أصفر ذهبي ساطع يعبر عن المال */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* ----------------------------------------------------------------------------
+   الخطوة 2: بطاقات الطلبات (Order Cards) والأزرار الميدانية الضخمة
+---------------------------------------------------------------------------- */
+
+/* تأثير الظهور الناعم للتبويبات */
+.tab-section {
+    padding: 0 15px;
+    animation: fadeInTab 0.3s ease-in-out;
+}
+
+@keyframes fadeInTab {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h4 {
+    font-size: 16px;
+    color: #475569;
+    margin-bottom: 15px;
+    font-weight: 800;
+}
+
+/* بطاقات الطلبات العصرية */
+.order-card {
+    background: #ffffff;
+    border-radius: 20px; /* حواف دائرية فخمة */
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04); /* ظل ناعم جداً يعطي عمقاً */
+    border: 1px solid #f1f5f9;
+    position: relative;
+    overflow: hidden;
+}
+
+    /* شريط جانبي ملون لتمييز البطاقة */
+    .order-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 6px;
+        height: 100%;
+        background: #3b82f6; /* أزرق عصري */
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+    }
+
+    .order-card h3 {
+        color: #1e293b;
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+
+    .order-card p {
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 8px;
+        line-height: 1.6;
+    }
+
+    .order-card strong {
+        color: #334155;
+    }
+
+/* صندوق العنوان (Address Box) المريح للعين */
+.address-box {
+    background: #f8fafc;
+    color: #0f172a;
+    padding: 14px;
+    border-radius: 12px;
+    margin: 15px 0;
+    font-size: 14px;
+    font-weight: 700;
+    border: 1px dashed #cbd5e1;
+}
+
+/* ----------------------------------------------------------------------------
+   الأزرار الميدانية (Action Buttons) - مصممة للضغط باليد الواحدة
+---------------------------------------------------------------------------- */
+.action-btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 14px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.2s ease;
+}
+
+    .action-btn:active {
+        transform: scale(0.96); /* تأثير النقر الانضغاطي */
+    }
+
+/* زر قبول الطلب (أخضر زمردي) */
+.btn-accept {
+    background: #10b981;
+    color: white;
+    box-shadow: 0 6px 15px rgba(16, 185, 129, 0.25);
+}
+
+/* زر التسليم للعميل (أزرق مشرق) */
+.btn-deliver {
+    background: #3b82f6;
+    color: white;
+    box-shadow: 0 6px 15px rgba(59, 130, 246, 0.25);
+}
+
+/* ----------------------------------------------------------------------------
+   شريط التنقل السفلي (Modern Bottom Navigation) - تأثير زجاجي عائم
+---------------------------------------------------------------------------- */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.9); /* أبيض شبه شفاف */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 15px 0 20px 0; /* مساحة مريحة لأسفل الشاشة */
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    gap: 6px;
+    flex: 1;
+}
+
+    .nav-item i {
+        font-size: 24px;
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .nav-item span {
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    /* تفاعل الزر النشط */
+    .nav-item.active {
+        color: #3b82f6; /* أزرق فخم يدل على النشاط */
+    }
+
+        .nav-item.active i {
+            transform: scale(1.3) translateY(-4px); /* الأيقونة تقفز للأعلى عند النقر */
+        }
+
+/* ----------------------------------------------------------------------------
+   اللمسة الجمالية الأخيرة: تنسيق السجل المالي (المحفظة) والنوافذ المنبثقة
+---------------------------------------------------------------------------- */
+
+/* 1. تحسين شكل الإيصالات في المحفظة (تجاوز الستايل المضمن القديم) */
+#transactions-list > div {
+    background: #ffffff !important;
+    border: none !important;
+    border-radius: 16px !important;
+    padding: 20px !important;
+    margin-bottom: 15px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+    /* إضافة شريط جانبي صغير للإيصال المالي */
+    #transactions-list > div::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 4px;
+        height: 100%;
+        background: #cbd5e1;
+    }
+
+/* ----------------------------------------------------------------------------
+   2. النافذة المنبثقة (Modal) - الطوارئ (تأثير زجاجي وحركة انبثاق)
+---------------------------------------------------------------------------- */
+div[id="transfer-modal"] {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    background: rgba(15, 23, 42, 0.6) !important; /* لون كحلي داكن وشفاف */
+    transition: all 0.3s ease;
+}
+
+    /* صندوق النافذة الأبيض */
+    div[id="transfer-modal"] > div {
+        border-radius: 24px !important; /* حواف عصرية */
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2) !important;
+        padding: 25px !important;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transform: scale(0.95);
+        animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; /* تأثير ارتدادي */
+    }
+
+@keyframes modalPop {
+    to {
+        transform: scale(1);
+    }
+}
+
+/* تحسين القائمة المنسدلة لاختيار الزميل */
+#available-drivers-select {
+    font-family: 'Tajawal', sans-serif !important;
+    padding: 14px !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    background-color: #f8fafc !important;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+    #available-drivers-select:focus {
+        border-color: #3b82f6 !important;
+    }
+
+/* تحديث زر "تأكيد التحويل" للطوارئ */
+#confirm-transfer-btn {
+    font-family: 'Cairo', sans-serif !important;
+    border-radius: 14px !important;
+    padding: 16px !important;
+    background: #ef4444 !important; /* أحمر عصري */
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3) !important;
+    transition: all 0.2s ease;
+}
+
+    #confirm-transfer-btn:active {
+        transform: scale(0.96);
+    }
+
+/* ----------------------------------------------------------------------------
+   بطاقة المحفظة العصرية (Modern Bank Card) في تبويب محفظتي
+---------------------------------------------------------------------------- */
+.modern-wallet-card {
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); /* تدرج أحمر فخم */
+    border-radius: 24px;
+    padding: 30px 20px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 25px;
+    box-shadow: 0 15px 30px rgba(239, 68, 68, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.wallet-title {
+    font-size: 15px;
+    font-weight: 700;
+    opacity: 0.9;
+    margin-bottom: 5px;
+    z-index: 2;
+}
+
+.wallet-amount {
+    font-size: 42px; /* خط ضخم وواضح للمبلغ */
+    font-weight: 800;
+    font-family: 'Cairo', sans-serif;
+    z-index: 2;
+    text-shadow: 0 4px 15px rgba(0,0,0,0.3); /* ظل يعطي بروزاً للرقم */
+    letter-spacing: 1px;
+}
+
+/* الأيقونة المائية الكبيرة في خلفية البطاقة */
+.wallet-icon-bg {
+    position: absolute;
+    left: -20px;
+    bottom: -30px;
+    font-size: 130px;
+    color: white;
+    opacity: 0.08; /* شفافة جداً */
+    transform: rotate(-15deg);
+    z-index: 1;
+}
+
+/* تنظيف كود المحفظة القديمة (اختياري لكنه مفيد لإزالة بقايا الكود السابق) */
+.wallet-box {
+    display: none !important;
+}
