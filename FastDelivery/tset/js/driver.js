@@ -783,16 +783,29 @@ function startDriverNotificationRadar() {
 
             // الإشعار الصوتي والمنزلق
             if (!isFirstLoad && !isRead && !toastedNotifs.has(notifId)) {
-                document.getElementById('d-toast-title').innerText = notif.title || 'تنبيه جديد';
-                document.getElementById('d-toast-body').innerText = notif.body || notif.message || '';
-                toast.style.top = '20px';
+                // 1. إظهار النافذة المنزلقة الزرقاء (Toast) داخل التطبيق كما هي
+            document.getElementById('d-toast-title').innerText = notif.title || 'تنبيه جديد';
+            document.getElementById('d-toast-body').innerText = notif.body || notif.message || '';
+            toast.style.top = '20px';
+            setTimeout(() => toast.style.top = '-100px', 5000);
+            toastedNotifs.add(notifId);
 
+            // =========================================================
+            // 🚀 2. الجسر السحري: إرسال الإشعار لنظام الأندرويد (Sketchware)
+            // =========================================================
+            // نتحقق أولاً: هل التطبيق مفتوح داخل تطبيقنا الأندرويد؟
+            if (window.NativeBridge) {
+                // نعم! إذن نأمر نظام الأندرويد بإظهار إشعار حقيقي يهتز ويرن!
+                window.NativeBridge.pushNotif(
+                    notif.title || 'تنبيه جديد', 
+                    notif.body || notif.message || ''
+                );
+            } else {
+                // لا، المندوب يفتح النظام من متصفح عادي (مثل جوجل كروم)
+                console.log("الجسر غير موجود. نحن في متصفح عادي.");
                 if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
                 const audio = document.getElementById('alert-sound');
                 if (audio) audio.play().catch(e => console.log("الصوت يحتاج تفاعل"));
-
-                setTimeout(() => toast.style.top = '-100px', 5000);
-                toastedNotifs.add(notifId);
             }
 
             // رسم بطاقة الإشعار
@@ -1109,5 +1122,6 @@ async function fetchDriverPages() {
         console.error("خطأ في جلب الصفحات:", error);
     }
 }
+
 
 document.addEventListener('DOMContentLoaded', fetchDriverPages);
