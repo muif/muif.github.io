@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "596516332041",
+    "project_id": "fastdelivery-app-8311b",
+    "storage_bucket": "fastdelivery-app-8311b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:596516332041:android:1b2fdbf3522f5f1b370ed8",
+        "android_client_info": {
+          "package_name": "com.nd.caption"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCH16W3m7IF9YT-v69pN46cz5OaKd9KphQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
