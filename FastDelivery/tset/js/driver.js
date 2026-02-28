@@ -784,22 +784,24 @@ function startDriverNotificationRadar() {
             // الإشعار الصوتي والمنزلق
             if (!isFirstLoad && !isRead && !toastedNotifs.has(notifId)) {
                 // إظهار النافذة المنزلقة الزرقاء               
-                document.getElementById('d-toast-title').innerText = notif.title || 'تنبيه جديد';
-                document.getElementById('d-toast-body').innerText = notif.body || notif.message || '';
-                toast.style.top = '20px';
-                setTimeout(() => toast.style.top = '-100px', 5000);
-                toastedNotifs.add(notifId);
+                // 1. تحديد صفحة التوجيه (Deep Link URL)
+                // افتراضياً: التوجيه لصفحة الإشعارات العامة
+                let targetUrl = 'https://muif.github.io/FastDelivery/tset/index.html';
 
-                // الجسر السحري
+                // إذا كان الإشعار يخص طلباً معيناً (يحتوي على orderId مثلاً)
+                if (notif.orderId || notif.action === 'view_order') {
+                    targetUrl = 'https://muif.github.io/FastDelivery/tset/index.html' + notif.orderId;
+                }
+
+                // 2. الجسر السحري (الآن نرسل له 3 أشياء: العنوان، النص، والرابط!)
                 if (window.NativeBridge) {
                     window.NativeBridge.pushNotif(
                         notif.title || 'تنبيه جديد',
-                        notif.body || notif.message || ''
+                        notif.body || notif.message || '',
+                        targetUrl // 👈 هذا هو الرابط الذي سيختبئ داخل الإشعار
                     );
                 } else {
                     if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-                    const audio = document.getElementById('alert-sound');
-                    if (audio) audio.play().catch(e => console.log("الصوت يحتاج تفاعل"));
                 }
             }
 
