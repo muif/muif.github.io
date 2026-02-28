@@ -783,28 +783,20 @@ function startDriverNotificationRadar() {
 
             // الإشعار الصوتي والمنزلق
             if (!isFirstLoad && !isRead && !toastedNotifs.has(notifId)) {
-                // إظهار النافذة المنزلقة الزرقاء (Toast) داخل التطبيق
+                // إظهار النافذة المنزلقة الزرقاء               
                 document.getElementById('d-toast-title').innerText = notif.title || 'تنبيه جديد';
                 document.getElementById('d-toast-body').innerText = notif.body || notif.message || '';
                 toast.style.top = '20px';
                 setTimeout(() => toast.style.top = '-100px', 5000);
                 toastedNotifs.add(notifId);
 
-                // =========================================================
-                // 🚀 الفحص التشخيصي للجسر
-                // =========================================================
+                // الجسر السحري
                 if (window.NativeBridge) {
-                    // رسالة فحص 1 (إذا ظهرت، فهذا يعني أن الجسر يعمل والمشكلة في الأندرويد)
-                    alert("✅ الجسر متصل! جاري إرسال الإشعار لشريط الأندرويد...");
-
                     window.NativeBridge.pushNotif(
                         notif.title || 'تنبيه جديد',
                         notif.body || notif.message || ''
                     );
                 } else {
-                    // رسالة فحص 2 (إذا ظهرت، فهذا يعني أن الموقع لم يجد الجسر من الأساس!)
-                    alert("❌ الجسر غير موجود! الهاتف يهتز من المتصفح فقط.");
-
                     if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
                     const audio = document.getElementById('alert-sound');
                     if (audio) audio.play().catch(e => console.log("الصوت يحتاج تفاعل"));
