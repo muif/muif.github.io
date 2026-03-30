@@ -1,0 +1,528 @@
+/* ============================================================================
+   ملف التنسيقات الرئيسي للوحة الإدارة (Admin Dashboard CSS)
+   الخطوة 1: (استدعاء الخطوط وتوحيدها + لون خلفية عصري فقط)
+============================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    /* التغيير الأول: استخدام خط تجوال لجميع النصوص */
+    font-family: 'Tajawal', sans-serif;
+}
+
+/* التغيير الثاني: تخصيص خط القاهرة للعناوين لإعطاء طابع رسمي ومقروء */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cairo', sans-serif;
+}
+
+/* [تطبيقاً للجزء السابع] - اعتماد الاتجاه العربي (RTL) بشكل افتراضي */
+body {
+    display: flex;
+    height: 100vh;
+    /* التغيير الثالث: لون خلفية عصري وأهدأ للعين */
+    background-color: #f8fafc;
+    direction: rtl;
+    /* دمج كود الحماية الخاص بك هنا للترتيب */
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+    body.authorized {
+        opacity: 1;
+    }
+
+/* ----------------------------------------------------------------------------
+   الشريط الجانبي (Sidebar Navigation) - بدون أي تغيير في الهيكل
+---------------------------------------------------------------------------- */
+.sidebar {
+    width: 250px;
+    min-width: 250px; /* 🛡️ حماية: منع العرض من أن يقل عن 250 بكسل */
+    flex-shrink: 0; /* 🛡️ حماية: منع المتصفح من ضغط أو تقليص الشريط نهائياً */
+    background-color: #1e293b;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    transition: 0.3s;
+    box-shadow: -4px 0 15px rgba(0,0,0,0.05);
+}
+
+.sidebar-header {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* التغيير: خط فاصل شفاف وأنيق */
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 10px 0;
+    flex-grow: 1;
+}
+
+    .sidebar-menu li {
+        padding: 15px 20px;
+        cursor: pointer;
+        transition: 0.2s;
+        border-right: 4px solid transparent;
+    }
+
+        /* التغيير: ألوان التمرير (Hover) والعنصر النشط */
+        .sidebar-menu li:hover, .sidebar-menu li.active {
+            background-color: #334155; /* لون أفتح قليلاً لراحة العين عند التمرير */
+            border-right-color: #e74c3c; /* خط التحديد أصبح أحمر حيوي بدلاً من الأزرق */
+        }
+
+        .sidebar-menu li a {
+            color: #cbd5e1; /* التغيير: لون النص أبيض مطفي ليكون عصرياً */
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px; /* توحيد حجم الخط */
+            font-weight: 500;
+        }
+
+        /* النص يصبح ناصع البياض عند التحديد فقط */
+        .sidebar-menu li.active a, .sidebar-menu li:hover a {
+            color: white;
+        }
+
+/* ----------------------------------------------------------------------------
+   منطقة المحتوى الرئيسية (Main Content Area)
+---------------------------------------------------------------------------- */
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* الشريط العلوي (Header) */
+.top-header {
+    background-color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03); /* ظل أنعم وأحدث */
+    z-index: 10;
+    border-bottom: 1px solid #e2e8f0; /* خط سفلي خفيف جداً يفصل الهيدر */
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* ----------------------------------------------------------------------------
+   [تطبيقاً للجزء الخامس: محرك الإشعارات الذكي]
+---------------------------------------------------------------------------- */
+.notification-bell {
+    position: relative;
+    cursor: pointer;
+    font-size: 22px; /* تكبير الأيقونة قليلاً */
+    color: #64748b; /* رمادي مزرق عصري */
+    transition: 0.2s;
+}
+
+    .notification-bell:hover {
+        color: #e74c3c; /* يضيء بالأحمر عند التمرير */
+    }
+
+.badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background-color: #e74c3c;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 11px;
+    font-weight: bold;
+    border: 2px solid white; /* إطار أبيض يفصلها عن الجرس بقوة */
+    box-shadow: 0 2px 4px rgba(231, 76, 60, 0.3); /* توهج أحمر خفيف */
+}
+
+/* زر تسجيل الخروج الآمن - تصميم حديث */
+.logout-btn {
+    background-color: #fee2e2; /* خلفية حمراء شفافة/باهتة */
+    color: #e74c3c; /* نص أحمر */
+    border: 1px solid #f87171; /* إطار أحمر خفيف */
+    padding: 8px 16px;
+    border-radius: 6px; /* تدوير الحواف */
+    cursor: pointer;
+    transition: 0.2s;
+    font-family: 'Cairo', sans-serif; /* استخدام خط العناوين للفخامة */
+    font-weight: bold;
+}
+
+    .logout-btn:hover {
+        background-color: #e74c3c;
+        color: white;
+        box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2); /* ظل ناعم عند التمرير */
+    }
+
+/* منطقة العرض الديناميكية (Dynamic Content) لحاويات الداشبورد */
+/* ----------------------------------------------------------------------------
+   منطقة العرض والبطاقات (Cards & Dynamic Content)
+---------------------------------------------------------------------------- */
+.content-area {
+    padding: 30px;
+    overflow-y: auto;
+    flex-grow: 1;
+    /* لمسة عصرية: تصغير شريط التمرير (Scrollbar) وجعله أنيقاً */
+    /*scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;*/
+}
+
+    .content-area::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .content-area::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 10px;
+    }
+
+.welcome-card {
+    background: white;
+    padding: 25px 30px;
+    border-radius: 12px; /* تدوير أحدث للحواف */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03); /* ظل أنعم وأوسع */
+    border: 1px solid #f1f5f9; /* إطار رمادي خفيف جداً يحدد البطاقة */
+    transition: 0.3s;
+}
+
+    /* تفاعل البطاقة عند تمرير الماوس (Hover) */
+    .welcome-card:hover {
+        box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+    }
+
+/* ----------------------------------------------------------------------------
+   تحسينات عامة للجداول والمدخلات (General UI Enhancements)
+---------------------------------------------------------------------------- */
+/* تحسين حقول الإدخال (Inputs) والقوائم المنسدلة */
+input[type="text"], input[type="number"], input[type="date"], input[type="tel"], select, textarea {
+    font-family: 'Tajawal', sans-serif;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    transition: 0.2s;
+    outline: none;
+}
+
+    /* تأثير التوهج عند النقر داخل حقل الإدخال */
+    input:focus, select:focus, textarea:focus {
+        border-color: #3498db !important;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15) !important;
+    }
+
+/* تحسين الجداول (تجاوز الألوان المضمنة القديمة بلطف) */
+table thead th {
+    font-family: 'Cairo', sans-serif;
+    font-size: 15px;
+    background-color: #1e293b !important; /* توحيد اللون مع الشريط الجانبي */
+    color: white !important;
+    border: none !important;
+}
+
+table tbody tr {
+    transition: 0.2s;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+    /* تفاعل لوني عند التمرير على صف الجدول */
+    table tbody tr:hover {
+        background-color: #f8fafc;
+    }
+
+table tbody td {
+    font-size: 14px;
+    color: #475569; /* لون خط مريح للعين */
+}
+
+/* ----------------------------------------------------------------------------
+   الخطوة 5 (النسخة المصححة): تحسين الأزرار العامة والنوافذ المنبثقة
+---------------------------------------------------------------------------- */
+
+/* تأثير حركي عصري لجميع الأزرار بدون تدمير خطوط الأيقونات */
+button {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border-radius: 6px; /* إضافة حواف ناعمة لمنع الشكل المربع الحاد */
+}
+
+    button:hover {
+        transform: translateY(-2px); /* رفع الزر للأعلى قليلاً */
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* ظل ناعم */
+        filter: brightness(1.05); /* زيادة الإضاءة قليلاً */
+    }
+
+    button:active {
+        transform: translateY(0); /* عودة الزر لمكانه عند النقر */
+    }
+
+/* ----------------------------------------------------------------------------
+   تأثيرات النوافذ المنبثقة (Modals Glassmorphism)
+---------------------------------------------------------------------------- */
+
+/* 1. جعل الخلفية السوداء ضبابية وزجاجية */
+div[id$="-modal"] {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+}
+
+    /* 2. تدوير حواف الصندوق الأبيض وانبثاقه بنعومة */
+    div[id$="-modal"] > div {
+        border-radius: 12px !important; /* حواف دائرية عصرية */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
+        transform: scale(0.95);
+        animation: modalPopIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+/* الأنيميشن الخاص بالنافذة */
+@keyframes modalPopIn {
+    to {
+        transform: scale(1);
+    }
+}
+
+/* تحسينات إضافية لنصوص شريط الصفحات (Pagination) */
+#page-indicator {
+    color: #64748b !important;
+}
+
+/* ----------------------------------------------------------------------------
+   ميزة طي الشريط الجانبي (Sidebar Collapse)
+---------------------------------------------------------------------------- */
+/* 1. تصغير عرض الشريط الجانبي عند إضافة كلاس collapsed */
+.sidebar.collapsed {
+    width: 80px;
+    min-width: 80px;
+}
+
+    /* 2. إخفاء عنوان الشريط (نظام التوصيل السريع) وإظهار أيقونة بديلة */
+    .sidebar.collapsed .sidebar-header h3 {
+        display: none;
+    }
+
+    .sidebar.collapsed .sidebar-header::after {
+        content: '🚀'; /* أيقونة تظهر عندما يُطوى الشريط */
+        font-size: 24px;
+    }
+
+    /* 3. خدعة إخفاء النصوص مع الحفاظ على الأيقونات (بدون تعديل الـ HTML) */
+    .sidebar.collapsed .sidebar-menu li a {
+        font-size: 0; /* إخفاء النص */
+        justify-content: center; /* توسيط الأيقونة */
+        padding: 15px 0;
+    }
+
+        .sidebar.collapsed .sidebar-menu li a i {
+            font-size: 20px; /* إعادة إظهار الأيقونة بحجم واضح */
+            margin: 0; /* إزالة المسافة الجانبية القديمة */
+        }
+
+/* 4. تصميم زر الطي (الذي سنضيفه في HTML لاحقاً) */
+.toggle-sidebar-btn {
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 22px;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-left: 15px; /* إبعاد الزر عن عنوان الصفحة */
+    padding: 5px;
+    border-radius: 4px;
+}
+
+    .toggle-sidebar-btn:hover {
+        color: #e74c3c;
+        background-color: #f1f5f9;
+    }
+/* ============================================================================
+   🚀 الإصلاح النهائي النظيف للإشعارات والإعدادات (Clean Layout Fix)
+============================================================================ */
+
+/* 1. دفع السهم وشارة الإشعارات لليسار فقط (بدون التدخل بالألوان أو الهيكل) */
+.sidebar-menu li a .submenu-icon,
+.sidebar-menu li a .badge {
+    margin-right: auto;
+}
+
+/* 2. تصميم شارة الإشعارات */
+.sidebar-menu li a .badge {
+    background: #e74c3c;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+/* 3. إخفاء العناصر الإضافية عند طي الشريط فقط */
+.sidebar.collapsed .submenu-icon,
+.sidebar.collapsed .badge,
+.sidebar.collapsed .submenu {
+    display: none !important;
+}
+
+/* 4. 🚀 إصلاح هيكل القائمة المنسدلة لتمتد للحواف (Submenu Full Width Fix) */
+#nav-settings-group {
+    padding: 0 !important; /* تحرير القائمة من المسافات الجانبية للأب */
+}
+
+    #nav-settings-group > a {
+        padding: 15px 20px; /* إعادة المسافات لزر الإعدادات الرئيسي فقط */
+    }
+
+#settings-submenu {
+    display: none;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: rgba(0,0,0,0.15); /* إعطاء خلفية أغمق قليلاً لتمييزها */
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+    /* إلغاء حواجز القوائم الفرعية ليلامس الخط الأحمر حافة الشاشة */
+    #settings-submenu li {
+        padding: 0 !important;
+    }
+
+        /* دفع النص 45 بكسل من اليمين لإعطاء تأثير التفرع الأنيق */
+        #settings-submenu li a {
+            padding: 12px 20px 12px 20px !important;
+            padding-right: 45px !important;
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+
+            #settings-submenu li a i {
+                font-size: 14px;
+            }
+/* ============================================================================
+   🛠️ الضربة القاضية لمشكلة الألوان (Ultimate Force Color Fix)
+============================================================================ */
+
+/* 1. إجبار جميع الأيقونات والنصوص في الشريط الجانبي على أخذ اللون النيلي بشكل دائم */
+.sidebar-menu li a,
+.sidebar-menu li a i {
+    color: #cbd5e1 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* 2. إجبارها على التوهج باللون الأبيض فور تمرير الماوس أو عند النقر */
+.sidebar-menu li:hover > a,
+.sidebar-menu li:hover > a i,
+.sidebar-menu li.active > a,
+.sidebar-menu li.active > a i {
+    color: #ffffff !important;
+}
+
+/* ============================================================================
+   🚀 الحل الهندسي الصحيح لطفحان الشريط الجانبي (Menu Scroll Fix)
+============================================================================ */
+
+/* 1. ترتيب الشريط الجانبي ليكون عمودياً ويمتد لآخر الشاشة */
+.sidebar {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100vh !important;
+}
+
+/* 2. حصر التمرير (السكرول) داخل القائمة فقط لمنع خروج الأيقونات عن الإطار المظلم */
+.sidebar-menu {
+    flex: 1 !important; /* تأخذ كل المساحة المتبقية تحت العنوان */
+    overflow-y: auto !important; /* تفعيل التمرير العمودي */
+    overflow-x: hidden !important; /* منع التشوه العرضي */
+    padding-bottom: 80px !important; /* مسافة أمان في الأسفل */
+}
+
+    /* 3. إخفاء شريط التمرير (Scrollbar) للحفاظ على التصميم الأنيق (سيعمل بعجلة الماوس أو اللمس) */
+    .sidebar-menu::-webkit-scrollbar {
+        display: none !important;
+    }
+
+.sidebar-menu {
+    -ms-overflow-style: none !important; /* متصفح Edge */
+    scrollbar-width: none !important; /* متصفح Firefox */
+}
+/* ============================================================================
+   🎨 تخصيص القوائم المنسدلة العصرية والتنبيهات (Choices.js & SweetAlert)
+============================================================================ */
+
+/* تحسين حواف النوافذ المنبثقة للتنبيهات */
+.modern-popup {
+    border-radius: 15px !important;
+    font-family: 'Tajawal', sans-serif !important;
+}
+
+/* تنسيق القوائم المنسدلة لتطابق حقول الإدخال لديك */
+.choices__inner {
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    background-color: #f8fafc !important;
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    font-family: 'Tajawal', sans-serif !important;
+}
+
+.choices[data-type*="select-one"] .choices__inner {
+    padding-bottom: 0px !important;
+}
+
+/* لون التأشير عند فتح القائمة */
+.choices.is-focused .choices__inner {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+    background-color: #ffffff !important;
+}
+
+/* القائمة التي تنسدل للأسفل (الخيارات) */
+.choices__list--dropdown {
+    border-radius: 6px !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+    border: 1px solid #e2e8f0 !important;
+    z-index: 9999 !important; /* لضمان ظهورها فوق كل شيء */
+}
+
+input:checked + #maint-toggle-ui {
+    background-color: #ef4444;
+}
+
+    input:checked + #maint-toggle-ui:before {
+        transform: translateX(-26px);
+    }
+
+/* ============================================================================
+   🛠️ إصلاح زر تفعيل الصيانة ليتوافق مع الاتجاه العربي (RTL Toggle Switch)
+============================================================================ */
+
+/* 1. اللون الأحمر الجذاب عند التفعيل */
+input:checked + #maint-toggle-ui {
+    background-color: #ef4444 !important;
+}
+
+/* 2. تصميم الدائرة البيضاء ومكانها الابتدائي (من اليمين) */
+#maint-toggle-ui:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    right: 4px; /* 🚀 السر هنا: تبدأ من اليمين في الواجهة العربية */
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s cubic-bezier(0.4, 0.0, 0.2, 1); /* حركة ناعمة جداً */
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* 3. حركة الدائرة عند التفعيل (تتجه لليسار داخل الإطار) */
+input:checked + #maint-toggle-ui:before {
+    transform: translateX(-26px); /* 🚀 تتحرك بالسالب لليسار بشكل دقيق */
+}

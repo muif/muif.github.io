@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة الإدارة | FastDelivery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ========================================= */
+        /* اللمسات الإبداعية والتصميم (Creative UI) */
+        /* ========================================= */
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            /* خلفية متدرجة متحركة فخمة جداً */
+            background: linear-gradient(-45deg, #0f172a, #1e293b, #3b82f6, #2563eb);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* تصميم الصندوق بأسلوب الزجاج (Glassmorphism) */
+        .login-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideUpFade {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* الشعار والعنوان */
+        .logo-container {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+            .logo-container i {
+                font-size: 35px;
+                color: white;
+                animation: bounce 2s infinite ease-in-out;
+            }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        h3 {
+            margin: 0 0 5px 0;
+            color: #1e293b;
+            font-size: 24px;
+            font-weight: 900;
+        }
+
+        p.subtitle {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        /* حقول الإدخال مع الأيقونات */
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+            .input-group i {
+                position: absolute;
+                right: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #94a3b8;
+                font-size: 18px;
+                transition: 0.3s;
+            }
+
+        input {
+            width: 100%;
+            padding: 15px 45px 15px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            background: #f8fafc;
+            color: #334155;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+            input:focus {
+                border-color: #3b82f6;
+                background: white;
+                box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            }
+
+                input:focus + i {
+                    color: #3b82f6;
+                }
+
+        /* زر الدخول التفاعلي */
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+            button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 15px 25px rgba(37, 99, 235, 0.4);
+            }
+
+            button:active {
+                transform: translateY(1px);
+            }
+
+            button:disabled {
+                background: #94a3b8;
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+            }
+
+        #errorMsg {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            min-height: 20px;
+            transition: 0.3s;
+        }
+
+        /* أشكال هندسية عائمة في الخلفية (اختياري للجمالية) */
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+            z-index: -1;
+        }
+
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            right: -50px;
+        }
+
+        .circle-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -50px;
+            left: -50px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+
+    <div class="login-box">
+        <div class="logo-container">
+            <i class="fas fa-rocket"></i>
+        </div>
+        <h3>مركز القيادة</h3>
+        <p class="subtitle">قم بتسجيل الدخول للوصول إلى لوحة الإدارة</p>
+
+        <div class="input-group">
+            <input type="email" id="email" placeholder="البريد الإلكتروني للإدارة" autocomplete="email">
+            <i class="fas fa-envelope"></i>
+        </div>
+
+        <div class="input-group">
+            <input type="password" id="password" placeholder="كلمة المرور الآمنة" autocomplete="current-password">
+            <i class="fas fa-lock"></i>
+        </div>
+
+        <button id="loginBtn">
+            <span>تسجيل الدخول</span>
+            <i class="fas fa-sign-in-alt"></i>
+        </button>
+
+        <p id="errorMsg"></p>
+    </div>
+
+    <script type="module">
+        import { loginUser } from '../../shared/auth.js';
+
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMsg = document.getElementById('errorMsg');
+
+        // إمكانية الدخول عبر زر Enter في الكيبورد للسرعة
+        document.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                loginBtn.click();
+            }
+        });
+
+        loginBtn.addEventListener('click', async () => {
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!email || !password) {
+                errorMsg.style.color = "#ef4444"; // لون أحمر أنيق
+                errorMsg.innerHTML = '<i class="fas fa-exclamation-circle"></i> يرجى إدخال البريد الإلكتروني وكلمة المرور.';
+                return;
+            }
+
+            // حركة بصرية أثناء التحميل
+            errorMsg.style.color = "#3b82f6"; // لون أزرق
+            errorMsg.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق من الهوية...';
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>جاري الدخول...</span>';
+
+            const result = await loginUser(email, password);
+
+            if (!result.success) {
+                errorMsg.style.color = "#ef4444";
+                errorMsg.innerHTML = `<i class="fas fa-times-circle"></i> ${result.message}`;
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<span>تسجيل الدخول</span> <i class="fas fa-sign-in-alt"></i>';
+            } else {
+                errorMsg.style.color = "#10b981"; // لون أخضر للنجاح
+                errorMsg.innerHTML = '<i class="fas fa-check-circle"></i> تم تسجيل الدخول بنجاح! جاري التوجيه...';
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>
