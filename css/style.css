@@ -358,7 +358,6 @@ a:hover {
 }
 
 /* Prelaoder */
-
 #preloader {
   position: fixed;
   top: 0;
@@ -367,47 +366,16 @@ a:hover {
   bottom: 0;
   z-index: 9999;
   overflow: hidden;
-  background: #fff;
+  background: #fff; /* لون خلفية الشاشة قبل تحميل الصورة */
+  
+  /* إضافة الصورة هنا */
+  background-image: url('https://muif.github.io/img/Loader.png'); 
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100px; /* قم بتغيير الحجم حسب رغبتك */
 }
 
-#preloader:before {
-  content: "";
-  position: fixed;
-  top: calc(50% - 30px);
-  left: calc(50% - 30px);
-  border: 6px solid #f2f2f2;
-  border-top: 6px solid #421139;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  -webkit-animation: animate-preloader 1s linear infinite;
-  animation: animate-preloader 1s linear infinite;
-}
-
-@-webkit-keyframes animate-preloader {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes animate-preloader {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
-}
-
+/* ملاحظة: قمنا بحذف #preloader:before و keyframes لأنك لم تعد بحاجة لرسومات CSS */
 /*======================================
 //--//-->   NAVBAR
 ======================================*/
