@@ -372,7 +372,7 @@ a:hover {
   background-image: url('https://muif.github.io/img/Loader.png'); 
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 100px; /* قم بتغيير الحجم حسب رغبتك */
+  background-size: 300px; /* قم بتغيير الحجم حسب رغبتك */
 }
 
 /* ملاحظة: قمنا بحذف #preloader:before و keyframes لأنك لم تعد بحاجة لرسومات CSS */
