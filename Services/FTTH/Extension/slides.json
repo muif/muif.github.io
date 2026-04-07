@@ -1,0 +1,16 @@
+[
+  {
+    "image": "https://رابط-الصورة-الأولى.jpg",
+    "title": "العنوان الأول",
+    "description": "وصف الفلم أو العرض الأول هنا...",
+    "link": "https://example.com/link1",
+    "buttonText": "مشاهدة الآن"
+  },
+  {
+    "image": "https://رابط-الصورة-الثانية.jpg",
+    "title": "العنوان الثاني",
+    "description": "وصف الفلم أو العرض الثاني هنا...",
+    "link": "", 
+    "buttonText": "المزيد"
+  }
+]
