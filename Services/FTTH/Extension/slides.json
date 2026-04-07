@@ -1,16 +1,16 @@
 [
   {
-    "image": "https://رابط-الصورة-الأولى.jpg",
-    "title": "العنوان الأول",
-    "description": "وصف الفلم أو العرض الأول هنا...",
-    "link": "https://example.com/link1",
+    "image": "https://muif.github.io/Services/FTTH/Extension/ticket-1.jpg",
+    "title": "تذاكر نيبور!",
+    "description": "تابع تذاكر نيبور أولًا بأول عبر الاشعارات...",
+    "link": "",
     "buttonText": "مشاهدة الآن"
   },
   {
-    "image": "https://رابط-الصورة-الثانية.jpg",
-    "title": "العنوان الثاني",
-    "description": "وصف الفلم أو العرض الثاني هنا...",
-    "link": "", 
+    "image": "https://muif.github.io/img/intro-bg.jpg",
+    "title": "منتظر عماد  ",
+    "description": "بوابتك نحو العالم",
+    "link": "https://muif.github.io/Tools.html", 
     "buttonText": "المزيد"
   }
 ]
