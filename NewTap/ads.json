@@ -1,0 +1,32 @@
+{
+  "active_ads": [
+    {
+      "id": "ad_001",
+      "sponsorName": "Tech Store",
+      "type": "widget", 
+      "content": {
+        "title": "عرض خاص للمبرمجين",
+        "description": "خصم 20% على لوحات المفاتيح الميكانيكية.",
+        "imageUrl": "https://example.com/keyboard.jpg",
+        "link": "https://example.com/offer"
+      },
+      "displaySettings": {
+        "priority": "high",
+        "expiresAt": "2026-04-20T23:59:59Z" 
+      }
+    },
+    {
+      "id": "ad_002",
+      "sponsorName": "Cloud Host",
+      "type": "background",
+      "content": {
+        "imageUrl": "https://example.com/beautiful-server-bg.jpg",
+        "link": "https://example.com/hosting"
+      },
+      "displaySettings": {
+        "priority": "normal",
+        "expiresAt": "2026-05-01T00:00:00Z"
+      }
+    }
+  ]
+}
