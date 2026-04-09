@@ -1,32 +1,12 @@
 {
-  "active_ads": [
+  "ads": [
     {
-      "id": "ad_001",
-      "sponsorName": "Tech Store",
-      "type": "widget", 
-      "content": {
-        "title": "عرض خاص للمبرمجين",
-        "description": "خصم 20% على لوحات المفاتيح الميكانيكية.",
-        "imageUrl": "https://example.com/keyboard.jpg",
-        "link": "https://example.com/offer"
-      },
-      "displaySettings": {
-        "priority": "high",
-        "expiresAt": "2026-04-20T23:59:59Z" 
-      }
-    },
-    {
-      "id": "ad_002",
-      "sponsorName": "Cloud Host",
-      "type": "background",
-      "content": {
-        "imageUrl": "https://example.com/beautiful-server-bg.jpg",
-        "link": "https://example.com/hosting"
-      },
-      "displaySettings": {
-        "priority": "normal",
-        "expiresAt": "2026-05-01T00:00:00Z"
-      }
+      "id": 1,
+      "title": "عرض خاص من Nippur Connect",
+      "description": "ضاعف سرعة إنترنت الألياف الضوئية اليوم مجاناً لمدة شهر!",
+      "link": "https://example.com/offer",
+      "expiryDate": "2026-05-01"
     }
-  ]
+  ],
+  "news_source": "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/arabic/rss.xml"
 }
