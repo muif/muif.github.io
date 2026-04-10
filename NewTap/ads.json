@@ -1,8 +1,20 @@
 [
-    {
-        "id": 1,
-        "title": "استضف موقعك بأعلى سرعة مع عروضنا الجديدة!",
-        "targetUrl": "https://example.com/hosting",
-        "displayProbability": 0.8
-    }
+  {
+    "id": 1,
+    "title": "🚀 انطلق بمشروعك الآن: استضافة سحابية فائقة السرعة!",
+    "targetUrl": "https://example.com/hosting-deals",
+    "displayProbability": 0.3
+  },
+  {
+    "id": 2,
+    "title": "💻 هل تبحث عن أدوات UI/UX عصرية؟ تفضل بزيارة مكتبتنا.",
+    "targetUrl": "https://example.com/ui-resources",
+    "displayProbability": 0.7
+  },
+  {
+    "id": 3,
+    "title": "🛠️ حسّن إنتاجيتك كـ Senior Developer مع هذه الأدوات.",
+    "targetUrl": "https://example.com/dev-tools",
+    "displayProbability": 1.0
+  }
 ]
