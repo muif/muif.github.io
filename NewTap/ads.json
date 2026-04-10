@@ -1,12 +1,14 @@
-{
-  "ads": [
-    {
-      "id": 1,
-      "title": "عرض خاص من Nippur Connect",
-      "description": "ضاعف سرعة إنترنت الألياف الضوئية اليوم مجاناً لمدة شهر!",
-      "link": "https://example.com/offer",
-      "expiryDate": "2026-05-01"
-    }
-  ],
-  "news_source": "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/arabic/rss.xml"
-}
+[
+  {
+    "title": "Nippur FTTH - أسرع إنترنت في المنطقة",
+    "link": "https://your-isp-link.com",
+    "description": "اشترك الآن واحصل على شهر مجاني مع باقات Nippur الجديدة.",
+    "badge": "إعلان ممول"
+  },
+  {
+    "title": "تعلم البرمجة مع حسين",
+    "link": "https://github.com/your-profile",
+    "description": "تابع مستودعاتي على GitHub لتعلم بناء واجهات احترافية.",
+    "badge": "مقترح"
+  }
+]
