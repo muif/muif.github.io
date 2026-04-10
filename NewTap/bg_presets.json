@@ -1,0 +1,11 @@
+{
+    "media": [
+        { "name": "غابة هادئة", "type": "image", "url": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e" },
+        { "name": "أمواج البحر", "type": "video", "url": "https://assets.mixkit.co/videos/preview/mixkit-waves-coming-to-the-shore-line-1560-large.mp4" },
+        { "name": "فضاء عميق", "type": "image", "url": "https://images.unsplash.com/photo-1451187580459-43490279c0fa" }
+    ],
+    "gradients": [
+        { "name": "الغروب البنفسجي", "value": "linear-gradient(45deg, #4158D0, #C850C0, #FFCC70)" },
+        { "name": "أعماق المحيط", "value": "linear-gradient(160deg, #0093E9 0%, #80D0C7 100%)" }
+    ]
+}
