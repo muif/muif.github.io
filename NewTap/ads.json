@@ -1,14 +1,8 @@
 [
-  {
-    "title": "Nippur FTTH - أسرع إنترنت في المنطقة",
-    "link": "https://your-isp-link.com",
-    "description": "اشترك الآن واحصل على شهر مجاني مع باقات Nippur الجديدة.",
-    "badge": "إعلان ممول"
-  },
-  {
-    "title": "تعلم البرمجة مع حسين",
-    "link": "https://github.com/your-profile",
-    "description": "تابع مستودعاتي على GitHub لتعلم بناء واجهات احترافية.",
-    "badge": "مقترح"
-  }
+    {
+        "id": 1,
+        "title": "استضف موقعك بأعلى سرعة مع عروضنا الجديدة!",
+        "targetUrl": "https://example.com/hosting",
+        "displayProbability": 0.8
+    }
 ]
