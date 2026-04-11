@@ -1,8 +1,9 @@
+
 // ==UserScript==
-// @name         نظام النينجا لسحب البيانات (V5.0 - نظام الاستيراد والتصدير)
+// @name         نظام النينجا لسحب البيانات (V5.1 - مع رقم الحساب ID)
 // @namespace    http://tampermonkey.net/
-// @version      5.0
-// @description  نظام حفظ التقدم، الاستئناف التلقائي، ونقل الجلسات بين الحواسيب
+// @version      5.1
+// @description  نظام حفظ التقدم، الاستيراد/التصدير، مع إضافة الـ ID للمقارنة المستقبلية
 // @author       Mntder
 // @match        https://admin.ftth.iq/*
 // @grant        none
@@ -14,7 +15,6 @@
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     const STATE_KEY = 'nippur_scraper_state';
 
-    // تحميل الحالة السابقة إن وجدت
     let state = JSON.parse(localStorage.getItem(STATE_KEY)) || {
         allCustomers: [],
         scrapedData: [],
@@ -40,7 +40,7 @@
         `;
 
         const title = document.createElement('h3');
-        title.innerText = 'نظام السحب الشامل V5.0';
+        title.innerText = 'نظام السحب الشامل V5.1';
         title.style.cssText = 'margin: 0; font-size: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; text-align: center; color: #4CAF50;';
 
         const statusText = document.createElement('div');
@@ -51,7 +51,6 @@
         progressText.innerText = state.allCustomers.length > 0 ? `${state.currentIndex} / ${state.allCustomers.length}` : '0 / 0';
         progressText.style.cssText = 'font-size: 18px; color: #fff; text-align: center; direction: ltr; font-weight: bold; background: rgba(0,0,0,0.4); padding: 8px; border-radius: 8px; letter-spacing: 1px;';
 
-        // أزرار التحكم الأساسية
         const controlsDiv = document.createElement('div');
         controlsDiv.style.cssText = 'display: flex; gap: 5px; margin-top: 5px;';
 
@@ -68,7 +67,6 @@
         resetBtn.innerText = 'تصفير';
         resetBtn.style.cssText = `flex: 1; background: #f44336; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s;`;
 
-        // أزرار نقل الجلسة (الاستيراد والتصدير)
         const sessionDiv = document.createElement('div');
         sessionDiv.style.cssText = 'display: flex; gap: 5px; margin-top: 5px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 10px;';
 
@@ -82,7 +80,6 @@
         importStateBtn.title = 'رفع ملف ذاكرة لإكمال السحب';
         importStateBtn.style.cssText = `flex: 1; background: #333; color: #fff; border: 1px solid #555; padding: 8px; border-radius: 8px; cursor: pointer; font-size: 12px; transition: 0.2s;`;
 
-        // برمجة الأزرار
         startBtn.onclick = async () => {
             startBtn.disabled = true; resetBtn.disabled = true;
             state.isScraping = true; saveState();
@@ -106,9 +103,8 @@
 
         exportStateBtn.onclick = () => {
             if (state.allCustomers.length === 0) return alert('لا توجد جلسة نشطة لتصديرها!');
-            // إيقاف السحب مؤقتاً قبل التصدير
             state.isScraping = false; saveState();
-
+            
             const stateStr = JSON.stringify(state);
             const blob = new Blob([stateStr], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
@@ -132,7 +128,7 @@
                     try {
                         const importedState = JSON.parse(ev.target.result);
                         if (importedState && importedState.allCustomers) {
-                            importedState.isScraping = false; // لا تبدأ تلقائياً بعد الاستيراد
+                            importedState.isScraping = false; 
                             localStorage.setItem(STATE_KEY, JSON.stringify(importedState));
                             alert('تم استيراد الجلسة بنجاح! سيتم تحديث الصفحة الآن.');
                             location.reload();
@@ -151,7 +147,7 @@
         controlsDiv.appendChild(startBtn);
         controlsDiv.appendChild(exportCsvBtn);
         controlsDiv.appendChild(resetBtn);
-
+        
         sessionDiv.appendChild(exportStateBtn);
         sessionDiv.appendChild(importStateBtn);
 
@@ -210,17 +206,17 @@
             statusEl.style.color = '#00BCD4';
 
             while (state.currentIndex < state.allCustomers.length) {
-                if (!state.isScraping) break;
+                if (!state.isScraping) break; 
 
                 const customer = state.allCustomers[state.currentIndex];
-                const customerId = customer.self.id;
+                const customerId = customer.self.id; // تم التقاط الـ ID هنا
 
                 try {
-                    await sleep(1500);
-
+                    await sleep(1500); 
+                    
                     const details = await fetchJson(`/api/customers/${customerId}`);
                     const subs = await fetchJson(`/api/customers/subscriptions?customerId=${customerId}`);
-
+                    
                     const name = details.model?.primaryContact?.self?.displayValue || 'غير متوفر';
                     const phone = details.model?.primaryContact?.mobile || 'غير متوفر';
                     const subItem = subs.items && subs.items.length > 0 ? subs.items[0] : null;
@@ -228,7 +224,7 @@
                     const serial = subItem?.deviceDetails?.serial || 'غير متوفر';
                     const fdt = subItem?.deviceDetails?.fdt?.displayValue || 'غير متوفر';
                     const fat = subItem?.deviceDetails?.fat?.displayValue || 'غير متوفر';
-
+                    
                     let subscriptionName = 'غير متوفر';
                     if (subItem?.services && subItem.services.length > 0) subscriptionName = subItem.services[0].id;
                     else if (subItem?.bundle) subscriptionName = subItem.bundle.id;
@@ -236,19 +232,20 @@
                     const startedAt = subItem?.startedAt ? new Date(subItem.startedAt).toLocaleDateString('en-GB') : 'غير متوفر';
                     const expires = subItem?.expires ? new Date(subItem.expires).toLocaleDateString('en-GB') : 'غير متوفر';
 
-                    state.scrapedData.push({ name, phone, username, serial, fdt, fat, subscriptionName, startedAt, expires });
+                    // تم إضافة الـ ID إلى الكائن المحفوظ
+                    state.scrapedData.push({ id: customerId, name, phone, username, serial, fdt, fat, subscriptionName, startedAt, expires });
                     state.currentIndex++;
-
+                    
                     if (state.currentIndex % 5 === 0) saveState();
-
+                    
                     progressEl.innerText = `${state.currentIndex} / ${state.allCustomers.length}`;
 
                 } catch (err) {
                     if (err.message === 'RATE_LIMIT' || err.name === 'TypeError' || err.message.includes('Failed to fetch')) {
-                        saveState();
+                        saveState(); 
                         let countdown = 30;
                         statusEl.style.color = '#f44336';
-
+                        
                         const timer = setInterval(() => {
                             statusEl.innerText = `رصد حماية! تحديث الصفحة بعد ${countdown} ثانية للاستئناف...`;
                             countdown--;
@@ -257,14 +254,14 @@
                                 location.reload();
                             }
                         }, 1000);
-                        return;
+                        return; 
 
                     } else if (err.message === '401') {
                         state.isScraping = false; saveState();
-                        throw err;
+                        throw err; 
                     } else {
                         console.error(`تم تخطي ${customerId}`, err);
-                        state.currentIndex++;
+                        state.currentIndex++; 
                         saveState();
                     }
                 }
@@ -286,12 +283,14 @@
     };
 
     const exportToCSV = (dataArray, suffix = '') => {
-        const headers = ['الاسم', 'رقم الهاتف', 'اليوزر', 'السيريال', 'FDT (الزون)', 'FAT', 'نوع الاشتراك', 'تاريخ التفعيل', 'تاريخ الانتهاء'];
+        // تم إضافة الـ ID كأول عمود في الهيدر
+        const headers = ['رقم الحساب (ID)', 'الاسم', 'رقم الهاتف', 'اليوزر', 'السيريال', 'FDT (الزون)', 'FAT', 'نوع الاشتراك', 'تاريخ التفعيل', 'تاريخ الانتهاء'];
         const csvRows = [headers.join(',')];
 
         for (const row of dataArray) {
+            // تم إضافة الـ ID كأول قيمة في الصف
             const values = [
-                `"${row.name.replace(/"/g, '""')}"`, `"${row.phone}"`, `"${row.username}"`, `"${row.serial}"`,
+                `"${row.id}"`, `"${row.name.replace(/"/g, '""')}"`, `"${row.phone}"`, `"${row.username}"`, `"${row.serial}"`,
                 `"${row.fdt}"`, `"${row.fat}"`, `"${row.subscriptionName}"`, `"${row.startedAt}"`, `"${row.expires}"`
             ];
             csvRows.push(values.join(','));
