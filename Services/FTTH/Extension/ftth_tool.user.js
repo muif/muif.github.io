@@ -2,7 +2,7 @@
 // @name        نسخ معلومات المشتركين
 // @namespace    http://tampermonkey.net/
 // @version      3.3.0.1
-// @description  (تم اضافة قسم اشعارات التذاكر )
+// @description  (تم اضافة قسم جدولة رسائل الواتساب )
 // @author       Muntadher Imad ✅
 // @match        https://admin.ftth.iq/subscriptions*
 // @match        https://admin.ftth.iq/customer-details/*
