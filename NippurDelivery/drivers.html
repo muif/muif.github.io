@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <script>
+        // نظام الحماية الجداري: التحقق قبل رسم أي عنصر في الصفحة
+        if (!localStorage.getItem('nippur_token')) {
+            document.documentElement.style.display = 'none'; // جعل الصفحة بيضاء تماماً
+            window.location.replace('login.html'); // التوجيه الصامت والفوري بدون تنبيهات
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المندوبين والغرامات - نظام نيبور المالي</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        <!-- القائمة الجانبية -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <h2>نظام نيبور</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="index.html">جميع الطلبات</a></li>
+                <li><a href="merchants.html">التجار والتقارير</a></li>
+                <li><a href="regions.html">المناطق والتسعير</a></li>
+                <!-- تم تفعيل كلاس active لصفحة المندوبين -->
+                <li class="active"><a href="drivers.html">المندوبين والغرامات</a></li>
+                <li><a href="wallet.html">محفظة الإدارة (الدخل)</a></li>
+                <li id="menu-settings"><a href="settings.html">الإعدادات</a></li>
+                <li class="logout-item" style="margin-top: auto; border-top: 1px solid #e2e8f0; padding-top: 10px;">
+                    <a href="#" onclick="handleLogout()" style="color: #ef4444; font-weight: bold;">تسجيل الخروج ↩</a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- المحتوى الرئيسي -->
+        <main class="main-content">
+            <div class="page-header">
+                <h2>إدارة المندوبين وسجل الغرامات</h2>
+                <div class="header-actions" style="display: flex; gap: 10px;">
+                    <button id="openFineHistoryBtn" class="btn-secondary" style="background-color: #6b7280;" onclick="openFineHistoryModal()">سجل الغرامات الشامل</button>
+                    <button id="openAddFineBtn" class="btn-primary" style="background-color: #ef4444;" onclick="openAddFineModal()">إضافة غرامة مالية +</button>
+                </div>
+            </div>
+
+            <!-- نظام الفلترة الخاص بالمندوبين -->
+            <div class="filter-section card">
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label>ابحث عن اسم المندوب:</label>
+                        <!-- القائمة المنسدلة الداعمة للبحث -->
+                        <input list="driversList" id="driverSearch" placeholder="اكتب للبحث أو اختر من القائمة...">
+                        <datalist id="driversList">
+                            <!-- تعبأ أسماء المندوبين برمجياً هنا -->
+                        </datalist>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>الفترة الزمنية:</label>
+                        <select id="timeFilter">
+                            <option value="today">اليوم</option>
+                            <option value="last7">آخر 7 أيام</option>
+                            <option value="last30">آخر 30 يوم</option>
+                            <option value="custom">تخصيص بين تاريخين</option>
+                        </select>
+                    </div>
+
+                    <!-- حقول التاريخ المخصص -->
+                    <div class="filter-group custom-date-group" id="customDateRange" style="display: none;">
+                        <input type="date" id="startDate">
+                        <span>إلى</span>
+                        <input type="date" id="endDate">
+                    </div>
+                </div>
+
+                <div class="filter-actions">
+                    <button id="applyDriverFilterBtn" class="btn-secondary">تطبيق الفلتر وعرض النتائج</button>
+                </div>
+            </div>
+            <div class="stats-cards-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                <div class="stat-card card" style="border-top: 4px solid #6b7280; padding: 15px;">
+                    <h4 style="color: var(--text-muted); font-size: 13px; margin-bottom: 10px;">عدد الطلبات الكلي</h4>
+                    <strong id="globalDriverOrders" style="font-size: 22px;">0</strong>
+                </div>
+                <div class="stat-card card" style="border-top: 4px solid #8b5cf6; padding: 15px;">
+                    <h4 style="color: var(--text-muted); font-size: 13px; margin-bottom: 10px;">إجمالي أجور التوصيل</h4>
+                    <strong id="globalDriverDeliveryFees" style="font-size: 22px; color: #7c3aed;">0 د.ع</strong>
+                </div>
+                <div class="stat-card card" style="border-top: 4px solid #3b82f6; padding: 15px;">
+                    <h4 style="color: var(--text-muted); font-size: 13px; margin-bottom: 10px;">مبالغ الطلبات الإجمالية</h4>
+                    <strong id="globalDriverTotalAmount" style="font-size: 22px; color: #2563eb;">0 د.ع</strong>
+                </div>
+                <div class="stat-card card" style="border-top: 4px solid #ef4444; background-color: #fef2f2; padding: 15px;">
+                    <h4 style="color: var(--text-muted); font-size: 13px; margin-bottom: 10px;">محافظ المندوبين (الذمم)</h4>
+                    <strong id="globalDriverWallets" style="font-size: 22px; color: #dc2626;">0 د.ع</strong>
+                    <small style="display: block; font-size: 10px; color: #ef4444; margin-top: 5px;">(ثابتة لجميع المندوبين)</small>
+                </div>
+            </div>
+            <!-- جدول عرض بيانات المندوبين (القسم الأول) -->
+            <div class="table-container card">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>اسم المندوب</th>
+                            <th>عدد الطلبات</th>
+                            <th>أجرة التوصيل</th>
+                            <th>مبلغ الطلبات الإجمالي</th>
+                            <th>الذمة المالية (محفظة المندوب)</th>
+                            <th>نقاط الغرامة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="driversTableBody">
+                        <!-- تعبأ البيانات برمجياً هنا -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- ============================================== -->
+            <!-- نوافذ الغرامات (المرحلة 3 - الجزء 2) -->
+            <!-- ============================================== -->
+            <!-- 1. نافذة إضافة غرامة -->
+            <div id="addFineModal" class="modal-overlay" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>إضافة غرامة مالية جديدة</h3>
+                        <button class="close-modal-btn" onclick="closeModal('addFineModal')">X</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group">
+                            <label>اسم المندوب:</label>
+                            <select id="fineDriverSelect">
+                                <option value="">-- اختر المندوب --</option>
+                                <!-- تعبأ برمجياً -->
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>نوع الغرامة:</label>
+                            <input type="text" id="fineTypeInput" placeholder="مثال: تأخير، سوء سلوك...">
+                        </div>
+                        <div class="input-group" style="display: flex; gap: 10px;">
+                            <div style="flex: 1;">
+                                <label>نقاط الغرامة:</label>
+                                <input type="number" id="finePointsInput" placeholder="أدخل عدد النقاط" min="1" oninput="calculateFineAmount()">
+                            </div>
+                            <div style="flex: 1;">
+                                <label>المبلغ المستقطع (يُحسب آلياً):</label>
+                                <input type="text" id="fineAmountDisplay" readonly style="background-color: #fee2e2; color: #ef4444; font-weight: bold;">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>سبب الغرامة (بالتفصيل):</label>
+                            <input type="text" id="fineReasonInput" placeholder="اكتب تفاصيل المخالفة...">
+                        </div>
+                        <div class="input-group">
+                            <label>تاريخ الغرامة:</label>
+                            <input type="date" id="fineDateInput">
+                        </div>
+                        <button class="btn-primary" id="saveFineBtn" style="width: 100%; margin-top: 15px; background-color: #ef4444;" onclick="saveFineAction()">حفظ وإصدار الغرامة</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. نافذة سجل الغرامات -->
+            <div id="fineHistoryModal" class="modal-overlay" style="display: none;">
+                <div class="modal-content" style="max-width: 900px; width: 90%;">
+                    <div class="modal-header">
+                        <h3>سجل الغرامات والعقوبات</h3>
+                        <button class="close-modal-btn" onclick="closeModal('fineHistoryModal')">X</button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>المندوب</th>
+                                    <th>النوع</th>
+                                    <th>النقاط</th>
+                                    <th>السبب</th>
+                                    <th>التاريخ</th>
+                                    <th>المبلغ المستقطع</th>
+                                    <th>حالة الاستقطاع</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fineHistoryTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- 3. نافذة استلام الأموال من المندوب (المرحلة 3 - الجزء 3) -->
+            <div id="receiveMoneyModal" class="modal-overlay" style="display: none;">
+                <div class="modal-content" style="max-width: 600px;">
+                    <div class="modal-header">
+                        <h3>استلام أموال من المندوب: <span id="receiveDriverName"></span></h3>
+                        <button class="close-modal-btn" onclick="closeModal('receiveMoneyModal')">X</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group">
+                            <label>الذمة المالية الحالية (المطلوب تسديده):</label>
+                            <input type="text" id="receiveCurrentWallet" readonly style="background-color: #f3f4f6; font-weight: bold; color: #ef4444;">
+                        </div>
+
+                        <!-- حاوية الـ Checklist التي سيتم تفعيلها برمجياً في الجزء الخامس -->
+                        <div id="unpaidOrdersChecklistContainer" style="margin-bottom: 15px; max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); padding: 10px; border-radius: 6px; display: none;">
+                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">حدد الطلبات التي ورّد المندوب أموالها:</p>
+                            <div id="checklistItems"></div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>المبلغ المستلم فعلياً:</label>
+                            <input type="number" id="receiveAmountInput" placeholder="أدخل المبلغ المستلم...">
+                        </div>
+                        <div class="input-group">
+                            <label>الملاحظة (اختياري):</label>
+                            <input type="text" id="receiveNoteInput" placeholder="اكتب ملاحظة حول الاستلام...">
+                        </div>
+                        <div class="modal-actions" style="display: flex; gap: 10px; margin-top: 20px;">
+                            <button class="btn-primary" id="confirmReceiveBtn" style="background-color: #10b981;">حفظ الاستلام</button>
+                            <button class="btn-secondary" id="printReceiveReceiptBtn" style="background-color: #6b7280;">طباعة الوصل</button>
+                            <button class="btn-secondary" id="whatsappReceiveBtn" style="background-color: #25d366; color: white;">إرسال واتساب</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="driverReportsModal" class="modal-overlay" style="display: none;">
+                <div class="modal-content" style="max-width: 1000px; width: 95%;">
+                    <div class="modal-header">
+                        <h3>تقارير طلبات المندوب: <span id="reportsDriverName"></span></h3>
+                        <button class="close-modal-btn" onclick="closeModal('driverReportsModal')">X</button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                            <div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap;">
+                                <div>
+                                    <label style="font-size: 13px; font-weight: bold; display: block; margin-bottom: 5px;">الفترة الزمنية:</label>
+                                    <select id="driverRepTimeFilter" style="padding: 6px; border-radius: 4px; border: 1px solid #ccc;">
+                                        <option value="today">اليوم الحالي</option>
+                                        <option value="last7">آخر 7 أيام</option>
+                                        <option value="last30">آخر 30 يوم</option>
+                                        <option value="custom">مخصص</option>
+                                    </select>
+                                </div>
+                                <div id="driverRepCustomDateGroup" style="display: none; gap: 5px;">
+                                    <input type="date" id="driverRepStartDate" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc;">
+                                    <input type="date" id="driverRepEndDate" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc;">
+                                </div>
+                                <button class="btn-primary" style="padding: 6px 15px; background-color: var(--primary-color);" onclick="loadDriverReports(1)">تطبيق الفلتر</button>
+                            </div>
+
+                            <div style="display: flex; gap: 10px;">
+                                <button onclick="generateDriverCSV()" class="btn-secondary" style="background-color: #059669; padding: 6px 15px;">تصدير CSV للكل 📥</button>
+                                <button onclick="printDriverReport()" class="btn-secondary" style="background-color: #4b5563; padding: 6px 15px;">طباعة كل الطلبات 🖨️</button>
+                            </div>
+                        </div>
+
+                        <div class="stats-cards-container" style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                            <div class="stat-card card">عدد الطلبات: <strong id="dRepTotalOrders">0</strong></div>
+                            <div class="stat-card card">مبالغ البضاعة: <strong id="dRepTotalAmount">0</strong></div>
+                            <div class="stat-card card">أجور التوصيل: <strong id="dRepDeliveryFees">0</strong></div>
+                            <div class="stat-card card" style="background-color: #fee2e2; color: #ef4444;">نقاط الغرامة: <strong id="dRepPenalty">0</strong></div>
+                            <div class="stat-card card" style="background-color: #d1fae5; color: #047857;">الذمة المالية: <strong id="dRepWallet">0</strong><br><small style="font-size:10px; color:#065f46;">(سينقص الرقم بمجرد التسديد)</small></div>
+                        </div>
+
+                        <div style="margin-bottom: 15px; padding: 10px; background-color: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px;">
+                            <strong style="font-size: 13px; color: #1e40af; margin-bottom: 8px; display: block;">⚙️ تخصيص الأعمدة (للشاشة والطباعة):</strong>
+                            <div style="display: flex; gap: 15px; flex-wrap: wrap; font-size: 13px;">
+                                <label><input type="checkbox" class="driver-col-toggle" value="0" checked> رقم الطلب</label>
+                                <label><input type="checkbox" class="driver-col-toggle" value="1" checked> التاريخ</label>
+                                <label><input type="checkbox" class="driver-col-toggle" value="2" checked> اسم المتجر</label>
+                                <label><input type="checkbox" class="driver-col-toggle" value="3" checked> مدينة الزبون</label>
+                                <label><input type="checkbox" class="driver-col-toggle" value="4" checked> سعر البضاعة</label>
+                                <label><input type="checkbox" class="driver-col-toggle" value="5" checked> أجرة التوصيل</label>
+                                <label><input type="checkbox" class="driver-col-toggle" value="6" checked> المبلغ الكلي (استلام من الزبون)</label>
+                                <label><input type="checkbox" class="driver-col-toggle" value="7" checked> حالة التسديد</label>
+                            </div>
+                        </div>
+
+                        <div style="overflow-x: auto;">
+                            <table class="data-table" id="driverReportDataTable">
+                                <thead>
+                                    <tr>
+                                        <th>رقم الطلب</th>
+                                        <th>التاريخ</th>
+                                        <th>اسم المتجر</th>
+                                        <th>مدينة الزبون</th>
+                                        <th>سعر البضاعة</th>
+                                        <th>أجرة التوصيل</th>
+                                        <th>المبلغ الكلي (يُستلم من الزبون)</th>
+                                        <th>حالة الطلب</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="driverReportsTableBody"></tbody>
+                            </table>
+                        </div>
+
+                        <div id="dRepPagination" style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;">
+                            <button id="dRepPrevBtn" class="btn-secondary" style="padding: 5px 15px;">السابق</button>
+                            <span id="dRepPageInfo" style="font-weight: bold; font-size: 14px;">صفحة 1 من 1</span>
+                            <button id="dRepNextBtn" class="btn-secondary" style="padding: 5px 15px;">التالي</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. نافذة سجل عمليات الاستلام (المرحلة 3 - الجزء 4) -->
+            <div id="driverHistoryModal" class="modal-overlay" style="display: none;">
+                <div class="modal-content" style="max-width: 900px; width: 90%;">
+                    <div class="modal-header">
+                        <h3>سجل عمليات الاستلام: <span id="historyDriverName"></span></h3>
+                        <button class="close-modal-btn" onclick="closeModal('driverHistoryModal')">X</button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px;">
+                            <button onclick="exportHistoryToCSV()" class="btn-secondary" style="background-color: #059669; font-size: 13px;">تصدير CSV 📥</button>
+                            <button onclick="printCurrentHistory()" class="btn-secondary" style="background-color: #4b5563; font-size: 13px;">طباعة الصفحة 🖨️</button>
+                        </div>
+
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>التاريخ</th>
+                                    <th>نوع العملية</th>
+                                    <th>المبلغ</th>
+                                    <th>الملاحظة</th>
+                                </tr>
+                            </thead>
+                            <tbody id="driverHistoryTableBody"></tbody>
+                        </table>
+
+                        <div id="historyPagination" style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;">
+                            <button id="prevHistoryBtn" class="btn-secondary" style="padding: 5px 15px;">السابق</button>
+                            <span id="historyPageInfo" style="font-weight: bold; font-size: 14px;">صفحة 1 من 1</span>
+                            <button id="nextHistoryBtn" class="btn-secondary" style="padding: 5px 15px;">التالي</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/drivers.js"></script>
+</body>
+</html>

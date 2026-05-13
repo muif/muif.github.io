@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <script>
+        // نظام الحماية الجداري: التحقق قبل رسم أي عنصر في الصفحة
+        if (!localStorage.getItem('nippur_token')) {
+            document.documentElement.style.display = 'none'; // جعل الصفحة بيضاء تماماً
+            window.location.replace('login.html'); // التوجيه الصامت والفوري بدون تنبيهات
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محفظة الإدارة - نظام نيبور المالي</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        <!-- القائمة الجانبية -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <h2>نظام نيبور</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="index.html">جميع الطلبات</a></li>
+                <li><a href="merchants.html">التجار والتقارير</a></li>
+                <li><a href="regions.html">المناطق والتسعير</a></li>
+                <li><a href="drivers.html">المندوبين والغرامات</a></li>
+                <!-- تم تفعيل كلاس active لصفحة محفظة الإدارة -->
+                <li class="active"><a href="wallet.html">محفظة الإدارة (الدخل)</a></li>
+                <li id="menu-settings"><a href="settings.html">الإعدادات</a></li>
+                <li class="logout-item" style="margin-top: auto; border-top: 1px solid #e2e8f0; padding-top: 10px;">
+                    <a href="#" onclick="handleLogout()" style="color: #ef4444; font-weight: bold;">تسجيل الخروج ↩</a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- المحتوى الرئيسي -->
+        <main class="main-content">
+            <div class="page-header">
+                <h2>محفظة الإدارة والتقارير المالية المركزية</h2>
+            </div>
+
+            <!-- نظام الفلترة الخاص بالمحفظة (يؤثر على الإحصائيات باستثناء الخزنة) -->
+            <div class="filter-section card">
+                <div class="filter-grid" style="align-items: flex-end;">
+                    <div class="filter-group">
+                        <label>الفترة الزمنية للإحصائيات:</label>
+                        <select id="walletTimeFilter">
+                            <option value="today">اليوم الحالي</option>
+                            <option value="last7">آخر 7 أيام</option>
+                            <option value="last30">آخر 30 يوم</option>
+                            <option value="custom">تاريخ مخصص</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group custom-date-group" id="walletCustomDateRange" style="display: none;">
+                        <input type="date" id="walletStartDate">
+                        <span style="margin: 0 10px;">إلى</span>
+                        <input type="date" id="walletEndDate">
+                    </div>
+
+                    <div class="filter-actions" style="border: none; padding: 0;">
+                        <button id="applyWalletFilterBtn" class="btn-secondary" style="background-color: #3b82f6;">تحديث الإحصائيات</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- بطاقات الإحصائيات العلوية (المرحلة 4 - الجزء 1) -->
+            <div class="stats-cards-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px;">
+
+                <!-- 1. إجمالي مبالغ الطلبات (تتأثر بالفلتر) -->
+                <div class="stat-card card" style="border-top: 4px solid #6b7280;">
+                    <h4 style="color: var(--text-muted); margin-bottom: 10px;">إجمالي مبالغ الطلبات</h4>
+                    <strong id="statTotalOrdersAmount" style="font-size: 24px;">0 د.ع</strong>
+                </div>
+
+                <!-- 2. إجمالي أرباح التجار (تتأثر بالفلتر) -->
+                <div class="stat-card card" style="border-top: 4px solid #f59e0b;">
+                    <h4 style="color: var(--text-muted); margin-bottom: 10px;">إجمالي أرباح التجار</h4>
+                    <strong id="statTotalMerchantsProfits" style="font-size: 24px; color: #d97706;">0 د.ع</strong>
+                </div>
+
+                <!-- 3. إجمالي مبالغ التوصيل (تتأثر بالفلتر) -->
+                <div class="stat-card card" style="border-top: 4px solid #8b5cf6;">
+                    <h4 style="color: var(--text-muted); margin-bottom: 10px;">إجمالي مبالغ التوصيل</h4>
+                    <strong id="statTotalDeliveryFees" style="font-size: 24px; color: #7c3aed;">0 د.ع</strong>
+                </div>
+
+                <!-- 4. إجمالي أرباح التطبيق (تتأثر بالفلتر) -->
+                <div class="stat-card card" style="border-top: 4px solid #3b82f6;">
+                    <h4 style="color: var(--text-muted); margin-bottom: 10px;">إجمالي أرباح التطبيق</h4>
+                    <strong id="statTotalAppProfits" style="font-size: 24px; color: #2563eb;">0 د.ع</strong>
+                </div>
+
+            </div>
+
+            <!-- 5. الخزنة المركزية: محفظة الإدارة (تراكمية لا تتأثر بالفلتر الزمني) -->
+            <div class="card" style="background: linear-gradient(135deg, #10b981 0%, #047857 100%); color: white; border-radius: 12px; padding: 30px; text-align: center; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);">
+                <h3 style="margin-bottom: 15px; font-size: 20px; font-weight: 500; opacity: 0.9;">الخزنة المركزية (محفظة الإدارة الدخل)</h3>
+                <div id="statAdminWalletBalance" style="font-size: 48px; font-weight: 700; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">0 د.ع</div>
+                <p style="margin-top: 15px; font-size: 14px; opacity: 0.8;">هذا الرصيد تراكمي ويمثل النقد الفعلي المتوفر، ولا يتأثر بفلترة التواريخ.</p>
+            </div>
+
+            <!-- قسم الإجراءات وجدول الحركات (المرحلة 4 - الجزء 2) -->
+            <!-- قسم الإجراءات المركزية (المرحلة 4 - الجزء 3) -->
+            <div class="actions-section" style="margin-bottom: 25px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <button id="openWithdrawModalBtn" class="btn-primary" style="background-color: #ef4444;" onclick="openWithdrawModal()">سحب مصروفات (رواتب/أخرى) -</button>
+                <button class="btn-primary" style="background-color: #10b981;" onclick="openCentralReceiveModal()">استلام من مندوب +</button>
+                <button class="btn-primary" style="background-color: #f59e0b;" onclick="openCentralPayModal()">تسليم أموال لمتجر -</button>
+            </div>
+
+            <div class="table-container card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                    <h3>سجل حركات المحفظة المركزية الشامل</h3>
+                    <!-- فلترة السجل الشامل -->
+                    <div style="display: flex; gap: 10px;">
+                        <select id="logTypeFilter" style="padding: 6px; border-radius: 4px; border: 1px solid var(--border-color);">
+                            <option value="all">جميع العمليات</option>
+                            <option value="receive">استلام من مندوب</option>
+                            <option value="pay">تسديد لتاجر</option>
+                            <option value="expense">مصروفات ورواتب</option>
+                        </select>
+                        <select id="logEntityFilter" style="padding: 6px; border-radius: 4px; border: 1px solid var(--border-color); min-width: 180px;">
+                            <option value="ADMIN_WALLET">محفظة الإدارة (ADMIN_WALLET)</option>
+                        </select>
+                        <button class="btn-secondary" style="padding: 6px 12px;" onclick="loadWalletTransactions()">تصفية السجل</button>
+                        <button class="btn-secondary" style="padding: 6px 12px; background-color: #059669;" onclick="exportWalletToCSV()">تصدير CSV 📥</button>
+                    </div>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>نوع العملية</th>
+                            <th>الموظف المسؤول</th>
+                            <th>تاريخ الحركة</th>
+                            <th>الطرف المعني</th>
+                            <th>مبلغ الحركة</th>
+                            <th>المحفظة قبل</th>
+                            <th>المحفظة بعد</th>
+                            <th>الملاحظة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="walletTransactionsTableBody">
+                        <!-- تعبأ الحركات برمجياً -->
+                    </tbody>
+                </table>
+                <div id="txPagination" style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;">
+                    <button id="prevTxBtn" class="btn-secondary" style="padding: 5px 20px;" onclick="changeTxPage(-1)">السابق</button>
+                    <span id="txPageInfo" style="font-weight: bold; font-size: 14px;">صفحة 1</span>
+                    <button id="nextTxBtn" class="btn-secondary" style="padding: 5px 20px;" onclick="changeTxPage(1)">التالي</button>
+                </div>
+
+          </div> 
+            <!-- نافذة سحب المصروفات (المرحلة 4 - الجزء 2) -->
+            <div id="withdrawModal" class="modal-overlay" style="display: none;">
+                <div class="modal-content" style="max-width: 600px;">
+                    <div class="modal-header">
+                        <h3>سحب مصروفات من الخزنة</h3>
+                        <button class="close-modal-btn" onclick="closeModal('withdrawModal')">X</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group">
+                            <label>نوع العملية:</label>
+                            <select id="withdrawTypeSelect" onchange="handleWithdrawTypeChange()">
+                                <option value="other">مصاريف أخرى</option>
+                                <option value="salary">رواتب الموظفين (المندوبين)</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group" id="driverSelectGroup" style="display: none;">
+                            <label>اختر المندوب:</label>
+                            <select id="withdrawDriverSelect" onchange="checkDriverPenalty()">
+                                <option value="">-- اختر المندوب --</option>
+                            </select>
+                        </div>
+
+                        <div id="penaltyAlertBox" style="display: none; background-color: #fee2e2; border: 1px solid #ef4444; color: #b91c1c; padding: 10px; border-radius: 6px; margin-bottom: 15px; font-size: 13px;">
+                            <strong style="display: block; margin-bottom: 5px;">تنبيه: توجد غرامة معلقة!</strong>
+                            <span id="penaltyAlertText"></span>
+                            <div style="margin-top: 10px;">
+                                <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-weight: bold;">
+                                    <input type="checkbox" id="deductPenaltyCheckbox" onchange="updateWithdrawCalculations()">
+                                    نعم، قم باحتساب واستقطاع الغرامة من هذا الراتب.
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label id="withdrawAmountLabel">المبلغ المراد سحبه:</label>
+                            <input type="number" id="withdrawAmountInput" placeholder="أدخل المبلغ..." oninput="updateWithdrawCalculations()">
+                        </div>
+
+                        <div id="salaryReceiptSection" style="display: none; background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                            <h4 style="margin-bottom: 10px; color: #334155; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">تفاصيل صرف الراتب:</h4>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>الراتب المقرر (استحقاق المندوب):</span>
+                                <strong id="receiptGross">0 د.ع</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: #ef4444;">
+                                <span>استقطاع صندوق الغرامات:</span>
+                                <strong id="receiptPenalty" dir="ltr">- 0 د.ع</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: #10b981; font-size: 16px;">
+                                <span>الصافي المسلم للمندوب (كاش):</span>
+                                <strong id="receiptNetDriver">0 د.ع</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #cbd5e1; color: #2563eb; font-weight: bold; font-size: 15px;">
+                                <span>المبلغ الخارج فعلياً من الخزنة:</span>
+                                <strong id="receiptSafeDeduction">0 د.ع</strong>
+                            </div>
+                            <p id="receiptDynamicFeedback" style="margin-top: 15px; font-size: 13px; font-weight: bold; text-align: center; padding: 8px; border-radius: 4px;"></p>
+                        </div>
+
+                        <div class="input-group" style="display: flex; gap: 10px;">
+                            <div style="flex: 1;">
+                                <label>مبلغ الخزنة قبل:</label>
+                                <input type="text" id="walletBeforeInput" readonly style="background-color: #f3f4f6; font-weight: bold;">
+                            </div>
+                            <div style="flex: 1;">
+                                <label>مبلغ الخزنة بعد:</label>
+                                <input type="text" id="walletAfterInput" readonly style="background-color: #fee2e2; color: #ef4444; font-weight: bold;">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>الملاحظة (تُكتب آلياً بناءً على التفاصيل):</label>
+                            <input type="text" id="withdrawNoteInput" placeholder="اكتب ملاحظة...">
+                        </div>
+
+                        <button class="btn-primary" id="confirmWithdrawBtn" style="width: 100%; margin-top: 15px; background-color: #ef4444;" onclick="executeWithdrawAction()">تنفيذ السحب</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- النوافذ المركزية للاستلام والتسديد (المرحلة 4 - الجزء 3) -->
+            <!-- 1. نافذة التسديد المركزي للتاجر -->
+            <div id="centralPayModal" class="modal-overlay" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>تسليم أموال لمتجر معين (مركزي)</h3>
+                        <button class="close-modal-btn" onclick="closeModal('centralPayModal')">X</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group">
+                            <label>ابحث عن التاجر:</label>
+                            <select id="centralPayMerchantSelect" onchange="fetchMerchantWalletForCentral()">
+                                <option value="">-- جاري تحميل المتاجر --</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>الرصيد الحالي للتاجر (ديون):</label>
+                            <input type="text" id="centralPayCurrentWallet" readonly style="background-color: #f3f4f6; font-weight: bold;">
+                        </div>
+                        <div class="input-group">
+                            <label>المبلغ المسدد:</label>
+                            <input type="number" id="centralPayAmountInput" placeholder="أدخل المبلغ...">
+                        </div>
+                        <div class="input-group">
+                            <label>الملاحظة:</label>
+                            <input type="text" id="centralPayNoteInput" placeholder="اكتب ملاحظة...">
+                        </div>
+                        <div class="modal-actions" style="display: flex; gap: 10px; margin-top: 20px;">
+                            <button id="confirmCentralPayBtn" class="btn-primary" style="background-color: #f59e0b;" onclick="executeCentralPay()">تأكيد التسديد الشامل</button>
+                            <button id="centralPrintReceiptBtn" class="btn-secondary" style="background-color: #6b7280;">طباعة الوصل</button>
+                            <button id="centralWhatsappPayBtn" class="btn-secondary" style="background-color: #25d366; color: white;">إرسال واتساب</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="centralReceiveModal" class="modal-overlay" style="display: none;">
+                <div class="modal-content" style="max-width: 600px;">
+                    <div class="modal-header">
+                        <h3>استلام أموال من مندوب (مركزي)</h3>
+                        <button class="close-modal-btn" onclick="closeModal('centralReceiveModal')">X</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group">
+                            <label>ابحث عن المندوب:</label>
+                            <select id="centralReceiveDriverSelect" onchange="fetchDriverWalletForCentral()">
+                                <option value="">-- جاري تحميل المندوبين --</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>الذمة المالية الحالية للمندوب:</label>
+                            <input type="text" id="centralReceiveCurrentWallet" readonly style="background-color: #f3f4f6; color: #ef4444; font-weight: bold;">
+                        </div>
+
+                        <div id="centralUnpaidOrdersContainer" style="margin-bottom: 15px; max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); padding: 10px; border-radius: 6px; display: none;">
+                            <div id="centralChecklistItems"></div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>المبلغ المستلم فعلياً:</label>
+                            <input type="number" id="centralReceiveAmountInput" placeholder="أدخل المبلغ المستلم...">
+                        </div>
+                        <div class="input-group">
+                            <label>الملاحظة (اختياري):</label>
+                            <input type="text" id="centralReceiveNoteInput" placeholder="اكتب ملاحظة حول الاستلام...">
+                        </div>
+                        <div class="modal-actions" style="display: flex; gap: 10px; margin-top: 20px;">
+                            <button class="btn-primary" style="background-color: #10b981;" onclick="executeCentralReceive()">تأكيد الاستلام الشامل</button>
+                            <button id="centralPrintReceiveReceiptBtn" class="btn-secondary" style="background-color: #6b7280;">طباعة الوصل</button>
+                            <button class="btn-secondary" id="centralWhatsappBtn" style="background-color: #25d366; color: white;">إرسال واتساب</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/auth.js"></script> 
+    <script src="assets/js/wallet.js"></script>
+</body>
+</html>

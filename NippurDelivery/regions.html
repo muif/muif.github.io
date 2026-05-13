@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <script>
+        // نظام الحماية الجداري: التحقق قبل رسم أي عنصر في الصفحة
+        if (!localStorage.getItem('nippur_token')) {
+            document.documentElement.style.display = 'none'; // جعل الصفحة بيضاء تماماً
+            window.location.replace('login.html'); // التوجيه الصامت والفوري بدون تنبيهات
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المناطق والتسعير - نظام نيبور المالي</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        <!-- القائمة الجانبية -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <h2>نظام نيبور</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="index.html">جميع الطلبات</a></li>
+                <li><a href="merchants.html">التجار والتقارير</a></li>
+                <!-- تم تفعيل كلاس active لصفحة المناطق -->
+                <li class="active"><a href="regions.html">المناطق والتسعير</a></li>
+                <li><a href="drivers.html">المندوبين والغرامات</a></li>
+                <li><a href="wallet.html">محفظة الإدارة (الدخل)</a></li>
+                <li id="menu-settings"><a href="settings.html">الإعدادات</a></li>
+                <li class="logout-item" style="margin-top: auto; border-top: 1px solid #e2e8f0; padding-top: 10px;">
+                    <a href="#" onclick="handleLogout()" style="color: #ef4444; font-weight: bold;">تسجيل الخروج ↩</a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- المحتوى الرئيسي -->
+        <main class="main-content">
+            <div class="page-header">
+                <h2>إدارة المناطق ومجموعات التسعير</h2>
+            </div>
+
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+
+                <!-- القسم الأول: المناطق غير المصنفة (الجديدة) -->
+                <div class="card" style="flex: 1; min-width: 300px; border: 1px solid #fca5a5;">
+                    <h3 style="color: #ef4444; margin-bottom: 15px;">المناطق غير المصنفة (تحتاج لتسعير)</h3>
+                    <div style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
+                        <input type="checkbox" id="selectAllUnmapped" style="width: 18px; height: 18px;">
+                        <label for="selectAllUnmapped" style="font-weight: bold;">تحديد الكل</label>
+                    </div>
+
+                    <div id="unmappedRegionsContainer" style="max-height: 200px; overflow-y: auto; margin-bottom: 15px; border: 1px solid var(--border-color); padding: 10px; border-radius: 6px;">
+                        <!-- تعبأ المناطق الجديدة برمجياً هنا مع Checkboxes -->
+                    </div>
+                    <div class="input-group">
+                        <label>نقل المناطق المحددة إلى مجموعة:</label>
+                        <select id="targetGroupSelect">
+                            <option value="">-- اختر المجموعة --</option>
+                            <!-- تعبأ المجموعات المتاحة برمجياً -->
+                        </select>
+                    </div>
+
+                    <!-- خيارات التصحيح المحاسبي -->
+                    <div class="input-group" style="background-color: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 15px;">
+                        <label style="color: var(--primary-color); margin-bottom: 8px;">نطاق تطبيق السعر على الطلبات المعلقة (UNPAID):</label>
+
+                        <div style="margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                            <input type="radio" id="scopeAll" name="pricingScope" value="all" checked>
+                            <label for="scopeAll" style="font-size: 13px;">تطبيق على جميع الطلبات (الحالية والقديمة)</label>
+                        </div>
+
+                        <div style="margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                            <input type="radio" id="scopeDate" name="pricingScope" value="date">
+                            <label for="scopeDate" style="font-size: 13px;">تطبيق ابتداءً من تاريخ معين:</label>
+                            <input type="date" id="scopeDateValue" style="padding: 4px; font-size: 12px; border-radius: 4px; border: 1px solid #ccc; display: none;">
+                        </div>
+
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="radio" id="scopeFuture" name="pricingScope" value="future">
+                            <label for="scopeFuture" style="font-size: 13px; color: #ef4444;">تطبيق من الآن فصاعداً (لا تغير الطلبات القديمة)</label>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary" id="assignRegionsBtn" style="background-color: #10b981; width: 100%;">تنفيذ ونقل المناطق</button>
+                </div>
+
+                <!-- القسم الثاني: إنشاء مجموعة تسعير جديدة -->
+                <div class="card" style="flex: 1; min-width: 300px;">
+                    <h3 style="margin-bottom: 15px;">إنشاء مجموعة تسعير جديدة</h3>
+                    <div class="input-group">
+                        <label>اسم المجموعة (مثال: مجموعة عفك):</label>
+                        <input type="text" id="newGroupName" placeholder="أدخل اسم المجموعة...">
+                    </div>
+                    <div class="input-group">
+                        <label>سعر التوصيل للمجموعة (دينار):</label>
+                        <input type="number" id="newGroupPrice" placeholder="مثال: 2000">
+                    </div>
+                    <button class="btn-primary" id="createNewGroupBtn">حفظ المجموعة الجديدة</button>
+                </div>
+
+            </div>
+
+            <!-- القسم الثالث: عرض المجموعات الحالية والمناطق بداخلها -->
+            <div class="card" style="margin-top: 20px;">
+                <h3 style="margin-bottom: 15px;">مجموعات التسعير الحالية</h3>
+                <div id="existingGroupsContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px;">
+                    <!-- تعبأ بطاقات المجموعات برمجياً هنا -->
+                </div>
+            </div>
+
+            <div id="editGroupModal" class="modal-overlay" style="display: none;">
+                <div class="modal-content" style="max-width: 600px;">
+                    <div class="modal-header">
+                        <h3>تعديل مجموعة التسعير وإدارة مناطقها</h3>
+                        <button class="close-modal-btn" onclick="closeModal('editGroupModal')">X</button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="editGroupId">
+
+                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                            <div class="input-group" style="flex: 1;">
+                                <label>اسم المجموعة:</label>
+                                <input type="text" id="editGroupName">
+                            </div>
+                            <div class="input-group" style="flex: 1;">
+                                <label>سعر التوصيل للمجموعة (دينار):</label>
+                                <input type="number" id="editGroupPrice">
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 10px; border-top: 1px dashed #cbd5e1; padding-top: 15px;">
+                            <label style="font-weight: bold; color: var(--primary-color); display: block; margin-bottom: 5px;">المناطق المدرجة في هذه المجموعة:</label>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">حدد المناطق التي ترغب بتطبيق إجراء عليها (اتركها فارغة إذا أردت تعديل السعر/الاسم فقط).</p>
+
+                            <div id="editGroupRegionsContainer" style="max-height: 150px; overflow-y: auto; border: 1px solid var(--border-color); padding: 10px; border-radius: 6px; margin-bottom: 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px;">
+                            </div>
+
+                            <div class="input-group">
+                                <label>إجراء للمناطق المحددة أعلاه:</label>
+                                <select id="editRegionAction" onchange="toggleEditTargetGroup()">
+                                    <option value="none">-- لا يوجد إجراء (إبقاء في نفس المجموعة) --</option>
+                                    <option value="remove">إزالة من المجموعة (إرجاعها لقائمة غير المصنفة)</option>
+                                    <option value="move">نقل إلى مجموعة أسعار أخرى</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group" id="editTargetGroupContainer" style="display: none;">
+                                <label>اختر المجموعة الهدف للنقل:</label>
+                                <select id="editTargetGroupSelect">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="input-group" style="background-color: #f8fafc; padding: 15px; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 15px; margin-top: 10px;">
+                            <label style="color: var(--primary-color); font-weight: bold; margin-bottom: 10px; display: block;">نطاق تطبيق التعديلات على الطلبات المعلقة (UNPAID):</label>
+
+                            <div style="margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                                <input type="radio" id="editScopeAll" name="editPricingScope" value="all" checked>
+                                <label for="editScopeAll" style="font-size: 13px;">تطبيق السعر الجديد على جميع الطلبات (الحالية والقديمة)</label>
+                            </div>
+
+                            <div style="margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                                <input type="radio" id="editScopeDate" name="editPricingScope" value="date">
+                                <label for="editScopeDate" style="font-size: 13px;">تطبيق ابتداءً من تاريخ معين:</label>
+                                <input type="date" id="editScopeDateValue" style="padding: 4px; font-size: 12px; border-radius: 4px; border: 1px solid #ccc; display: none;">
+                            </div>
+
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <input type="radio" id="editScopeFuture" name="editPricingScope" value="future">
+                                <label for="editScopeFuture" style="font-size: 13px; color: #ef4444;">تطبيق من الآن فصاعداً (لا تغير أسعار الطلبات القديمة)</label>
+                            </div>
+                        </div>
+
+                        <button class="btn-primary" id="saveGroupEditsBtn" style="width: 100%; background-color: #f59e0b;" onclick="saveGroupEdits()">حفظ التعديلات وتحديث الحسابات</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/regions.js"></script>
+</body>
+</html>

@@ -1,0 +1,360 @@
+/* إعدادات المتغيرات الأساسية للنظام (SaaS Style) */
+:root {
+    --primary-color: #2563eb;
+    --primary-hover: #1d4ed8;
+    --bg-color: #f3f4f6;
+    --box-bg: #ffffff;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+    --border-color: #e5e7eb;
+    --error-color: #ef4444;
+    --font-family: 'Tajawal', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-color);
+}
+
+.login-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.login-box {
+    background-color: var(--box-bg);
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+    .login-header h2 {
+        color: var(--text-main);
+        font-size: 24px;
+        margin-bottom: 8px;
+    }
+
+    .login-header p {
+        color: var(--text-muted);
+        font-size: 14px;
+    }
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+    .input-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--text-main);
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    .input-group input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.3s;
+    }
+
+        .input-group input:focus {
+            border-color: var(--primary-color);
+        }
+
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .btn-primary:hover {
+        background-color: var(--primary-hover);
+    }
+
+    .btn-primary:disabled {
+        background-color: var(--text-muted);
+        cursor: not-allowed;
+    }
+
+.error-msg {
+    color: var(--error-color);
+    font-size: 13px;
+    text-align: center;
+    margin-top: 15px;
+    min-height: 18px;
+}
+
+
+/* إضافات لتخطيط لوحة التحكم (SaaS Layout) */
+.dashboard-body {
+    background-color: var(--bg-color);
+    margin: 0;
+    overflow-x: hidden;
+}
+
+.dashboard-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* القائمة الجانبية (اليمنى) */
+.sidebar {
+    width: 250px;
+    background-color: var(--box-bg);
+    border-left: 1px solid var(--border-color);
+    padding: 20px 0;
+    flex-shrink: 0;
+}
+
+.sidebar-logo {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+.sidebar-menu {
+    list-style: none;
+}
+
+    .sidebar-menu li a {
+        display: block;
+        padding: 15px 20px;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+
+        .sidebar-menu li.active a, .sidebar-menu li a:hover {
+            background-color: #eff6ff;
+            color: var(--primary-color);
+            border-right: 4px solid var(--primary-color);
+        }
+
+/* المحتوى الرئيسي */
+.main-content {
+    flex-grow: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.card {
+    background-color: var(--box-bg);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+}
+
+/* نظام الفلترة */
+.filter-grid {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+}
+
+    .filter-group label {
+        margin-bottom: 8px;
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    .filter-group select, .filter-group input {
+        padding: 10px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        font-family: inherit;
+    }
+
+.filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 15px;
+}
+
+.btn-secondary {
+    padding: 10px 20px;
+    background-color: #10b981;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.results-count {
+    font-weight: bold;
+    color: var(--text-main);
+    background: #f3f4f6;
+    padding: 8px 15px;
+    border-radius: 6px;
+}
+
+/* التنبيهات */
+.alert-box {
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.alert-warning {
+    background-color: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fef3c7;
+}
+
+/* الجداول (DGV) */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .data-table th, .data-table td {
+        padding: 12px 15px;
+        text-align: right;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .data-table th {
+        background-color: #f9fafb;
+        color: var(--text-muted);
+        font-weight: 600;
+    }
+
+    .data-table tr:hover {
+        background-color: #f3f4f6;
+    }
+
+
+/* ========================================== */
+/* تنسيقات النوافذ المنبثقة (Modals) */
+/* ========================================== */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6); /* خلفية داكنة وشفافة */
+    display: none; /* يتم التحكم بها برمجياً لتصبح flex */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* لضمان ظهور النافذة فوق جميع عناصر الصفحة */
+    backdrop-filter: blur(3px); /* تأثير ضبابي احترافي للخلفية */
+}
+
+.modal-content {
+    background-color: var(--box-bg);
+    width: 100%;
+    max-width: 500px; /* العرض الافتراضي، وبعض النوافذ ستتجاوزه برمجياً إذا لزم الأمر */
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh; /* لمنع النافذة من أن تصبح أطول من الشاشة */
+    animation: modalFadeIn 0.3s ease-out; /* حركة انبثاق سلسة */
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+    .modal-header h3 {
+        margin: 0;
+        color: var(--text-main);
+        font-size: 18px;
+    }
+
+.close-modal-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 0 5px;
+}
+
+    .close-modal-btn:hover {
+        color: var(--error-color);
+    }
+
+.modal-body {
+    padding: 20px;
+    overflow-y: auto; /* إضافة شريط تمرير داخلي إذا كان محتوى النافذة طويلاً جداً */
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* تأثير حركي (Animation) لظهور النافذة */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}

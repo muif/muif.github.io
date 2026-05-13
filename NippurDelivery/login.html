@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - نظام نيبور المالي</title>
+    <!-- استدعاء ملف التصميم الأساسي -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- خطوط جوجل العصرية (Tajawal) -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="login-body">
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <h2>نظام نيبور المالي</h2>
+                <p>تسجيل الدخول للوحة التحكم</p>
+            </div>
+            <form id="loginForm">
+                <div class="input-group">
+                    <label for="userName">اسم المستخدم</label>
+                    <input type="text" id="userName" placeholder="أدخل اسم المستخدم" required autocomplete="username">
+                </div>
+                <div class="input-group">
+                    <label for="password">كلمة المرور</label>
+                    <input type="password" id="password" placeholder="أدخل كلمة المرور" required autocomplete="current-password">
+                </div>
+                <button type="submit" id="loginBtn" class="btn-primary">تسجيل الدخول</button>
+                <div id="loginError" class="error-msg"></div>
+            </form>
+        </div>
+    </div>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/auth.js"></script>
+</body>
+</html>

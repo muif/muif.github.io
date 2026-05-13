@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <script>
+        // نظام الحماية الجداري: التحقق قبل رسم أي عنصر في الصفحة
+        if (!localStorage.getItem('nippur_token')) {
+            document.documentElement.style.display = 'none'; // جعل الصفحة بيضاء تماماً
+            window.location.replace('login.html'); // التوجيه الصامت والفوري بدون تنبيهات
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحة التجار - نظام نيبور المالي</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        <!-- القائمة الجانبية -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <h2>نظام نيبور</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="index.html">جميع الطلبات</a></li>
+                <!-- تم تفعيل كلاس active لصفحة التجار -->
+                <li class="active"><a href="merchants.html">التجار والتقارير</a></li>
+                <li><a href="regions.html">المناطق والتسعير</a></li>
+                <li><a href="drivers.html">المندوبين والغرامات</a></li>
+                <li><a href="wallet.html">محفظة الإدارة (الدخل)</a></li>
+                <li id="menu-settings"><a href="settings.html">الإعدادات</a></li>
+                <li class="logout-item" style="margin-top: auto; border-top: 1px solid #e2e8f0; padding-top: 10px;">
+                    <a href="#" onclick="handleLogout()" style="color: #ef4444; font-weight: bold;">تسجيل الخروج ↩</a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- المحتوى الرئيسي -->
+        <main class="main-content">
+            <div class="page-header">
+                <h2>إدارة التجار والمتاجر</h2>
+            </div>
+            <div id="commissionManagementSection" class="card" style="border: 1px solid var(--primary-color); background-color: #f8fafc; margin-bottom: 20px;">
+                <div onclick="toggleCommissionSection()" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="color: var(--primary-color); margin: 0;">⚙️ إدارة عمولات المتاجر (تعديل/تخصيص)</h3>
+                    <span id="commissionToggleIcon" style="font-size: 16px; color: var(--primary-color); transition: transform 0.3s; font-weight: bold;">▼</span>
+                </div>
+
+                <div id="commissionContent" style="display: none; margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">يمكنك هنا تحديد أو تغيير نسبة العمولة لأي متجر وتطبيقها بأثر رجعي أو مستقبلي.</p>
+
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-start;">
+                        <div class="input-group" style="flex: 1; min-width: 250px;">
+                            <label>اختر المتجر (سابق أو جديد):</label>
+                            <select id="merchantCommissionSelect">
+                                <option value="">-- اختر المتجر --</option>
+                            </select>
+                        </div>
+                        <div class="input-group" style="flex: 1; min-width: 200px;">
+                            <label>نسبة العمولة الجديدة (%):</label>
+                            <input type="number" id="newCommissionRate" placeholder="مثال: 15" min="0" max="100">
+                        </div>
+                    </div>
+
+                    <div class="input-group" style="background-color: #ffffff; padding: 15px; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 15px;">
+                        <label style="color: var(--primary-color); font-weight: bold; margin-bottom: 8px;">نطاق تطبيق العمولة على الطلبات المعلقة (UNPAID):</label>
+
+                        <div style="margin-bottom: 8px; display: flex; align-items: center; gap: 10px;">
+                            <input type="radio" id="commScopeAll" name="commScope" value="all" checked>
+                            <label for="commScopeAll" style="font-size: 14px;"><strong>تصحيح شامل:</strong> تطبيق على جميع الطلبات المعلقة (الحالية والقديمة)</label>
+                        </div>
+
+                        <div style="margin-bottom: 8px; display: flex; align-items: center; gap: 10px;">
+                            <input type="radio" id="commScopeDate" name="commScope" value="date">
+                            <label for="commScopeDate" style="font-size: 14px;"><strong>تاريخ معين:</strong> تطبيق على الطلبات ابتداءً من تاريخ:</label>
+                            <input type="date" id="commScopeDateValue" style="padding: 5px; border: 1px solid #ccc; border-radius: 4px; display: none;">
+                        </div>
+
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <input type="radio" id="commScopeFuture" name="commScope" value="future">
+                            <label for="commScopeFuture" style="font-size: 14px; color: #ef4444;"><strong>للمستقبل فقط:</strong> تغيير السعر للطلبات القادمة فقط</label>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary" id="saveCommissionBtn" style="width: 100%;">حفظ التغييرات وتحديث الحسابات</button>
+                </div>
+            </div>
+            <!-- نظام الفلترة الخاص بالتجار -->
+            <div class="filter-section card">
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label>ابحث عن اسم المتجر:</label>
+                        <!-- استخدمنا datalist لتوفير قائمة منسدلة تدعم البحث بداخلها -->
+                        <input list="merchantsList" id="merchantSearch" placeholder="اكتب للبحث أو اختر من القائمة...">
+                        <datalist id="merchantsList">
+                            <!-- سيتم تعبئة الأسماء برمجياً هنا -->
+                        </datalist>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>الفترة الزمنية:</label>
+                        <select id="timeFilter">
+                            <option value="today">اليوم</option>
+                            <option value="last7">آخر 7 أيام</option>
+                            <option value="last30">آخر 30 يوم</option>
+                            <option value="custom">تخصيص بين تاريخين</option>
+                        </select>
+                    </div>
+
+                    <!-- حقول التاريخ المخصص -->
+                    <div class="filter-group custom-date-group" id="customDateRange" style="display: none;">
+                        <input type="date" id="startDate">
+                        <span>إلى</span>
+                        <input type="date" id="endDate">
+                    </div>
+                </div>
+
+                <div class="filter-actions">
+                    <button id="applyMerchantFilterBtn" class="btn-secondary">تطبيق الفلتر وعرض النتائج</button>
+                </div>
+            </div>
+            <div class="stats-cards-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                <div class="stat-card card" style="border-top: 4px solid #6b7280; padding: 15px;">
+                    <h4 style="color: var(--text-muted); font-size: 13px; margin-bottom: 10px;">عدد الطلبات الكلي</h4>
+                    <strong id="globalTotalOrders" style="font-size: 22px;">0</strong>
+                </div>
+                <div class="stat-card card" style="border-top: 4px solid #3b82f6; padding: 15px;">
+                    <h4 style="color: var(--text-muted); font-size: 13px; margin-bottom: 10px;">مجموع المبالغ الكلي</h4>
+                    <strong id="globalTotalAmount" style="font-size: 22px; color: #2563eb;">0 د.ع</strong>
+                </div>
+                <div class="stat-card card" style="border-top: 4px solid #10b981; padding: 15px;">
+                    <h4 style="color: var(--text-muted); font-size: 13px; margin-bottom: 10px;">أرباح التجار</h4>
+                    <strong id="globalMerchantsProfit" style="font-size: 22px; color: #059669;">0 د.ع</strong>
+                </div>
+                <div class="stat-card card" style="border-top: 4px solid #8b5cf6; padding: 15px;">
+                    <h4 style="color: var(--text-muted); font-size: 13px; margin-bottom: 10px;">أرباح التطبيق</h4>
+                    <strong id="globalAppProfit" style="font-size: 22px; color: #7c3aed;">0 د.ع</strong>
+                </div>
+                <div class="stat-card card" style="border-top: 4px solid #ef4444; background-color: #fef2f2; padding: 15px;">
+                    <h4 style="color: var(--text-muted); font-size: 13px; margin-bottom: 10px;">محافظ التجار (الديون)</h4>
+                    <strong id="globalWallets" style="font-size: 22px; color: #dc2626;">0 د.ع</strong>
+                    <small style="display: block; font-size: 10px; color: #ef4444; margin-top: 5px;">(ثابتة وتراكمية)</small>
+                </div>
+            </div>
+            <!-- جدول عرض بيانات التجار (القسم التمهيدي) -->
+            <div class="table-container card">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>اسم المتجر</th>
+                            <th>عدد الطلبات</th>
+                            <th>المبلغ الكلي للطلبات</th>
+                            <th>نسبة العمولة</th>
+                            <th>ربح التاجر</th>
+                            <th>ربح التطبيق (الأساسي)</th>
+                            <th>محفظة التاجر (الديون)</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="merchantsTableBody">
+                        <!-- تعبأ البيانات برمجياً -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- نوافذ الإجراءات المنبثقة (Modals) للمرحلة الثانية -->
+            <!-- ============================================== -->
+            <!-- 1. نافذة تسديد التاجر -->
+            <div id="payMerchantModal" class="modal-overlay" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>تسديد دفعة للتاجر: <span id="payMerchantName"></span></h3>
+                        <button class="close-modal-btn" onclick="closeModal('payMerchantModal')">X</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group">
+                            <label>رصيد محفظة التاجر (المتبقي له):</label>
+                            <input type="text" id="payCurrentWallet" readonly style="background-color: #f3f4f6; font-weight: bold;">
+                        </div>
+                        <div class="input-group">
+                            <label>المبلغ المراد تسديده:</label>
+                            <input type="number" id="payAmountInput" placeholder="أدخل المبلغ...">
+                            <small id="payAmountAlert" style="color: red; display: none;">تنبيه: المبلغ المدخل أكبر من ديون التاجر!</small>
+                        </div>
+                        <div class="input-group">
+                            <label>الملاحظة:</label>
+                            <input type="text" id="payNoteInput" placeholder="اكتب ملاحظة لعملية التسديد (اختياري)...">
+                        </div>
+                        <div class="modal-actions" style="display: flex; gap: 10px; margin-top: 20px;">
+                            <button class="btn-primary" id="confirmPayBtn">حفظ التسديد</button>
+                            <button class="btn-secondary" id="printReceiptBtn" style="background-color: #6b7280;">طباعة الوصل</button>
+                            <button class="btn-secondary" id="whatsappPayBtn" style="background-color: #10b981;">إرسال واتساب</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="merchantReportsModal" class="modal-overlay" style="display: none;">
+                <div class="modal-content" style="max-width: 1000px; width: 95%;">
+                    <div class="modal-header">
+                        <h3>تقارير التاجر: <span id="reportsMerchantName"></span></h3>
+                        <button class="close-modal-btn" onclick="closeModal('merchantReportsModal')">X</button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                            <div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap;">
+                                <div>
+                                    <label style="font-size: 13px; font-weight: bold; display: block; margin-bottom: 5px;">الفترة الزمنية:</label>
+                                    <select id="repTimeFilter" style="padding: 6px; border-radius: 4px; border: 1px solid #ccc;">
+                                        <option value="today">اليوم الحالي</option>
+                                        <option value="last7">آخر 7 أيام</option>
+                                        <option value="last30">آخر 30 يوم</option>
+                                        <option value="custom">مخصص</option>
+                                    </select>
+                                </div>
+                                <div id="repCustomDateGroup" style="display: none; gap: 5px;">
+                                    <input type="date" id="repStartDate" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc;">
+                                    <input type="date" id="repEndDate" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc;">
+                                </div>
+                                <button class="btn-primary" style="padding: 6px 15px; background-color: var(--primary-color);" onclick="loadMerchantReports(1)">تطبيق الفلتر</button>
+                            </div>
+
+                            <div style="display: flex; gap: 10px;">
+                                <button onclick="generateMerchantCSV()" class="btn-secondary" style="background-color: #059669; padding: 6px 15px;">تصدير CSV للكل 📥</button>
+                                <button onclick="printMerchantReport()" class="btn-secondary" style="background-color: #4b5563; padding: 6px 15px;">طباعة كل الطلبات 🖨️</button>
+                            </div>
+                        </div>
+
+                        <div class="stats-cards-container" style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                            <div class="stat-card card">عدد الطلبات: <strong id="repTotalOrders">0</strong></div>
+                            <div class="stat-card card">المجموع: <strong id="repTotalAmount">0</strong></div>
+                            <div class="stat-card card">أرباح المتجر المتوقعة: <strong id="repStoreProfit">0</strong></div>
+                            <div class="stat-card card">أجور التوصيل: <strong id="repDeliveryFees">0</strong></div>
+                            <div class="stat-card card" style="background-color: #fee2e2;">محفظة التاجر (الديون): <strong id="repCurrentDebt">0</strong><br><small style="font-size:10px; color:#ef4444;">(سيزداد الرقم بمجرد الاستلام من المندوب)</small></div>
+                        </div>
+
+                        <div style="margin-bottom: 15px; padding: 10px; background-color: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px;">
+                            <strong style="font-size: 13px; color: #1e40af; margin-bottom: 8px; display: block;">⚙️ تخصيص الأعمدة (للشاشة والطباعة):</strong>
+                            <div style="display: flex; gap: 15px; flex-wrap: wrap; font-size: 13px;">
+                                <label><input type="checkbox" class="col-toggle" value="0" checked> رقم الطلب</label>
+                                <label><input type="checkbox" class="col-toggle" value="1" checked> التاريخ</label>
+                                <label><input type="checkbox" class="col-toggle" value="2" checked> مدينة الزبون</label>
+                                <label><input type="checkbox" class="col-toggle" value="3" checked> المندوب</label>
+                                <label><input type="checkbox" class="col-toggle" value="4" checked> سعر الطلب الكلي</label>
+                                <label><input type="checkbox" class="col-toggle" value="5" checked> ربح التاجر</label>
+                                <label><input type="checkbox" class="col-toggle" value="6" checked> سعر التوصيل</label>
+                                <label><input type="checkbox" class="col-toggle" value="7" checked> ربح التطبيق الإجمالي</label>
+                            </div>
+                        </div>
+
+                        <div style="overflow-x: auto;">
+                            <table class="data-table" id="reportDataTable">
+                                <thead>
+                                    <tr>
+                                        <th>رقم الطلب</th>
+                                        <th>التاريخ</th>
+                                        <th>مدينة الزبون</th>
+                                        <th>المندوب</th>
+                                        <th>سعر الطلب الكلي</th>
+                                        <th>ربح التاجر</th>
+                                        <th>سعر التوصيل</th>
+                                        <th>ربح التطبيق الإجمالي</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="merchantReportsTableBody"></tbody>
+                            </table>
+                        </div>
+
+                        <div id="repPagination" style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;">
+                            <button id="repPrevBtn" class="btn-secondary" style="padding: 5px 15px;">السابق</button>
+                            <span id="repPageInfo" style="font-weight: bold; font-size: 14px;">صفحة 1 من 1</span>
+                            <button id="repNextBtn" class="btn-secondary" style="padding: 5px 15px;">التالي</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. نافذة سجل التسديدات (الحركات) -->
+            <div id="merchantHistoryModal" class="modal-overlay" style="display: none;">
+                <div class="modal-content" style="max-width: 900px; width: 90%;">
+                    <div class="modal-header">
+                        <h3>سجل عمليات التسديد للتاجر</h3>
+                        <button class="close-modal-btn" onclick="closeModal('merchantHistoryModal')">X</button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px;">
+                            <button onclick="exportMerchantHistoryToCSV()" class="btn-secondary" style="background-color: #059669; font-size: 13px;">تصدير CSV 📥</button>
+                            <button onclick="printCurrentMerchantHistory()" class="btn-secondary" style="background-color: #4b5563; font-size: 13px;">طباعة الصفحة 🖨️</button>
+                        </div>
+
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>التاريخ</th>
+                                    <th>نوع العملية</th>
+                                    <th>المبلغ</th>
+                                    <th>الملاحظة</th>
+                                </tr>
+                            </thead>
+                            <tbody id="merchantHistoryTableBody"></tbody>
+                        </table>
+
+                        <div id="merchantHistoryPagination" style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;">
+                            <button id="prevMerchantHistoryBtn" class="btn-secondary" style="padding: 5px 15px;">السابق</button>
+                            <span id="merchantHistoryPageInfo" style="font-weight: bold; font-size: 14px;">صفحة 1 من 1</span>
+                            <button id="nextMerchantHistoryBtn" class="btn-secondary" style="padding: 5px 15px;">التالي</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/merchants.js"></script>
+</body>
+</html>
