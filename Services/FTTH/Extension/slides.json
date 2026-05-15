@@ -1,5 +1,12 @@
 [
    {
+    "image": "https://muif.github.io/Services/FTTH/Extension/ticket-4.jpg",
+    "title": "تابع جميع المشتركين",
+    "description": "يمكنك الآن المتابعة والبحث والفلترة الشفافة على جميع المشتركين",
+    "link": "",
+    "buttonText": ""
+  },
+   {
     "image": "https://muif.github.io/Services/FTTH/Extension/ticket-3.jpg",
     "title": "جدولة رسائل الواتساب!",
     "description": "أتمتة ذكية وجدولة متقدمة لإدارة تواصلك مع المشتركين عبر الواتساب بضغطة زر.",
@@ -12,12 +19,5 @@
     "description": "لن تفوتك متابعة مشاكل المشتركين بعد الان ، سيصدر اشعار فوري بعد كل تذكرة جديدة من الشركة!",
     "link": "",
     "buttonText": "مشاهدة الآن"
-  },
-  {
-    "image": "https://muif.github.io/Services/FTTH/Extension/ticket-2.jpg",
-    "title": "نيبور الحضارة",
-    "description": "**طينٌ سومريّ.. بقلبٍ سيليكونيّ.**",
-    "link": "", 
-    "buttonText": "المزيد"
   }
 ]
