@@ -43,7 +43,7 @@
     }
     .donation-icon {
       font-size: 3rem;
-      color: #0078ff; /* لون موقعك الأساسي */
+      color: #0078ff;
       margin-bottom: 20px;
     }
     .donation-number {
@@ -52,12 +52,36 @@
       font-weight: bold;
       color: #333;
       direction: ltr;
-      display: inline-block;
+      display: block;
       margin-top: 15px;
+      margin-bottom: 15px;
       padding: 10px 20px;
       background: #f8f9fa;
       border-radius: 8px;
       border: 1px dashed #0078ff;
+    }
+    /* تنسيق زر النسخ */
+    .copy-btn {
+      background-color: #0078ff;
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 8px 25px;
+      font-size: 1rem;
+      font-family: 'Cairo', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .copy-btn:hover {
+      background-color: #0056b3;
+      transform: scale(1.05);
+    }
+    .copy-btn.copied {
+      background-color: #28a745; /* لون أخضر عند النسخ */
+      pointer-events: none;
     }
   </style>
 </head>
@@ -112,9 +136,7 @@
       <div class="row">
         <div class="col-sm-12">
           <div class="title-box text-center">
-            <h3 class="title-a">
-              طرق التبرع المتاحة
-            </h3>
+            <h3 class="title-a">طرق التبرع المتاحة</h3>
             <p class="subtitle-a" style="font-size: 1.2rem; color: #555;">
               تبرعوا بما تستطيعون، فحتى المبلغ البسيط يصنع فرقاً في علاج آدم.
             </p>
@@ -133,6 +155,9 @@
             <h4 class="s-title">زين كاش</h4>
             <p class="s-description text-center">التبرع عبر محفظة زين كاش</p>
             <div class="donation-number">0780 688 3136</div>
+            <button class="copy-btn" onclick="copyNumber('07806883136', this)">
+              <i class="fa fa-copy"></i> نسخ الرقم
+            </button>
           </div>
         </div>
 
@@ -145,6 +170,9 @@
             <h4 class="s-title">سوبر كي (Qi Card)</h4>
             <p class="s-description text-center">التبرع عبر بطاقة الماستر كارد</p>
             <div class="donation-number">3551 8910 33</div>
+            <button class="copy-btn" onclick="copyNumber('3551891033', this)">
+              <i class="fa fa-copy"></i> نسخ الرقم
+            </button>
           </div>
         </div>
 
@@ -157,6 +185,9 @@
             <h4 class="s-title">سوبر كي (Qi Card)</h4>
             <p class="s-description text-center">التبرع عبر بطاقة الماستر كارد</p>
             <div class="donation-number" style="font-size: 1.4rem;">9101 3851 2025</div>
+            <button class="copy-btn" onclick="copyNumber('910138512025', this)">
+              <i class="fa fa-copy"></i> نسخ الرقم
+            </button>
           </div>
         </div>
       </div>
@@ -193,6 +224,30 @@
   <script src="lib/typed/typed.min.js"></script>
   <!-- Template Main Javascript File -->
   <script src="js/main.js"></script>
+
+  <!-- سكريبت نسخ النص -->
+  <script>
+    function copyNumber(textToCopy, btnElement) {
+      // استخدام واجهة Clipboard API الحديثة
+      navigator.clipboard.writeText(textToCopy).then(function() {
+        // حفظ المحتوى الأصلي للزر
+        const originalHTML = btnElement.innerHTML;
+        
+        // تغيير شكل ومحتوى الزر لإظهار نجاح النسخ
+        btnElement.innerHTML = '<i class="fa fa-check"></i> تم النسخ!';
+        btnElement.classList.add('copied');
+        
+        // إعادة الزر لشكله الأصلي بعد ثانيتين
+        setTimeout(function() {
+          btnElement.innerHTML = originalHTML;
+          btnElement.classList.remove('copied');
+        }, 2000);
+      }).catch(function(err) {
+        console.error('فشل في نسخ النص: ', err);
+        alert('حدث خطأ أثناء النسخ. يرجى النسخ يدوياً.');
+      });
+    }
+  </script>
 
 </body>
 </html>
