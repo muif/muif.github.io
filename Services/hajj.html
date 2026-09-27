@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استعلام نتائج قرعة الحج - منتظر عماد</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- HTML2PDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- خط Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#2a0826',
+                            purple: '#4a1543',
+                            lightPurple: '#6b1d52',
+                            accent: '#882463',
+                            softBg: '#fcf6fa'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #2a0826 0%, #4a1543 50%, #1a0318 100%);
+        }
+
+        /* حاوية PDF المخفية افتراضياً */
+        #pdfRenderContainer {
+            display: none;
+            width: 750px;
+            background-color: #ffffff;
+            padding: 35px;
+            box-sizing: border-box;
+            direction: rtl;
+            font-family: 'Cairo', sans-serif;
+            color: #2a0826;
+            margin: 0 auto;
+        }
+
+        .pdf-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 10px;
+        }
+
+        .pdf-card {
+            border: 1px solid #f3e8f0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            background-color: #fdfafc;
+        }
+
+        .brand-header-bg {
+            background: linear-gradient(135deg, #4a1543 0%, #2a0826 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- الكارت الرئيسي للبحث -->
+    <div class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl w-full max-w-xl p-6 sm:p-8 border border-white/20 my-8">
+
+        <!-- الهيدر واللوجو الشخصي -->
+        <div class="text-center mb-8">
+            <div class="flex justify-center items-center mb-4">
+                <img src="https://muif.github.io/img/person.png" alt="منتظر عماد" class="h-24 w-auto object-contain drop-shadow-md">
+            </div>
+            <h1 class="text-2xl font-black text-brand-dark">استعلام نتائج قرعة الحج</h1>
+            <div class="w-16 h-1 bg-brand-lightPurple mx-auto my-2 rounded-full"></div>
+            <p class="text-xs font-bold text-slate-500">أدخل الرقم الوطني للاستعلام عن النتيجة</p>
+        </div>
+
+        <!-- نموذج البحث -->
+        <form id="hajjForm" class="space-y-5">
+            <div>
+                <label for="nationalId" class="block text-sm font-bold text-brand-dark mb-2">الرقم الوطني / رقم الهوية</label>
+                <input type="text"
+                       id="nationalId"
+                       placeholder="مثال: 195085061448"
+                       required
+                       class="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-lightPurple focus:border-transparent transition-all text-brand-dark font-semibold text-center text-lg placeholder:text-slate-300 bg-slate-50/50">
+            </div>
+
+            <button type="submit"
+                    id="submitBtn"
+                    class="w-full bg-gradient-to-r from-brand-purple to-brand-lightPurple hover:from-brand-dark hover:to-brand-purple active:scale-[0.99] text-white font-bold py-4 px-4 rounded-xl shadow-lg shadow-brand-purple/30 transition-all duration-200 flex items-center justify-center space-x-2 space-x-reverse">
+                <span id="btnText">استعلام عن النتيجة</span>
+                <span id="btnSpinner" class="hidden">
+                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </span>
+            </button>
+        </form>
+
+        <!-- منطقة عرض النتيجة -->
+        <div id="resultBox" class="mt-6 hidden transition-all duration-300">
+            <div id="resultContent"></div>
+        </div>
+
+    </div>
+
+    <!-- حاوية PDF المخصصة للطباعة بهوية الموقع -->
+    <div id="pdfRenderContainer">
+        <!-- هيدر الـ PDF -->
+        <table style="width: 100%; border-bottom: 2px solid #f3e8f0; padding-bottom: 15px; margin-bottom: 20px;">
+            <tr>
+                <td style="vertical-align: middle;">
+                    <img src="https://muif.github.io/img/person.png" alt="منتظر عماد" style="height: 65px; width: auto; display: inline-block; vertical-align: middle; margin-left: 15px;">
+                    <div style="display: inline-block; vertical-align: middle;">
+                        <h2 style="font-size: 20px; font-weight: 800; color: #4a1543; margin: 0;">وثيقة نتيجة قرعة الحج</h2>
+                        <p style="font-size: 11px; color: #6b1d52; margin: 2px 0 0 0; font-weight: 700;">نظام الاستعلام الإلكتروني </p>
+                    </div>
+                </td>
+                <td style="text-align: left; vertical-align: middle;">
+                    <span style="font-size: 11px; background-color: #4a1543; color: #ffffff; padding: 6px 14px; border-radius: 20px; font-weight: bold;">وثيقة غير-رسمية</span>
+                </td>
+            </tr>
+        </table>
+
+        <!-- رسالة التهنئة من منتظر عماد بتنسيق الهوية -->
+        <div style="background: linear-gradient(135deg, #fdf8fb 0%, #f9edf5 100%); border: 1px solid #f3d7ea; border-radius: 14px; padding: 18px; text-align: center; margin-bottom: 25px;">
+            <h3 style="font-size: 18px; color: #4a1543; font-weight: 800; margin: 0 0 6px 0;">🎉 ألف مبارك الفوز بقرعة الحج المباركة 🎉</h3>
+            <p style="font-size: 13px; color: #6b1d52; margin: 0; font-weight: 700;">مقدمة مع أطيب التهاني والتبريكات من: <span style="color: #4a1543; font-size: 15px; font-weight: 900;">منتظر عماد</span></p>
+        </div>
+
+        <!-- معلومات النتيجة -->
+        <h4 style="font-size: 14px; font-weight: 800; color: #2a0826; margin: 0 0 10px 0; border-right: 4px solid #6b1d52; padding-right: 8px;">📄 تفاصيل نتيجة القرعة</h4>
+        <table class="pdf-table" style="margin-bottom: 15px;">
+            <tr>
+                <td style="width: 50%;">
+                    <div class="pdf-card">
+                        <span style="font-size: 11px; color: #882463; font-weight: 700; display: block; margin-bottom: 4px;">رقم الطلب</span>
+                        <strong id="pdf_request_number" style="font-size: 16px; color: #2a0826;">-</strong>
+                    </div>
+                </td>
+                <td style="width: 50%;">
+                    <div class="pdf-card">
+                        <span style="font-size: 11px; color: #882463; font-weight: 700; display: block; margin-bottom: 4px;">سنة الفوز</span>
+                        <strong id="pdf_win_year" style="font-size: 16px; color: #2a0826;">-</strong>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 50%;">
+                    <div class="pdf-card">
+                        <span style="font-size: 11px; color: #882463; font-weight: 700; display: block; margin-bottom: 4px;">المكتب</span>
+                        <strong id="pdf_office_name" style="font-size: 15px; color: #2a0826;">-</strong>
+                    </div>
+                </td>
+                <td style="width: 50%;">
+                    <div class="pdf-card">
+                        <span style="font-size: 11px; color: #882463; font-weight: 700; display: block; margin-bottom: 4px;">الحالة</span>
+                        <strong style="font-size: 16px; color: #15803d;">فائز</strong>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <div style="border: 1px dashed #d8b4fe; border-radius: 8px; padding: 10px; text-align: center; font-size: 11px; color: #6b1d52; margin-bottom: 25px; background-color: #fcf6fa;">
+            🛡️ يُعد هذا المستند إشعاراً بنتيجة القرعة بناءً على البيانات المسترجعة إلكترونياً.
+        </div>
+
+        <!-- بيانات الفائز الرئيسي -->
+        <h4 style="font-size: 14px; font-weight: 800; color: #2a0826; margin: 0 0 10px 0; border-right: 4px solid #6b1d52; padding-right: 8px;">👤 بيانات الفائز الرئيسي</h4>
+        <div style="border: 1px solid #f3e8f0; border-radius: 12px; padding: 16px; background-color: #ffffff; margin-bottom: 20px;">
+            <table style="width: 100%;">
+                <tr style="border-bottom: 1px solid #faf0f7;">
+                    <td style="padding: 8px 0; font-size: 13px; color: #64748b;">الاسم الكامل:</td>
+                    <td style="padding: 8px 0; font-size: 15px; color: #2a0826; text-align: left; font-weight: 800;" id="pdf_principal_name">-</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px 0 0 0; font-size: 13px; color: #64748b;">الرقم الوطني:</td>
+                    <td style="padding: 8px 0 0 0; font-size: 15px; color: #2a0826; text-align: left; font-weight: 800;" id="pdf_principal_id">-</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- بيانات المرافق -->
+        <div id="pdf_companion_section" style="display: none;">
+            <h4 style="font-size: 14px; font-weight: 800; color: #2a0826; margin: 0 0 10px 0; border-right: 4px solid #6b1d52; padding-right: 8px;">👥 بيانات المرافق</h4>
+            <div style="border: 1px solid #f3e8f0; border-radius: 12px; padding: 16px; background-color: #ffffff; margin-bottom: 20px;">
+                <table style="width: 100%;">
+                    <tr style="border-bottom: 1px solid #faf0f7;">
+                        <td style="padding: 8px 0; font-size: 13px; color: #64748b;">اسم المرافق:</td>
+                        <td style="padding: 8px 0; font-size: 15px; color: #2a0826; text-align: left; font-weight: 800;" id="pdf_companion_name">-</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0 0 0; font-size: 13px; color: #64748b;">الرقم الوطني للمرافق:</td>
+                        <td style="padding: 8px 0 0 0; font-size: 15px; color: #2a0826; text-align: left; font-weight: 800;" id="pdf_companion_id">-</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- الفوتر بلمسة موقعك -->
+        <div style="margin-top: 40px; border-top: 1px solid #f3e8f0; padding-top: 15px; text-align: center; font-size: 11px; color: #882463; font-weight: 600;">
+            تم التوليد بواسطة نظام استعلام نتائج القرعة | حقوق البرمجة والتصميم محفوظة لـ <strong>منتظر عماد</strong>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('hajjForm');
+        const nationalIdInput = document.getElementById('nationalId');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const btnSpinner = document.getElementById('btnSpinner');
+        const resultBox = document.getElementById('resultBox');
+        const resultContent = document.getElementById('resultContent');
+
+        const BACKEND_URL = 'https://quirky-catfish-7758.muntadherimad1.deno.net/api/check-hajj';
+        let currentWinnerData = null;
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const nationalId = nationalIdInput.value.trim();
+            if (!nationalId) return;
+
+            submitBtn.disabled = true;
+            btnText.textContent = 'جاري التحقق...';
+            btnSpinner.classList.remove('hidden');
+            resultBox.classList.add('hidden');
+
+            try {
+                const response = await fetch(BACKEND_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ national_id: nationalId })
+                });
+
+                const data = await response.json();
+                resultBox.classList.remove('hidden');
+
+                if (data.status === true && data.winner_info && data.winner_info.length > 0) {
+                    const info = data.winner_info[0];
+                    currentWinnerData = info;
+
+                    // تعبئة البيانات في قوالب الـ PDF
+                    document.getElementById('pdf_request_number').textContent = info.request_number || '-';
+                    document.getElementById('pdf_win_year').textContent = info.win_year || '-';
+                    document.getElementById('pdf_office_name').textContent = info.office_name || '-';
+                    document.getElementById('pdf_principal_name').textContent = info.principal_name || '-';
+                    document.getElementById('pdf_principal_id').textContent = info.principal_national_id || '-';
+
+                    if (info.companion_name) {
+                        document.getElementById('pdf_companion_section').style.display = 'block';
+                        document.getElementById('pdf_companion_name').textContent = info.companion_name;
+                        document.getElementById('pdf_companion_id').textContent = info.companion_national_id || '-';
+                    } else {
+                        document.getElementById('pdf_companion_section').style.display = 'none';
+                    }
+
+                    // عرض بطاقة النتيجة بالتصاميم والأنماط الخاصة بك
+                    resultContent.innerHTML = `
+                            <div class="bg-brand-softBg border border-brand-lightPurple/20 rounded-2xl p-5 text-brand-dark space-y-4 shadow-sm">
+                                <div class="text-center pb-3 border-b border-brand-lightPurple/10">
+                                    <span class="bg-brand-purple text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">النتيجة: فائز بالقرعة</span>
+                                    <h2 class="text-xl font-black text-brand-purple mt-2">🎉 ألف مبارك الفوز بقرعة الحج</h2>
+                                    <p class="text-xs text-brand-lightPurple font-bold mt-1">تهنئة خاصة مقدمة من: منتظر عماد</p>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-3 text-sm">
+                                    <div class="bg-white p-3 rounded-xl border border-brand-lightPurple/10 shadow-sm">
+                                        <span class="text-xs text-slate-400 block font-bold">رقم الطلب</span>
+                                        <strong class="text-brand-dark font-black text-base">${info.request_number}</strong>
+                                    </div>
+                                    <div class="bg-white p-3 rounded-xl border border-brand-lightPurple/10 shadow-sm">
+                                        <span class="text-xs text-slate-400 block font-bold">سنة الفوز</span>
+                                        <strong class="text-brand-dark font-black text-base">${info.win_year}</strong>
+                                    </div>
+                                    <div class="bg-white p-3 rounded-xl border border-brand-lightPurple/10 shadow-sm">
+                                        <span class="text-xs text-slate-400 block font-bold">المكتب</span>
+                                        <strong class="text-brand-dark font-bold text-sm">${info.office_name}</strong>
+                                    </div>
+                                    <div class="bg-white p-3 rounded-xl border border-brand-lightPurple/10 shadow-sm">
+                                        <span class="text-xs text-slate-400 block font-bold">الاسم</span>
+                                        <strong class="text-brand-dark font-bold text-sm">${info.principal_name}</strong>
+                                    </div>
+                                </div>
+
+                                <button type="button" onclick="downloadPDF()" class="w-full mt-4 bg-brand-purple hover:bg-brand-dark text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-brand-purple/20 transition-all duration-200 flex items-center justify-center space-x-2 space-x-reverse">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    <span>تحميل النتيجة الرسمية (PDF)</span>
+                                </button>
+                            </div>
+                        `;
+                } else if (data.status === false) {
+                    resultContent.innerHTML = `
+                            <div class="p-5 rounded-xl border border-amber-200 bg-amber-50 text-amber-800 text-center font-bold">
+                                ${data.message || 'نأسف .. لم يحالفك الحظ بالفوز.'}
+                            </div>
+                        `;
+                } else {
+                    resultContent.innerHTML = `
+                            <div class="p-5 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 text-center font-bold">
+                                ${data.message || 'حدث خطأ أثناء جلب البيانات.'}
+                            </div>
+                        `;
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                resultBox.classList.remove('hidden');
+                resultContent.innerHTML = `
+                        <div class="p-5 rounded-xl border border-red-200 bg-red-50 text-red-700 text-center font-bold">
+                            تعذر الاتصال بالخادم الوسيط. يرجى التأكد من اتصال الإنترنت.
+                        </div>
+                    `;
+            } finally {
+                submitBtn.disabled = false;
+                btnText.textContent = 'استعلام عن النتيجة';
+                btnSpinner.classList.add('hidden');
+            }
+        });
+
+        // دالة تنزيل ملف الـ PDF الآمنة مع تضمين اللوجو
+        async function downloadPDF() {
+            const element = document.getElementById('pdfRenderContainer');
+
+            // إظهار العنصر مؤقتاً لتوليد الـ PDF بوضوح
+            element.style.display = 'block';
+
+            const options = {
+                margin: [10, 10, 10, 10],
+                filename: `نتيجة_قرعة_الحج_${currentWinnerData?.principal_national_id || 'فائز'}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            try {
+                await html2pdf().set(options).from(element).save();
+            } finally {
+                element.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
