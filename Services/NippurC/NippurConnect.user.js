@@ -1,12 +1,12 @@
 // ==UserScript==
-// @name         NippurConnect Master Core
+// @name         NippurConnect Delivery
 // @namespace    http://tampermonkey.net/
 // @version      6.2
 // @description  النظام المركزي المطور مع محرك إعدادات ديناميكي متقدم يدعم كافة أنواع الأدوات
-// @author       You
+// @author       MuntadherImad 
 // @match        https://nippurconnect.com/admin/*
-// @updateURL    https://raw.githubusercontent.com/اسم_المستخدم/اسم_المستودع/main/script.user.js
-// @downloadURL  https://raw.githubusercontent.com/اسم_المستخدم/اسم_المستودع/main/script.user.js
+// @updateURL    https://github.com/muif/muif.github.io/raw/refs/heads/main/Services/NippurC/NippurConnect.user.js
+// @downloadURL  https://github.com/muif/muif.github.io/raw/refs/heads/main/Services/NippurC/NippurConnect.user.js
 // @grant        none
 // ==/UserScript==
 
@@ -32,7 +32,7 @@
     async function checkRemoteConfigAndUpdates() {
         try {
             // استبدل الرابط أدناه برابط ملف الـ json الخام (Raw) من مستودع GitHub الخاص بك
-            const response = await fetch('https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/config.json', { cache: 'no-store' });
+            const response = await fetch('https://github.com/muif/muif.github.io/raw/refs/heads/main/Services/NippurC/config.json', { cache: 'no-store' });
             if (!response.ok) return;
             const remoteConfig = await response.json();
 
