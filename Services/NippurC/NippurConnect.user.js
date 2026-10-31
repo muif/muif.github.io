@@ -6,7 +6,7 @@
 // @author       MuntadherImad 
 // @match        https://nippurconnect.com/admin/*
 // @updateURL    https://github.com/muif/muif.github.io/raw/refs/heads/main/Services/NippurC/NippurConnect.user.js
-// @downloadURL  https://github.com/muif/muif.github.io/raw/refs/heads/main/Services/NippurC/NippurConnect.user.js
+// @downloadURL    https://github.com/muif/muif.github.io/raw/refs/heads/main/Services/NippurC/NippurConnect.user.js
 // @grant        none
 // ==/UserScript==
 
@@ -25,66 +25,6 @@
             this.logs.push({ module: moduleName, error: error.toString(), time: new Date() });
         }
     };
-
-    // =========================================================================
-    // 0. نظام التحقق من التحديثات والإعدادات عن بعد (Remote Sync & Updates)
-    // =========================================================================
-    async function checkRemoteConfigAndUpdates() {
-        try {
-            // استبدل الرابط أدناه برابط ملف الـ json الخام (Raw) من مستودع GitHub الخاص بك
-            const response = await fetch('https://github.com/muif/muif.github.io/raw/refs/heads/main/Services/NippurC/config.json', { cache: 'no-store' });
-            if (!response.ok) return;
-            const remoteConfig = await response.json();
-
-            // 1. التحقق من التعطيل الشامل من قبل المطور
-            if (remoteConfig.globalEnabled === false) {
-                console.warn("حدث مشكلة مع الخادم.");
-                return false; // إيقاف التشغيل
-            }
-
-            // 2. التحقق من التحديث الإجباري (Force Update)
-            if (remoteConfig.remoteVersion && remoteConfig.remoteVersion !== SYSTEM_CORE.version) {
-                const isAutoUpdateEnabled = localStorage.getItem('nippur_auto_update') === 'true';
-
-                if (remoteConfig.forceUpdate || isAutoUpdateEnabled) {
-                    // عرض تنبيه إجباري أو توجيه للتثبيت
-                    showUpdateNotification(remoteConfig.updateUrl, remoteConfig.forceUpdate);
-                }
-            }
-
-            // 3. دمج أو تجاوز إعدادات الكتل المعطلة عن بعد
-            if (remoteConfig.disabledModules && Array.isArray(remoteConfig.disabledModules)) {
-                remoteConfig.disabledModules.forEach(modId => {
-                    const mod = MODULES.find(m => m.id === modId);
-                    if (mod) mod.enabled = false; // تعطيل الكتلة محلياً بناءً على أمر السيرفر
-                });
-            }
-
-        } catch (e) {
-            console.log("تعذر الاتصال بخادم الإعدادات ، العمل بالإعدادات المحلية.");
-        }
-        return true;
-    }
-
-    function showUpdateNotification(updateUrl, isForce) {
-        if (document.getElementById('nippur-update-banner')) return;
-        const banner = document.createElement('div');
-        banner.id = 'nippur-update-banner';
-        banner.style.cssText = `
-            position: fixed; bottom: 20px; left: 20px; z-index: 9999999;
-            background: ${isForce ? '#dc2626' : '#2563eb'}; color: #fff; padding: 12px 18px;
-            border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); font-family: sans-serif;
-            font-size: 13px; direction: rtl; display: flex; align-items: center; gap: 12px;
-        `;
-        banner.innerHTML = `
-            <span>${isForce ? '⚠️ توفر تحديث إجباري هام للسكربت!' : '✨ توفر تحديث جديد للسكربت.'}</span>
-            <a href="${updateUrl}" target="_blank" style="background:#fff; color:${isForce ? '#dc2626' : '#2563eb'}; padding:4px 10px; border-radius:4px; font-weight:bold; text-decoration:none;">تحديث الآن</a>
-            ${!isForce ? '<span id="close-update" style="cursor:pointer; margin-right:8px;">✕</span>' : ''}
-        `;
-        document.body.appendChild(banner);
-        const closeBtn = document.getElementById('close-update');
-        if (closeBtn) closeBtn.onclick = () => banner.remove();
-    }
 
     // =========================================================================
     // 2. سجل الكتل الفرعية (Modules Registry)
@@ -2042,8 +1982,75 @@
                 }
             }
         }
-
     ];
+
+    // =========================================================================
+    // 0. نظام التحقق من التحديثات والإعدادات عن بعد (Remote Sync & Updates)
+    // =========================================================================
+    async function checkRemoteConfigAndUpdates() {
+        try {
+            // إضافة معلمة عشوائية لتجنب التخزين المؤقت (Cache Buster)
+            const response = await fetch('https://github.com/muif/muif.github.io/raw/refs/heads/main/Services/NippurC/config.json?_=' + new Date().getTime(), { cache: 'no-store' });
+            if (!response.ok) return true;
+            const remoteConfig = await response.json();
+
+            // 1. التحقق من التعطيل الشامل من قبل المطور
+            if (remoteConfig.globalEnabled === false) {
+                SYSTEM_CORE.globalEnabled = false;
+                console.warn("NippurConnect: تم تعطيل السكربت مركزياً من الخادم.");
+                return false; // إيقاف التشغيل بالكامل
+            }
+
+            // 2. التحقق من التحديث الإجباري (Force Update)
+            if (remoteConfig.remoteVersion && remoteConfig.remoteVersion !== SYSTEM_CORE.version) {
+                const isAutoUpdateEnabled = localStorage.getItem('nippur_auto_update') === 'true';
+                if (remoteConfig.forceUpdate || isAutoUpdateEnabled) {
+                    showUpdateNotification(remoteConfig.updateUrl, remoteConfig.forceUpdate);
+                }
+            }
+
+            // 3. دمج أو تجاوز إعدادات الكتل المعطلة عن بعد
+            if (remoteConfig.disabledModules && Array.isArray(remoteConfig.disabledModules)) {
+                remoteConfig.disabledModules.forEach(modId => {
+                    const mod = MODULES.find(m => m.id === modId);
+                    if (mod) mod.enabled = false;
+                });
+            }
+
+            if (remoteConfig.modulesConfig) {
+                for (let modId in remoteConfig.modulesConfig) {
+                    const mod = MODULES.find(m => m.id === modId);
+                    if (mod && remoteConfig.modulesConfig[modId].enabled === false) {
+                        mod.enabled = false;
+                    }
+                }
+            }
+
+        } catch (e) {
+            console.log("تعذر الاتصال بخادم الإعدادات، العمل بالإعدادات المحلية.");
+        }
+        return true;
+    }
+
+    function showUpdateNotification(updateUrl, isForce) {
+        if (document.getElementById('nippur-update-banner')) return;
+        const banner = document.createElement('div');
+        banner.id = 'nippur-update-banner';
+        banner.style.cssText = `
+            position: fixed; bottom: 20px; left: 20px; z-index: 9999999;
+            background: ${isForce ? '#dc2626' : '#2563eb'}; color: #fff; padding: 12px 18px;
+            border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); font-family: sans-serif;
+            font-size: 13px; direction: rtl; display: flex; align-items: center; gap: 12px;
+        `;
+        banner.innerHTML = `
+            <span>${isForce ? '⚠️ توفر تحديث إجباري هام للسكربت!' : '✨ توفر تحديث جديد للسكربت.'}</span>
+            <a href="${updateUrl}" target="_blank" style="background:#fff; color:${isForce ? '#dc2626' : '#2563eb'}; padding:4px 10px; border-radius:4px; font-weight:bold; text-decoration:none;">تحديث الآن</a>
+            ${!isForce ? '<span id="close-update" style="cursor:pointer; margin-right:8px;">✕</span>' : ''}
+        `;
+        document.body.appendChild(banner);
+        const closeBtn = document.getElementById('close-update');
+        if (closeBtn) closeBtn.onclick = () => banner.remove();
+    }
 
     // =========================================================================
     // 3. محرك إدارة التخزين والإعدادات الديناميكية (Dynamic Options Engine)
@@ -2053,7 +2060,7 @@
         if (saved) {
             try {
                 const parsed = JSON.parse(saved);
-                SYSTEM_CORE.globalEnabled = parsed.globalEnabled ?? true;
+                SYSTEM_CORE.globalEnabled = parsed.globalEnabled ?? SYSTEM_CORE.globalEnabled;
                 MODULES.forEach(mod => {
                     if (parsed.modules && parsed.modules[mod.id]) {
                         mod.enabled = parsed.modules[mod.id].enabled ?? mod.enabled;
@@ -2104,8 +2111,6 @@
     function buildDashboardUI() {
         if (document.getElementById('nippur-float-btn')) return;
 
-        loadSavedSettings();
-
         const floatBtn = document.createElement('div');
         floatBtn.id = 'nippur-float-btn';
         floatBtn.style.cssText = `
@@ -2138,7 +2143,6 @@
         MODULES.forEach((mod, index) => {
             let optionsHTML = '';
 
-            // مولد خيارات ديناميكي متطور يدعم أنواع متعددة (Boolean, Text, Select, Number)
             for (let optKey in mod.options) {
                 const opt = mod.options[optKey];
 
@@ -2303,7 +2307,6 @@
             });
         });
 
-        // ربط أحداث الحفظ التلقائي لكافة الأنواع (Boolean, Text, Number, Select)
         modal.querySelectorAll('.mod-opt-input').forEach(input => {
             const eventType = input.tagName === 'SELECT' || input.type === 'checkbox' ? 'change' : 'input';
 
@@ -2326,7 +2329,7 @@
     }
 
     // =========================================================================
-    // 5. المحرك المركزي لتشغيل الكتل
+    // 5. المحرك المركزي لتشغيل الكتل (مع الانتظار لفحص الخادم أولاً)
     // =========================================================================
     function runCoreEngine() {
         if (!SYSTEM_CORE.globalEnabled) return;
@@ -2348,12 +2351,28 @@
         });
     }
 
-    loadSavedSettings();
-    runCoreEngine();
+    async function initSystem() {
+        // قراءة الإعدادات المحلية أولاً
+        loadSavedSettings();
 
-    const observer = new MutationObserver(() => {
+        // الانتظار لجلب فحص الخادم عن بعد وتطبيق أوامر التعطيل الفوري
+        const canRun = await checkRemoteConfigAndUpdates();
+        if (!canRun) {
+            console.warn("NippurConnect: السكربت معطل حالياً من الخادم المركزي.");
+            return; // إيقاف تنفيذ السكربت بالكامل ولن يعمل أي شي
+        }
+
         runCoreEngine();
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
+
+        const observer = new MutationObserver(() => {
+            if (SYSTEM_CORE.globalEnabled) {
+                runCoreEngine();
+            }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+    }
+
+    // بدء تشغيل النظام الآمن
+    initSystem();
 
 })();
