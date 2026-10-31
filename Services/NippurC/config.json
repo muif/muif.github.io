@@ -2,7 +2,7 @@
   "remoteVersion": "6.3",
   "forceUpdate": true,
   "updateUrl": "https://github.com/muif/muif.github.io/raw/refs/heads/main/Services/NippurC/NippurConnect.user.js",
-  "globalEnabled": false,
+  "globalEnabled": true,
   "disabledModules": ["copyOrder"],
   "modulesConfig": {
     "copyOrder": {
