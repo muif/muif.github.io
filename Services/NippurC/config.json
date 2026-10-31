@@ -1,6 +1,6 @@
 {
   "remoteVersion": "6.3",
-  "forceUpdate": false,
+  "forceUpdate": true,
   "updateUrl": "https://raw.githubusercontent.com/your-username/repo/main/script.user.js",
   "globalEnabled": true,
   "disabledModules": ["copyOrder"],
