@@ -6,7 +6,7 @@
   "disabledModules": ["copyOrder"],
   "modulesConfig": {
     "copyOrder": {
-      "enabled": false
+      "enabled": true
     }
   }
 }
