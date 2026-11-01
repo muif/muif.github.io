@@ -3,7 +3,7 @@
   "forceUpdate": false,
   "updateUrl": "https://github.com/muif/muif.github.io/raw/refs/heads/main/Services/NippurC/NippurConnect.user.js",
   "globalEnabled": true,
-  "disabledModules": ["copyOrder"],
+  "disabledModules": [],
   "modulesConfig": {
     "copyOrder": {
       "enabled": true
