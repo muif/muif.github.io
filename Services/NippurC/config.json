@@ -1,6 +1,6 @@
 {
   "remoteVersion": "6.3",
-  "forceUpdate": false,
+  "forceUpdate": true,
   "updateUrl": "https://github.com/muif/muif.github.io/raw/refs/heads/main/Services/NippurC/NippurConnect.user.js",
   "globalEnabled": true,
   "disabledModules": [],
