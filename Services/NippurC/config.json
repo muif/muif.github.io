@@ -23,8 +23,8 @@
     "userManagementModal": {
       "enabled": true
     },
-     },
     "singleOrderCustomerModal": {
       "enabled": true
     }
+  }
 }
