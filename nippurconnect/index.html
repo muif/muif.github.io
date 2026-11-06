@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الرئيسية - لوحة التحكم الإدارية</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- مكتبة الأيقونات Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <sidebar class="sidebar" id="sidebar">
+        <div class="sidebar-brand"><span>NIPPUR CONNECT</span></div>
+        <ul class="sidebar-menu">
+            <li><a href="index.html" class="active"><i class="fas fa-chart-pie"></i> <span>الرئيسية</span></a></li>
+            <li><a href="users.html"><i class="fas fa-users"></i> <span>الزبائن</span></a></li>
+        </ul>
+    </sidebar>
+
+    <!-- الهيكل الرئيسي -->
+    <div class="main-wrapper">
+        <!-- الهيدر العلوي -->
+        <header>
+            <div class="header-left">
+                <button class="menu-toggle-btn" onclick="toggleSidebar()">☰</button>
+                <h2 style="font-size: 18px; color: #334155;">لوحة التحكم الرئيسية</h2>
+            </div>
+            <div class="user-info">
+                <span id="adminName" style="font-weight: 600; font-size: 14px;">مدير النظام</span>
+                <button class="btn-logout" onclick="logout()">تسجيل الخروج</button>
+            </div>
+        </header>
+
+        <!-- محتوى الصفحة الرئيسية -->
+        <div class="content-area">
+            <div class="page-title">نظرة عامة على النظام</div>
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <h3>إجمالي الزبائن</h3>
+                    <div class="number" id="kpiTotalUsers">-</div>
+                </div>
+                <div class="kpi-card success">
+                    <h3>النشطون (آخر 30 يوم)</h3>
+                    <div class="number" id="kpiActive30">-</div>
+                </div>
+                <div class="kpi-card warning">
+                    <h3>المتسربون</h3>
+                    <div class="number" id="kpiChurned">-</div>
+                </div>
+                <div class="kpi-card danger">
+                    <h3>بدون أي طلبات</h3>
+                    <div class="number" id="kpiZeroOrders">-</div>
+                </div>
+                <div class="kpi-card">
+                    <h3>إجمالي المبيعات المؤكدة</h3>
+                    <div class="number" id="kpiRevenue">-</div>
+                </div>
+                <!-- بطاقة سيولة المحافظ الكلية -->
+                <div class="kpi-card" style="background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-right: 4px solid #2ecc71;">
+                    <span style="color: #777; font-size: 14px;">إجمالي أرصدة المحافظ</span>
+                    <h2 id="kpiWalletsBalance" style="margin: 10px 0 0; color: #2ecc71;">-- د.ع</h2>
+                </div>
+
+                <!-- بطاقة تذاكر الدعم العاجلة -->
+                <div class="kpi-card" style="background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-right: 4px solid #e74c3c;">
+                    <span style="color: #777; font-size: 14px;">تذاكر الدعم المفتوحة</span>
+                    <h2 id="kpiOpenTickets" style="margin: 10px 0 0; color: #e74c3c;">--</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- استدعاء ملفات الجافاسكريبت الخاصة بالصفحة الرئيسية -->
+    <script src="assets/script/auth.js"></script>
+    <script src="assets/script/home.js"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+    </script>
+</body>
+</html>
