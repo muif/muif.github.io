@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل دخول الإدارة - نيبور كونكت</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --error-bg: #fee2e2;
+            --error-text: #991b1b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-main);
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            padding: 40px 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+            .login-header h2 {
+                color: var(--text-main);
+                font-size: 26px;
+                font-weight: 700;
+                margin-bottom: 8px;
+            }
+
+            .login-header p {
+                color: var(--text-muted);
+                font-size: 14px;
+            }
+
+        .error-message {
+            background-color: var(--error-bg);
+            color: var(--error-text);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            text-align: center;
+            display: none;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid #fecaca;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 8px;
+                color: var(--text-main);
+                font-weight: 600;
+                font-size: 14px;
+            }
+
+            .form-group input[type="text"],
+            .form-group input[type="password"] {
+                width: 100%;
+                padding: 12px 16px;
+                border: 1.5px solid var(--border-color);
+                border-radius: 10px;
+                font-size: 15px;
+                outline: none;
+                transition: all 0.3s ease;
+                background-color: #f8fafc;
+            }
+
+            .form-group input:focus {
+                border-color: var(--primary);
+                background-color: #fff;
+                box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+            }
+
+        .form-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: var(--text-muted);
+            user-select: none;
+        }
+
+            .remember-me input[type="checkbox"] {
+                width: 18px;
+                height: 18px;
+                accent-color: var(--primary);
+                cursor: pointer;
+            }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+            .btn-submit:hover {
+                background-color: var(--primary-hover);
+            }
+
+            .btn-submit:active {
+                transform: scale(0.98);
+            }
+
+            .btn-submit:disabled {
+                background-color: #94a3b8;
+                cursor: not-allowed;
+                box-shadow: none;
+            }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h2>لوحة التحكم</h2>
+                <p>نظام إدارة نيبور كونكت الداخلي</p>
+            </div>
+
+            <div id="errorAlert" class="error-message"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">رقم الهاتف (للمدراء فقط)</label>
+                    <input type="text" id="username" required placeholder="مثال: 07800000000">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">كلمة المرور</label>
+                    <input type="password" id="password" required placeholder="••••••••">
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" id="rememberMe">
+                        تذكرني
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn">تسجيل الدخول</button>
+            </form>
+        </div>
+        <div class="footer-note">
+            جميع الحقوق محفوظة 2026 © نيبور كونكت
+        </div>
+    </div>
+
+    <script>
+        // رابط الـ API على الاستضافة
+        const API_URL = 'https://nippurconnect.com/ManagerAPI/api.php?action=login';
+
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const usernameInput = document.getElementById('username').value.trim();
+            const passwordInput = document.getElementById('password').value.trim();
+            const rememberMe = document.getElementById('rememberMe').checked;
+
+            const errorAlert = document.getElementById('errorAlert');
+            const submitBtn = document.getElementById('submitBtn');
+
+            errorAlert.style.display = 'none';
+            submitBtn.textContent = 'جاري التحقق...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: usernameInput,
+                        password: passwordInput,
+                        remember_me: rememberMe
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.status) {
+                    // إذا اخترت "تذكرني"، نحفظه في localStorage (يبقى طويلاً)، وإذا لم تختره نحفظه في sessionStorage (ينتهي بإغلاق المتصفح)
+                    const storage = rememberMe ? localStorage : sessionStorage;
+
+                    storage.setItem('admin_token', result.token);
+                    storage.setItem('admin_user', JSON.stringify(result.user));
+
+                    // التحويل إلى لوحة التحكم الرئيسية
+                    window.location.href = 'index.html';
+                } else {
+                    errorAlert.textContent = result.message || 'فشل تسجيل الدخول';
+                    errorAlert.style.display = 'block';
+                    submitBtn.textContent = 'تسجيل الدخول';
+                    submitBtn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                errorAlert.textContent = 'حدث خطأ في الاتصال بالخادم، تأكد من اتصال الإنترنت.';
+                errorAlert.style.display = 'block';
+                submitBtn.textContent = 'تسجيل الدخول';
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

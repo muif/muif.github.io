@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الزبائن - لوحة التحكم الإدارية</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- مكتبة الأيقونات Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <sidebar class="sidebar" id="sidebar">
+        <div class="sidebar-brand"><span>NIPPUR CONNECT</span></div>
+        <ul class="sidebar-menu">
+            <li><a href="index.html"><i class="fas fa-chart-pie"></i> <span>الرئيسية</span></a></li>
+            <li><a href="users.html" class="active"><i class="fas fa-users"></i> <span>الزبائن</span></a></li>
+        </ul>
+    </sidebar>
+
+    <!-- الهيكل الرئيسي -->
+    <div class="main-wrapper">
+        <!-- الهيدر العلوي -->
+        <header>
+            <div class="header-left">
+                <button class="menu-toggle-btn" onclick="toggleSidebar()">☰</button>
+                <h2 style="font-size: 18px; color: #334155;">إدارة الزبائن</h2>
+            </div>
+            <div class="user-info">
+                <span id="adminName" style="font-weight: 600; font-size: 14px;">مدير النظام</span>
+                <button class="btn-logout" onclick="logout()">تسجيل الخروج</button>
+            </div>
+        </header>
+
+        <!-- محتوى صفحة الزبائن -->
+        <div class="content-area">
+            <div class="page-title">قائمة الزبائن والتحليلات</div>
+
+            <!-- شريط الفلاتر والبحث -->
+            <!-- شريط الفلاتر المتقدمة -->
+            <div class="filter-bar" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 20px;">
+                <input type="text" id="searchInput" placeholder="ابحث باسم الزبون أو رقم الهاتف..." oninput="debounceSearch()">
+                <div class="filter-buttons">
+                    <button class="filter-btn active" onclick="setFilter('all', this)">الكل</button>
+                    <button class="filter-btn" onclick="setFilter('active', this)">النشطون (30 يوم)</button>
+                    <button class="filter-btn" onclick="setFilter('churned', this)">الجيير (لم يطلبوا منذ 30 يوم)</button>
+                    <button class="filter-btn" onclick="setFilter('zero_orders', this)">بدون طلبات</button>
+                    <button class="filter-btn" onclick="setFilter('custom_churn', this)">جير مخصص</button>
+                </div>
+                <!-- زر تصدير Excel -->
+                <button onclick="exportFilteredUsersToExcel()" style="padding: 7px 14px; background: #27ae60; color: white; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                    📊 تصدير إلى XLSX
+                </button>
+
+                <!-- حقول الفلترة المتقدمة (جغرافية وزمنية) -->
+                <div class="advanced-filters" style="display: flex; gap: 10px; align-items: center; width: 100%; margin-top: 10px;">
+                    <!-- قائمة المحافظات -->
+                    <select id="governorateSelect" onchange="applyAdvancedFilters()" style="padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+                        <option value="">كل المحافظات</option>
+                    </select>
+
+                    <!-- حقل فلتر أشباح التسجيل (مسجلين قبل تاريخ معين بدون طلبات) -->
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <label style="font-size: 13px; color: #555;">تم الانضمام قبل:</label>
+                        <input type="date" id="signupBeforeInput" onchange="applyAdvancedFilters()" style="padding: 6px; border-radius: 6px; border: 1px solid #ccc;">
+                    </div>
+
+                    <!-- حقل فلتر التسرب التاريخي المخصص -->
+                    <div id="customChurnContainer" style="display: none; align-items: center; gap: 5px;">
+                        <label style="font-size: 13px; color: #555;">لم يطلب منذ:</label>
+                        <input type="date" id="lastOrderBeforeInput" onchange="applyAdvancedFilters()" style="padding: 6px; border-radius: 6px; border: 1px solid #ccc;">
+                    </div>
+
+                    <!-- زر إعادة ضبط الفلاتر -->
+                    <button onclick="resetAdvancedFilters()" style="padding: 7px 12px; background: #e0e0e0; border: none; border-radius: 6px; cursor: pointer;">إعادة ضبط</button>
+                </div>
+            </div>
+
+            <!-- جدول الزبائن -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>اسم الزبون</th>
+                            <th>رقم الهاتف</th>
+                            <th>المحافظة</th>
+                            <th>رصيد المحفظة</th>
+                            <th>إجمالي الطلبات</th>
+                            <th>تاريخ آخر طلب</th>
+                            <th>المجموع المنفق</th>
+                            <th>واتساب</th> 
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <tr><td colspan="7" style="text-align: center;">جاري تحميل البيانات...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- شريط الترقيم والانتقال (Pagination Bar) -->
+            <div class="pagination-bar" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; background: #fff; padding: 15px 20px; border-radius: 12px; border: 1px solid var(--border-color);">
+                <div class="rows-per-page" style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 14px; color: var(--text-muted);">عرض:</span>
+                    <select id="limitSelect" onchange="changeLimit()" style="padding: 6px 12px; border: 1px solid var(--border-color); border-radius: 6px; outline: none; font-size: 14px; background: #f8fafc;">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50" selected>50</option>
+                        <option value="100">100</option>
+                    </select>
+                    <span style="font-size: 14px; color: var(--text-muted);">زبون في الصفحة</span>
+                </div>
+                <div class="pagination-buttons" style="display: flex; gap: 10px; align-items: center;">
+                    <button class="filter-btn" id="prevBtn" onclick="changePage(-1)" disabled>السابق</button>
+                    <span id="pageInfo" style="font-size: 14px; font-weight: 600; color: var(--text-main);">الصفحة 1</span>
+                    <button class="filter-btn" id="nextBtn" onclick="changePage(1)">التالي</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة الملف الشامل للزبون (Customer 360 Modal) -->
+    <div class="modal" id="customerModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div id="modalBody">
+                <!-- تعبئة برمجية -->
+            </div>
+        </div>
+    </div>
+
+    <!-- استدعاء ملفات الجافاسكريبت الخاصة بصفحة الزبائن -->
+    <script src="assets/script/auth.js"></script>
+    <script src="assets/script/modal.js"></script>
+    <script src="assets/script/users.js"></script>
+    <!-- مكتبة توليد ملفات Excel من المتصفح -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+    </script>
+</body>
+</html>
