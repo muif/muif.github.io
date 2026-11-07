@@ -1,5 +1,5 @@
 {
-  "remoteVersion": "1.0",
+  "remoteVersion": "1.1",
   "forceUpdate": false,
   "updateUrl": "https://github.com/muif/muif.github.io/raw/refs/heads/main/Services/NippurC/NippurConnect.user.js",
   "globalEnabled": true,
